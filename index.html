@@ -811,9 +811,10 @@ function makeAutocomplete(input,fetchFn,onSelect){
                 e.preventDefault();skipBlur=true;
                 const val=el.dataset.val,label=el.textContent;
                 removeBox();
-                input.value=label;
                 onSelect(val,label);
-                setTimeout(()=>{skipBlur=false;},50);
+                // 확실하게 input에 값 설정 (비동기 후에도)
+                input.value=label;
+                setTimeout(()=>{input.value=label;skipBlur=false;},10);
             };
         });
     });
@@ -1193,6 +1194,7 @@ function getJiraSettings(){const d=localStorage.getItem('jiraDomain')||DEFAULT_D
 async function createJiraTickets(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 먼저 완료하세요.','error');return;}
     const rows=buildTicketData();if(!rows.length){showToast('생성할 항목이 없습니다.','error');return;}
+    if(!confirm(`총 ${rows.length}건의 Jira 티켓을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
     const ps=document.getElementById('progressSection'),pf=document.getElementById('progressFill'),pt=document.getElementById('progressText'),btn=document.getElementById('btnCreateTickets');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
@@ -1605,6 +1607,7 @@ function downloadCsvFromModal(){
 async function createFromCsv(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
     const rows=buildCsvTicketData();if(!rows.length){showToast('항목을 선택하세요.','error');return;}
+    if(!confirm(`총 ${rows.length}건의 Jira 티켓을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
     const ps=document.getElementById('csvProgressSection'),pf=document.getElementById('csvProgressFill'),pt=document.getElementById('csvProgressText'),btn=document.getElementById('csvBtnCreate');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
@@ -1843,11 +1846,13 @@ function renderCloneEditUI(){
         assigneeInput.style.cssText='width:100px;flex:none';
         assigneeInput.className='clone-ac-assignee';
         // 직접 입력 후 blur → 자동으로 첫 번째 검색 결과 매칭
-        assigneeInput.addEventListener('blur',async()=>{
-            const v=assigneeInput.value.trim();
-            if(!v){cloneEditRows[i].assignee='';cloneEditRows[i].assigneeName='';return;}
-            if(cloneEditRows[i].assigneeName===v&&cloneEditRows[i].assignee)return; // 이미 자동완성으로 설정됨
-            try{const r2=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(v)+'&maxResults=1');if(r2.ok){const d=await r2.json();if(d.length){cloneEditRows[i].assignee=d[0].accountId;cloneEditRows[i].assigneeName=d[0].displayName;assigneeInput.value=d[0].displayName;}}}catch(e){}
+        assigneeInput.addEventListener('blur',()=>{
+            setTimeout(async()=>{
+                if(cloneEditRows[i].assignee)return; // 자동완성으로 이미 설정됨
+                const v=assigneeInput.value.trim();
+                if(!v){cloneEditRows[i].assignee='';cloneEditRows[i].assigneeName='';return;}
+                try{const r2=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(v)+'&maxResults=1');if(r2.ok){const d=await r2.json();if(d.length){cloneEditRows[i].assignee=d[0].accountId;cloneEditRows[i].assigneeName=d[0].displayName;assigneeInput.value=d[0].displayName;}}}catch(e){}
+            },200);
         });
         assigneeInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();assigneeInput.blur();}});
 
@@ -1885,6 +1890,7 @@ async function createCloneTickets(){
     const j=getJiraSettings();if(!j.isValid||!cloneEditRows.length){showToast('설정을 확인하세요.','error');return;}
     const parentRow=cloneEditRows.find(r=>r.isParent);const childRows=cloneEditRows.filter(r=>!r.isParent);
     if(!parentRow){showToast('상위 티켓이 없습니다.','error');return;}
+    if(!confirm(`상위 1건 + 서브태스크 ${childRows.length}건, 총 ${cloneEditRows.length}건을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
     const ps=document.getElementById('cloneProgressSection'),pf=document.getElementById('cloneProgressFill'),pt=document.getElementById('cloneProgressText'),btn=document.getElementById('cloneBtnCreate');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
