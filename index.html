@@ -270,6 +270,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 <div class="header">
     <h1>Jira 티켓 자동 생성기</h1>
     <button class="btn" onclick="openGuide()">사용 가이드</button>
+    <button class="btn" onclick="togglePastSchedule()" id="btnTogglePast">지난 일정 숨기기</button>
     <button class="btn" onclick="openAddMonthModal()">+ 월별 일정 추가</button>
     <button class="btn" onclick="openBulkCreate()">+ Jira 일괄 생성</button>
     <button class="btn" onclick="openCsvCreate()">CSV 일괄 생성</button>
@@ -450,16 +451,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     <div class="modal-body" style="line-height:1.9;font-size:14px">
 
         <div class="guide-section">
-            <div class="guide-title">1. Jira 연결 설정 (최초 1회)</div>
-            <div class="guide-content">
-                <div class="guide-step"><span class="guide-num">1</span>페이지 상단의 <strong>Jira 연결 설정</strong>에서 이메일과 API 토큰을 입력합니다.</div>
-                <div class="guide-step"><span class="guide-num">2</span>API 토큰이 없다면 <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="color:var(--primary);font-weight:600">여기서 발급</a> 받으세요.</div>
-                <div class="guide-step"><span class="guide-num">3</span><strong>저장</strong> → <strong>연결 테스트</strong>를 눌러 "연결 성공"이 뜨는지 확인합니다.</div>
-            </div>
-        </div>
-
-        <div class="guide-section">
-            <div class="guide-title">2. 업데이트 일정 만들기</div>
+            <div class="guide-title">1. 업데이트 일정 만들기</div>
             <div class="guide-content">
                 <div class="guide-step"><span class="guide-num">1</span><strong>+ 월별 일정 추가</strong> → 연도/월 선택 → 해당 월의 모든 목요일이 자동 생성됩니다.</div>
                 <div class="guide-step"><span class="guide-num">2</span>각 업데이트의 <strong>+ 항목 추가</strong>로 작업 항목을 등록합니다.</div>
@@ -468,7 +460,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         </div>
 
         <div class="guide-section">
-            <div class="guide-title">3. 새 티켓 + 서브태스크 생성</div>
+            <div class="guide-title">2. 새 티켓 + 서브태스크 생성</div>
             <div class="guide-content">
                 <div class="guide-step"><span class="guide-num">1</span><strong>+ Jira 일괄 생성</strong> → <strong>새 티켓 생성</strong> 탭 선택</div>
                 <div class="guide-step"><span class="guide-num">2</span>Jira 미연결 항목을 체크 → <strong>다음</strong></div>
@@ -479,7 +471,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         </div>
 
         <div class="guide-section">
-            <div class="guide-title">4. 기존 에픽/태스크에 서브태스크 추가</div>
+            <div class="guide-title">3. 기존 에픽/태스크에 서브태스크 추가</div>
             <div class="guide-content">
                 <div class="guide-step"><span class="guide-num">A</span><strong>방법 1 - 테이블에서 직접:</strong> Jira 연결 항목의 체크박스 선택 → 하단 <strong>하위 서브태스크 생성</strong> 클릭</div>
                 <div class="guide-step"><span class="guide-num">B</span><strong>방법 2 - 일괄 생성:</strong> + Jira 일괄 생성 → <strong>기존 티켓 하위에 생성</strong> 탭</div>
@@ -488,7 +480,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         </div>
 
         <div class="guide-section">
-            <div class="guide-title">5. CSV 일괄 생성 (빠른 생성)</div>
+            <div class="guide-title">4. CSV 일괄 생성 (빠른 생성)</div>
             <div class="guide-content">
                 <div class="guide-step"><span class="guide-num">1</span><strong>CSV 일괄 생성</strong> 클릭 → 항목 이름을 줄 단위로 붙여넣기 또는 CSV 파일 업로드</div>
                 <div class="guide-step"><span class="guide-num">2</span><strong>항목 파싱</strong> → 티켓 설정 → <strong>Jira 티켓 생성</strong> 또는 <strong>CSV 다운로드</strong></div>
@@ -641,21 +633,27 @@ let currentAddItemTab='manual',jiraSearchSelected=new Set(),jiraSearchResultsDat
 function renderScheduleTable(){
     const tb=document.getElementById('scheduleBody');tb.innerHTML='';
     if(!scheduleData.length){tb.innerHTML='<tr><td colspan="3" class="empty-state">월별 일정 추가 버튼을 눌러 시작하세요.</td></tr>';return;}
+    let hiddenCount=0;
     scheduleData.forEach((md,mi)=>{
-        const total=md.updates.length+1;
-        md.updates.forEach((u,ui)=>{
+        // 지난 일정 필터링
+        const visibleUpdates=hidePast?md.updates.filter((u,ui)=>!isPastUpdate(md.month,u.date)):md.updates;
+        if(hidePast){hiddenCount+=md.updates.length-visibleUpdates.length;}
+        if(!visibleUpdates.length)return; // 전부 지남
+        const total=visibleUpdates.length+1;
+        visibleUpdates.forEach((u,ui)=>{
+            const origUi=md.updates.indexOf(u);
             const tr=document.createElement('tr');
             if(ui===0){const td=document.createElement('td');td.className='col-month';td.rowSpan=total;td.innerHTML=`${md.month}<br><button class="btn-delete-month" onclick="deleteMonth(${mi})">&#10005;</button>`;tr.appendChild(td);}
             const tdU=document.createElement('td');tdU.className='col-update';
             const cnt=u.items?u.items.length:0;let h=`<span class="update-date">${u.date}</span>`;
             if(cnt>0)h+=`<span class="update-badge">${cnt}</span>`;
             if(u.milestone)h+=`<br><span class="milestone-tag">(${u.milestone})</span>`;
-            h+=`<button class="btn-delete-update" onclick="deleteUpdate(${mi},${ui})">&#10005;</button>`;
+            h+=`<button class="btn-delete-update" onclick="deleteUpdate(${mi},${origUi})">&#10005;</button>`;
             tdU.innerHTML=h;tr.appendChild(tdU);
             const tdI=document.createElement('td');
             if(u.items&&u.items.length){tr.classList.add('item-row');tdI.className='item-cell';
                 u.items.forEach((it,ii)=>{const div=document.createElement('div');div.className='item-entry';
-                    const chk=it.jiraLinked?`<input type="checkbox" class="table-checkbox" data-mi="${mi}" data-ui="${ui}" data-ii="${ii}" onchange="onTableCheck()">`:'';
+                    const chk=it.jiraLinked?`<input type="checkbox" class="table-checkbox" data-mi="${mi}" data-ui="${origUi}" data-ii="${ii}" onchange="onTableCheck()">`:'';
                     const ico=it.jiraLinked?`<span class="jira-icon linked"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm3.5 5.3l-4 4a.7.7 0 01-1 0l-2-2a.7.7 0 011-1L7 8.8l3.5-3.5a.7.7 0 011 1z"/></svg></span>`:`<span class="jira-icon unlinked"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5A5.5 5.5 0 118 2.5a5.5 5.5 0 010 11z"/></svg></span>`;
                     const typeBadge=it.jiraType?`<span class="issue-type-badge issue-type-${(it.jiraType||'').toLowerCase().replace(/[^a-z]/g,'')}">${it.jiraType}</span>`:'';
                     const verBadge=it.jiraVersion?`<span class="version-badge">${it.jiraVersion}</span>`:'';
@@ -663,12 +661,19 @@ function renderScheduleTable(){
                     const jKey=it.jiraKey||extractJiraKey(it.name);
                     const domain=localStorage.getItem('jiraDomain');
                     const linkBtn=jKey&&domain?`<a href="https://${domain}/browse/${jKey}" target="_blank" class="jira-link-btn" title="${jKey} 열기">${jKey}</a>`:'';
-                    div.innerHTML=`${chk}${ico}${typeBadge}<span class="item-text ${it.jiraLinked?'':'no-jira'}" ondblclick="startEditItem(this,${mi},${ui},${ii})">${it.name}</span>${linkBtn}${verBadge}${statusBadge}<button class="btn-icon btn-icon-delete" onclick="deleteItem(${mi},${ui},${ii})">&#10005;</button>`;
+                    div.innerHTML=`${chk}${ico}${typeBadge}<span class="item-text ${it.jiraLinked?'':'no-jira'}" ondblclick="startEditItem(this,${mi},${origUi},${ii})">${it.name}</span>${linkBtn}${verBadge}${statusBadge}<button class="btn-icon btn-icon-delete" onclick="deleteItem(${mi},${origUi},${ii})">&#10005;</button>`;
                     tdI.appendChild(div);});}
-            const ab=document.createElement('button');ab.className='btn-add-item';ab.innerHTML='+ 항목 추가';ab.onclick=()=>openAddItemModal(mi,ui);tdI.appendChild(ab);tr.appendChild(tdI);tb.appendChild(tr);
+            const ab=document.createElement('button');ab.className='btn-add-item';ab.innerHTML='+ 항목 추가';ab.onclick=()=>openAddItemModal(mi,origUi);tdI.appendChild(ab);tr.appendChild(tdI);tb.appendChild(tr);
         });
         const trA=document.createElement('tr');trA.className='add-update-row';const tdA=document.createElement('td');tdA.colSpan=2;tdA.innerHTML=`<button class="btn-add-update" onclick="openAddUpdateModal(${mi})">+ 업데이트 추가</button>`;trA.appendChild(tdA);tb.appendChild(trA);
     });
+    if(hidePast&&hiddenCount>0){
+        const tr=document.createElement('tr');tr.innerHTML=`<td colspan="3" style="text-align:center;padding:10px;color:var(--text3);font-size:13px">지난 일정 ${hiddenCount}건이 숨겨져 있습니다. <button onclick="togglePastSchedule()" style="color:var(--primary);background:none;border:none;cursor:pointer;font-size:13px;text-decoration:underline">보기</button></td>`;
+        tb.insertBefore(tr,tb.firstChild);
+    }
+    // 버튼 텍스트 업데이트
+    const btn=document.getElementById('btnTogglePast');
+    if(btn)btn.textContent=hidePast?'지난 일정 보기':'지난 일정 숨기기';
 }
 
 // ==========================================
@@ -1551,7 +1556,37 @@ if(dz){
     dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('csv-drop-active');const f=e.dataTransfer.files[0];if(f){document.getElementById('csvFileInput').files=e.dataTransfer.files;handleCsvFile(document.getElementById('csvFileInput'));}});
 }
 
+// 현재 월 자동 생성
+function ensureCurrentMonth(){
+    const now=new Date();const y=now.getFullYear(),m=now.getMonth()+1;
+    const ml=m+'월';
+    if(scheduleData.find(d=>d.month===ml))return;
+    const th=getThursdays(y,m);
+    if(!th.length)return;
+    scheduleData.push({month:ml,updates:th.map(d=>({date:d+'일',milestone:'',items:[]}))});
+    const mo=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+    scheduleData.sort((a,b)=>mo.indexOf(a.month)-mo.indexOf(b.month));
+    saveData();
+}
+
+// 지난 일정 숨기기
+let hidePast=localStorage.getItem('hidePast')==='true';
+function togglePastSchedule(){
+    hidePast=!hidePast;
+    localStorage.setItem('hidePast',hidePast);
+    renderScheduleTable();
+    const btn=document.getElementById('btnTogglePast');
+    btn.textContent=hidePast?'지난 일정 보기':'지난 일정 숨기기';
+}
+function isPastUpdate(month,date){
+    const now=new Date();const y=now.getFullYear();
+    const mNum=parseInt(month);const dNum=parseInt(date);
+    const updateDate=new Date(y,mNum-1,dNum);
+    return updateDate<new Date(y,now.getMonth(),now.getDate());
+}
+
 // 초기화
+ensureCurrentMonth();
 loadJiraSettingsUI();
 renderScheduleTable();
 </script>
