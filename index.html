@@ -197,10 +197,6 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 
 /* Jira settings */
 .jira-settings-inline{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin:0 24px;padding:16px 20px;margin-top:16px}
-.jira-settings-inline.collapsed .jira-settings-body{display:none}
-.jira-settings-inline h3{cursor:pointer;display:flex;align-items:center;justify-content:space-between}
-.jira-settings-inline h3::after{content:'▲';font-size:11px;color:var(--text3)}
-.jira-settings-inline.collapsed h3::after{content:'▼'}
 .jira-settings-inline h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text)}
 .jira-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .jira-settings-grid .form-group input{width:100%}
@@ -267,16 +263,13 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     <h1>Jira 티켓 자동 생성기</h1>
     <button class="btn" onclick="openAddMonthModal()">+ 월별 일정 추가</button>
     <button class="btn" onclick="openBulkCreate()">+ Jira 일괄 생성</button>
-    <button class="btn-icon-header" onclick="toggleJiraSettings()" title="Jira 연결 설정">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-    </button>
     <button class="btn-icon-header" onclick="toggleTheme()" id="themeToggleBtn" title="라이트/다크 모드 전환">
         <svg id="themeIcon" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
     </button>
 </div>
 
 <div class="jira-settings-inline" id="jiraSettingsPanel">
-    <h3 onclick="toggleJiraSettings()">Jira 연결 설정</h3>
+    <h3>Jira 연결 설정</h3>
     <div class="jira-settings-body">
         <div style="margin-bottom:14px;padding:12px 14px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.9">
             <strong style="color:var(--text)">처음 사용하시나요? 아래 순서대로 입력하세요.</strong><br>
@@ -1153,9 +1146,6 @@ function createSubFromTable(){
 
 // 초기화
 loadJiraSettingsUI();
-if(localStorage.getItem('jiraToken')){
-    document.getElementById('jiraSettingsPanel').classList.add('collapsed');
-}
 renderScheduleTable();
 </script>
 </body>
