@@ -791,7 +791,8 @@ function confirmAddItem(){
 // ==========================================
 // Autocomplete search helper
 function makeAutocomplete(input,fetchFn,onSelect){
-    let box=null;
+    let box=null;let skipBlur=false;
+    function removeBox(){if(box){box.remove();box=null;}}
     function positionBox(){
         if(!box)return;
         const rect=input.getBoundingClientRect();
@@ -800,14 +801,23 @@ function makeAutocomplete(input,fetchFn,onSelect){
         box.style.width=Math.max(rect.width,200)+'px';
     }
     input.addEventListener('input',async()=>{
-        const q=input.value.trim();if(!q){if(box){box.remove();box=null;}return;}
+        const q=input.value.trim();if(!q){removeBox();return;}
         const items=await fetchFn(q);
         if(!box){box=document.createElement('div');box.className='ac-box';document.body.appendChild(box);}
         positionBox();
         box.innerHTML=items.length?items.map(it=>`<div class="ac-item" data-val="${it.value}">${it.label}</div>`).join(''):'<div class="ac-item" style="color:var(--text3)">결과 없음</div>';
-        box.querySelectorAll('.ac-item[data-val]').forEach(el=>{el.onmousedown=e=>{e.preventDefault();onSelect(el.dataset.val,el.textContent);input.value='';box.remove();box=null;};});
+        box.querySelectorAll('.ac-item[data-val]').forEach(el=>{
+            el.onmousedown=e=>{
+                e.preventDefault();skipBlur=true;
+                const val=el.dataset.val,label=el.textContent;
+                removeBox();
+                input.value=label;
+                onSelect(val,label);
+                setTimeout(()=>{skipBlur=false;},50);
+            };
+        });
     });
-    input.addEventListener('blur',()=>setTimeout(()=>{if(box){box.remove();box=null;}},150));
+    input.addEventListener('blur',()=>{if(!skipBlur)setTimeout(removeBox,100);});
 }
 
 function getPreviewExample(){
