@@ -846,12 +846,16 @@ function stRemoveTag(i,field,elPrefix,val){
 function stToggle(i,v){subtaskTemplates[i].enabled=v;saveTemplates();renderSubtaskTable();renderPreview();}
 function onStTitleEdit(input,i){
     const newVal=input.value;const example=getPreviewExample();
-    if(!example){subtaskTemplates[i].summary=newVal;saveTemplates();renderPreview();return;}
-    // 사용자가 치환 결과를 수정 → example 부분을 [전체제목]으로 되돌려 템플릿 저장
-    const escaped=example.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    const newTemplate=newVal.replace(new RegExp(escaped),'[전체제목]');
-    subtaskTemplates[i].summary=newTemplate;
-    saveTemplates();renderPreview();
+    if(!example){subtaskTemplates[i].summary=newVal;}
+    else{
+        const escaped=example.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        subtaskTemplates[i].summary=newVal.replace(new RegExp(escaped),'[전체제목]');
+    }
+    saveTemplates();
+    // 헤더 텍스트만 업데이트 (재렌더링 X)
+    const card=input.closest('.st-card');
+    if(card){const header=card.querySelector('.st-card-summary');if(header)header.textContent=newVal;}
+    renderPreview();
 }
 function stSet(i,k,v){subtaskTemplates[i][k]=v;saveTemplates();renderPreview();}
 function stDelete(i){subtaskTemplates.splice(i,1);saveTemplates();renderSubtaskTable();renderPreview();}
