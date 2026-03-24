@@ -274,17 +274,20 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 
 <div class="jira-settings-inline" id="jiraSettingsPanel">
     <h3>Jira 연결 설정</h3>
-    <div class="jira-settings-grid">
-        <div class="form-group"><label>Jira 도메인</label><input type="text" id="jiraDomain" placeholder="your-domain.atlassian.net"></div>
-        <div class="form-group"><label>프로젝트 키</label><input type="text" id="jiraProjectKey" placeholder="PM"></div>
-        <div class="form-group"><label>이메일</label><input type="email" id="jiraEmail" placeholder="your-email@example.com"></div>
-        <div class="form-group"><label>API 토큰</label><input type="password" id="jiraToken" placeholder="Jira API Token"></div>
-        <div class="form-group full-width"><label>프록시 서버 URL</label><input type="text" id="proxyUrl" placeholder="예: http://10.10.130.153:3000"></div>
+    <div style="margin-bottom:14px;padding:12px 14px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.9">
+        <strong style="color:var(--text)">처음 사용하시나요? 아래 순서대로 입력하세요.</strong><br>
+        1. <strong>Jira 도메인:</strong> <code style="color:var(--primary)">madngine.atlassian.net</code> (회사 Jira 주소)<br>
+        2. <strong>프로젝트 키:</strong> <code style="color:var(--primary)">PM</code> (Jira 프로젝트 URL에서 확인)<br>
+        3. <strong>이메일:</strong> Jira 로그인 시 사용하는 회사 이메일<br>
+        4. <strong>API 토큰:</strong> <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="color:var(--primary);font-weight:600">여기서 발급</a> → API 토큰 만들기 → 복사 붙여넣기<br>
+        5. <strong>저장</strong> → <strong>연결 테스트</strong> 클릭
     </div>
-    <div style="margin-top:12px;padding:12px 14px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.8">
-        <strong style="color:var(--text)">설정 안내</strong><br>
-        <strong>API 토큰 발급:</strong> <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="color:var(--primary)">Atlassian API 토큰 페이지</a> → API 토큰 만들기 → 복사하여 붙여넣기<br>
-        <strong>프록시 서버:</strong> 브라우저에서 Jira API를 직접 호출할 수 없어 프록시 서버를 경유합니다. 관리자에게 주소를 문의하세요.
+    <div class="jira-settings-grid">
+        <div class="form-group"><label>Jira 도메인</label><input type="text" id="jiraDomain" placeholder="madngine.atlassian.net"></div>
+        <div class="form-group"><label>프로젝트 키</label><input type="text" id="jiraProjectKey" placeholder="PM"></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="jiraEmail" placeholder="name@madngine.com"></div>
+        <div class="form-group"><label>API 토큰</label><input type="password" id="jiraToken" placeholder="발급받은 토큰 붙여넣기"></div>
+        <div class="form-group full-width"><label>프록시 서버 URL</label><input type="text" id="proxyUrl" placeholder="자동 설정됨"></div>
     </div>
     <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
         <button class="btn btn-primary btn-sm" onclick="saveJiraSettings()">저장</button>
@@ -908,17 +911,15 @@ function downloadCSV(){
 // JIRA API
 // ==========================================
 function getProxyBase(){
-    const p=localStorage.getItem('proxyUrl')||'';
-    if(p)return p.replace(/\/$/,'');
-    // 같은 서버에서 실행 중이면 상대 경로
-    return '';
+    const p=localStorage.getItem('proxyUrl')||DEFAULT_PROXY;
+    return p.replace(/\/$/,'');
 }
 function jiraFetch(path,opts={}){
     const d=localStorage.getItem('jiraDomain'),e=localStorage.getItem('jiraEmail'),t=localStorage.getItem('jiraToken');
     const base=getProxyBase();
     return fetch(base+'/jira-proxy'+path,{...opts,headers:{'X-Jira-Domain':d,'X-Jira-Auth':btoa(e+':'+t),'Content-Type':'application/json',...(opts.headers||{})}});
 }
-function getJiraSettings(){const d=localStorage.getItem('jiraDomain'),e=localStorage.getItem('jiraEmail'),t=localStorage.getItem('jiraToken'),p=localStorage.getItem('jiraProjectKey')||'PM';return{domain:d,email:e,token:t,projectKey:p,isValid:!!(d&&e&&t)};}
+function getJiraSettings(){const d=localStorage.getItem('jiraDomain')||DEFAULT_DOMAIN,e=localStorage.getItem('jiraEmail'),t=localStorage.getItem('jiraToken'),p=localStorage.getItem('jiraProjectKey')||DEFAULT_PROJECT;return{domain:d,email:e,token:t,projectKey:p,isValid:!!(d&&e&&t)};}
 
 async function createJiraTickets(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 먼저 완료하세요.','error');return;}
@@ -1049,7 +1050,17 @@ function toggleJiraResult(i){jiraSearchSelected.has(i)?jiraSearchSelected.delete
 function updateJiraSelectBtn(){document.getElementById('btnAddItem').textContent=jiraSearchSelected.size?`선택 항목 추가 (${jiraSearchSelected.size}건)`:'선택 항목 추가';}
 function jiraSelectAll(){jiraSearchResultsData.forEach((_,i)=>{jiraSearchSelected.add(i);const cb=document.getElementById('jira_res_'+i);if(cb)cb.checked=true;});updateJiraSelectBtn();}
 function jiraDeselectAll(){jiraSearchSelected.clear();jiraSearchResultsData.forEach((_,i)=>{const cb=document.getElementById('jira_res_'+i);if(cb)cb.checked=false;});updateJiraSelectBtn();}
-function toggleJiraSettings(){document.getElementById('jiraSettingsPanel').classList.toggle('active');document.getElementById('jiraDomain').value=localStorage.getItem('jiraDomain')||'';document.getElementById('jiraEmail').value=localStorage.getItem('jiraEmail')||'';document.getElementById('jiraToken').value=localStorage.getItem('jiraToken')||'';document.getElementById('jiraProjectKey').value=localStorage.getItem('jiraProjectKey')||'PM';document.getElementById('proxyUrl').value=localStorage.getItem('proxyUrl')||'';}
+const DEFAULT_PROXY='http://10.10.130.153:3000';
+const DEFAULT_DOMAIN='madngine.atlassian.net';
+const DEFAULT_PROJECT='PM';
+function toggleJiraSettings(){
+    document.getElementById('jiraSettingsPanel').classList.toggle('active');
+    document.getElementById('jiraDomain').value=localStorage.getItem('jiraDomain')||DEFAULT_DOMAIN;
+    document.getElementById('jiraEmail').value=localStorage.getItem('jiraEmail')||'';
+    document.getElementById('jiraToken').value=localStorage.getItem('jiraToken')||'';
+    document.getElementById('jiraProjectKey').value=localStorage.getItem('jiraProjectKey')||DEFAULT_PROJECT;
+    document.getElementById('proxyUrl').value=localStorage.getItem('proxyUrl')||DEFAULT_PROXY;
+}
 function saveJiraSettings(){let pk=document.getElementById('jiraProjectKey').value.trim();const m=pk.match(/\/projects\/([A-Za-z0-9_]+)/);if(m)pk=m[1];pk=pk.toUpperCase();localStorage.setItem('jiraDomain',document.getElementById('jiraDomain').value.trim());localStorage.setItem('jiraEmail',document.getElementById('jiraEmail').value.trim());localStorage.setItem('jiraToken',document.getElementById('jiraToken').value.trim());localStorage.setItem('jiraProjectKey',pk);localStorage.setItem('proxyUrl',document.getElementById('proxyUrl').value.trim());document.getElementById('jiraProjectKey').value=pk;_cachedVersions=null;_cachedComponents=null;_cachedLabels=null;_cachedGroups=null;showToast('설정 저장됨','success');}
 async function testJiraConnection(){saveJiraSettings();const j=getJiraSettings(),s=document.getElementById('jiraConnStatus');if(!j.isValid){showToast('모든 필드를 입력하세요.','error');return;}s.textContent='연결 중...';s.className='jira-conn-status';try{const r=await jiraFetch('/rest/api/3/myself');if(r.ok){const u=await r.json();s.textContent='연결 성공 ('+u.displayName+')';s.className='jira-conn-status ok';}else{s.textContent='연결 실패 ('+r.status+')';s.className='jira-conn-status fail';}}catch(e){s.textContent='오류: '+e.message;s.className='jira-conn-status fail';}}
 
