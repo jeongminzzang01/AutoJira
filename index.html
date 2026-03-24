@@ -1794,19 +1794,34 @@ function renderCloneEditUI(){
     const el=document.getElementById('cloneEditList');el.innerHTML='';
     cloneEditRows.forEach((r,i)=>{
         const div=document.createElement('div');div.className=`clone-row ${r.isParent?'parent':''}`;
-        div.innerHTML=`
-            <span class="clone-type" style="color:${r.isParent?'var(--primary)':'var(--text3)'}">${r.isParent?r.type:'Sub-task'}</span>
-            <input type="text" value="${r.summary}" onchange="cloneEditRows[${i}].summary=this.value" title="제목">
-            <input type="text" value="${r.assigneeName||r.assignee||''}" style="width:80px;flex:none" placeholder="담당자" onchange="cloneEditRows[${i}].assigneeName=this.value;cloneEditRows[${i}].assignee=this.value" title="담당자" class="clone-ac-assignee" data-idx="${i}">
-            ${r.isParent?'':`<button class="clone-del" onclick="cloneEditRows.splice(${i},1);renderCloneEditUI()" title="삭제">&#10005;</button>`}`;
+        const titleInput=document.createElement('input');titleInput.type='text';titleInput.value=r.summary;titleInput.title='제목';
+        if(r.isParent){
+            titleInput.addEventListener('change',function(){
+                const oldSummary=cloneEditRows[i].summary;const newSummary=this.value;
+                cloneEditRows[i].summary=newSummary;
+                // 하위 서브태스크 제목도 연동 변경
+                cloneEditRows.forEach((cr,ci)=>{if(!cr.isParent&&cr.summary.includes(oldSummary)){
+                    cr.summary=cr.summary.replace(oldSummary,newSummary);
+                }});
+                renderCloneEditUI();
+            });
+        }else{
+            titleInput.addEventListener('change',function(){cloneEditRows[i].summary=this.value;});
+        }
+        const assigneeInput=document.createElement('input');assigneeInput.type='text';
+        assigneeInput.value=r.assigneeName||'';assigneeInput.placeholder='담당자';assigneeInput.title='담당자';
+        assigneeInput.style.cssText='width:100px;flex:none';
+        assigneeInput.className='clone-ac-assignee';
+
+        div.innerHTML=`<span class="clone-type" style="color:${r.isParent?'var(--primary)':'var(--text3)'}">${r.isParent?r.type:'Sub-task'}</span>`;
+        div.appendChild(titleInput);
+        div.appendChild(assigneeInput);
+        if(!r.isParent){const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.title='삭제';delBtn.onclick=()=>{cloneEditRows.splice(i,1);renderCloneEditUI();};div.appendChild(delBtn);}
         el.appendChild(div);
         // Assignee autocomplete
-        const acInput=div.querySelector('.clone-ac-assignee');
-        if(acInput){
-            makeAutocomplete(acInput,async q=>{
-                try{const r2=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(q)+'&maxResults=5');if(!r2.ok)return[];const d=await r2.json();return d.map(u=>({value:u.accountId,label:u.displayName}));}catch(e){return[];}
-            },(val,label)=>{cloneEditRows[i].assignee=val;cloneEditRows[i].assigneeName=label;acInput.value=label;});
-        }
+        makeAutocomplete(assigneeInput,async q=>{
+            try{const r2=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(q)+'&maxResults=5');if(!r2.ok)return[];const d=await r2.json();return d.map(u=>({value:u.accountId,label:u.displayName}));}catch(e){return[];}
+        },(val,label)=>{cloneEditRows[i].assignee=val;cloneEditRows[i].assigneeName=label;assigneeInput.value=label;});
     });
     document.getElementById('clonePreviewCount').textContent=cloneEditRows.length;
 }
