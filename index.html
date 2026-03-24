@@ -673,18 +673,12 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
             <div class="form-group"><label>업데이트 날짜 (목요일)</label><input type="date" id="maintDate"></div>
         </div>
         <div class="form-group" style="margin-bottom:12px"><label>빌드 제목 템플릿</label><input type="text" id="maintTemplate" value="[마일스톤] {날짜} {N}차 서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드" style="width:100%"></div>
-        <div class="settings-form" style="margin-bottom:12px">
-            <div class="form-group"><label>빌드 일수 (업데이트 전)</label>
-                <select id="maintDays"><option value="3" selected>3일 (월~수)</option><option value="2">2일 (화~수)</option><option value="4">4일 (일~수)</option><option value="5">5일 (토~수)</option></select>
-            </div>
-            <div class="form-group"><label>이슈 유형</label>
-                <select id="maintIssueType"><option value="Epic" selected>Epic</option><option value="Task">Task</option></select>
-            </div>
-        </div>
-        <button class="btn btn-sm btn-secondary" onclick="generateMaintPreview()" style="margin-bottom:12px">미리보기 생성</button>
+        <button class="btn btn-sm btn-primary" onclick="generateMaintPreview()" style="margin-bottom:16px">미리보기 생성</button>
 
         <div id="maintPreviewSection" style="display:none">
-            <div class="section-title">생성될 티켓 (<span id="maintPreviewCount">0</span>건)</div>
+            <div class="section-title">생성될 티켓 (<span id="maintPreviewCount">0</span>건)
+                <button class="btn btn-sm btn-secondary" style="margin-left:auto" onclick="addMaintItem()">+ 에픽 추가</button>
+            </div>
             <div id="maintEditList"></div>
         </div>
 
@@ -2306,31 +2300,37 @@ function generateMaintPreview(){
     const ver=document.getElementById('maintVersion').value.trim();
     const dateStr=document.getElementById('maintDate').value;
     const tmpl=document.getElementById('maintTemplate').value;
-    const days=+document.getElementById('maintDays').value;
     if(!dateStr){showToast('업데이트 날짜를 선택하세요.','error');return;}
     const thurDate=new Date(dateStr);
     maintItems=[];
-    for(let i=days;i>=1;i--){
+    for(let i=3;i>=1;i--){
         const d=new Date(thurDate);d.setDate(d.getDate()-i);
-        const n=days-i+1;
+        const n=3-i+1;
         const mm=d.getMonth()+1;const dd=d.getDate();
         const summary=tmpl.replace('{날짜}',`${mm}/${dd}`).replace('{N}',n);
         maintItems.push({summary,date:`${d.getFullYear()}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`,checked:true,version:ver});
     }
     renderMaintPreview();
 }
+function addMaintItem(){
+    const ver=document.getElementById('maintVersion').value.trim();
+    const ms=ver.match(/^(M\d+)/i);
+    const prefix=ms?`[${ms[1]}] `:'';
+    maintItems.push({summary:`${prefix}PC/AOS/OneStore App 빌드`,date:'',checked:true,version:ver});
+    renderMaintPreview();
+}
 function renderMaintPreview(){
     const el=document.getElementById('maintEditList');el.innerHTML='';
-    const type=document.getElementById('maintIssueType').value;
     maintItems.forEach((item,i)=>{
         const div=document.createElement('div');div.className='clone-row';
         const cb=document.createElement('input');cb.type='checkbox';cb.checked=item.checked;cb.style.cssText='accent-color:var(--primary);flex-shrink:0';
         cb.onchange=()=>{item.checked=cb.checked;};
-        const typeSpan=document.createElement('span');typeSpan.className='clone-type';typeSpan.style.color='var(--primary)';typeSpan.textContent=type;
+        const typeSpan=document.createElement('span');typeSpan.className='clone-type';typeSpan.style.color='var(--primary)';typeSpan.textContent='Epic';
         const titleInput=document.createElement('input');titleInput.type='text';titleInput.value=item.summary;
         titleInput.onchange=()=>{item.summary=titleInput.value;};
-        const dateSpan=document.createElement('span');dateSpan.style.cssText='font-size:12px;color:var(--text3);flex-shrink:0;min-width:80px';dateSpan.textContent=item.date;
-        div.appendChild(cb);div.appendChild(typeSpan);div.appendChild(titleInput);div.appendChild(dateSpan);
+        const dateSpan=document.createElement('span');dateSpan.style.cssText='font-size:12px;color:var(--text3);flex-shrink:0;min-width:80px';dateSpan.textContent=item.date||'';
+        const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.onclick=()=>{maintItems.splice(i,1);renderMaintPreview();};
+        div.appendChild(cb);div.appendChild(typeSpan);div.appendChild(titleInput);div.appendChild(dateSpan);div.appendChild(delBtn);
         el.appendChild(div);
     });
     document.getElementById('maintPreviewCount').textContent=maintItems.filter(v=>v.checked).length;
@@ -2340,7 +2340,7 @@ function renderMaintPreview(){
 }
 function downloadMaintCsv(){
     const items=maintItems.filter(v=>v.checked);if(!items.length){showToast('항목을 선택하세요.','error');return;}
-    const type=document.getElementById('maintIssueType').value;
+    const type='Epic';
     const esc=v=>{const s=String(v||'');return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s;};
     let csv='\uFEFF이슈 유형,요약,수정버전\n';
     items.forEach(r=>{csv+=`${esc(type)},${esc(r.summary)},${esc(r.version)}\n`;});
@@ -2351,7 +2351,7 @@ function downloadMaintCsv(){
 async function createMaintTickets(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
     const items=maintItems.filter(v=>v.checked);if(!items.length){showToast('항목을 선택하세요.','error');return;}
-    const type=document.getElementById('maintIssueType').value;
+    const type='Epic';
     let preview=`${items.length}건의 정기점검 티켓을 생성합니다.\n\n`;
     items.forEach(v=>{preview+=`• [${type}] ${v.summary}\n`;});
     preview+='\n이대로 생성하시겠습니까?';
@@ -2362,7 +2362,7 @@ async function createMaintTickets(){
     const mkAdf=t=>({type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:t}]}]});
     for(let i=0;i<items.length;i++){
         const item=items[i];
-        const fields={project:{key:j.projectKey},issuetype:{name:type},summary:item.summary,description:mkAdf(item.summary),priority:{name:'Medium'}};
+        const fields={project:{key:j.projectKey},issuetype:{name:type},summary:item.summary,description:mkAdf(item.summary),priority:{name:'High'}};
         if(item.version)fields.fixVersions=[{name:item.version}];
         try{
             const r=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify({fields})});
