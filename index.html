@@ -1194,7 +1194,10 @@ function getJiraSettings(){const d=localStorage.getItem('jiraDomain')||DEFAULT_D
 async function createJiraTickets(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 먼저 완료하세요.','error');return;}
     const rows=buildTicketData();if(!rows.length){showToast('생성할 항목이 없습니다.','error');return;}
-    if(!confirm(`총 ${rows.length}건의 Jira 티켓을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
+    let pv=`총 ${rows.length}건을 생성합니다.\n\n`;
+    rows.forEach(r=>{pv+=`${r._isParent?'▶':'   └'} [${r.type}] ${r.summary}\n`;});
+    pv+='\n이대로 생성하시겠습니까?';
+    if(!confirm(pv))return;
     const ps=document.getElementById('progressSection'),pf=document.getElementById('progressFill'),pt=document.getElementById('progressText'),btn=document.getElementById('btnCreateTickets');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
@@ -1607,7 +1610,10 @@ function downloadCsvFromModal(){
 async function createFromCsv(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
     const rows=buildCsvTicketData();if(!rows.length){showToast('항목을 선택하세요.','error');return;}
-    if(!confirm(`총 ${rows.length}건의 Jira 티켓을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
+    let pv=`총 ${rows.length}건을 생성합니다.\n\n`;
+    rows.forEach(r=>{pv+=`${r._isParent?'▶':'   └'} [${r.type}] ${r.summary}\n`;});
+    pv+='\n이대로 생성하시겠습니까?';
+    if(!confirm(pv))return;
     const ps=document.getElementById('csvProgressSection'),pf=document.getElementById('csvProgressFill'),pt=document.getElementById('csvProgressText'),btn=document.getElementById('csvBtnCreate');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
@@ -1921,7 +1927,16 @@ async function createCloneTickets(){
     const j=getJiraSettings();if(!j.isValid||!cloneEditRows.length){showToast('설정을 확인하세요.','error');return;}
     const parentRows=cloneEditRows.filter(r=>r.isParent);
     const totalChildren=cloneEditRows.filter(r=>!r.isParent).length;
-    if(!confirm(`상위 ${parentRows.length}건 + 하위 ${totalChildren}건, 총 ${cloneEditRows.length}건을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
+    let preview=`상위 ${parentRows.length}건 + 하위 ${totalChildren}건, 총 ${cloneEditRows.length}건을 생성합니다.\n\n`;
+    parentRows.forEach(p=>{
+        preview+=`▶ [${p.type}] ${p.summary}${p.assigneeName?' ('+p.assigneeName+')':''}${p.version?' ['+p.version+']':''}\n`;
+        cloneEditRows.filter(r=>!r.isParent&&r._parentSrcKey===p._srcKey).forEach(c=>{
+            preview+=`   └ [${c.type}] ${c.summary}${c.assigneeName?' ('+c.assigneeName+')':''}\n`;
+        });
+        preview+='\n';
+    });
+    preview+='이대로 생성하시겠습니까?';
+    if(!confirm(preview))return;
     const ps=document.getElementById('cloneProgressSection'),pf=document.getElementById('cloneProgressFill'),pt=document.getElementById('cloneProgressText'),btn=document.getElementById('cloneBtnCreate');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
