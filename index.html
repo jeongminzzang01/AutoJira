@@ -1696,8 +1696,10 @@ function isPastUpdate(month,date){
 // ==========================================
 // CLONE FROM PAST TICKET
 // ==========================================
-let cloneSourceData=null;
-let cloneEditRows=[]; // [{type,summary,assignee,assigneeName,version,component,labels,isParent}]
+let cloneSourceData=null; // null or {parent, children}
+let cloneSourceList=[]; // multiple sources: [{parent,children}, ...]
+let cloneEditRows=[];
+let cloneSearchResults=[];let cloneSelectedIdxs=new Set();
 async function openCloneModal(){
     cloneSourceData=null;
     document.getElementById('cloneSearchQuery').value='';
@@ -1743,50 +1745,57 @@ async function searchCloneTickets(){
         const r=await jiraFetch('/rest/api/3/search/jql?jql='+encodeURIComponent(jql)+'&maxResults=20&fields=summary,status,issuetype,fixVersions,assignee,components,labels');
         if(!r.ok){c.innerHTML=`<div class="jira-result-empty">검색 실패 (${r.status})</div>`;return;}
         const d=await r.json();if(!d.issues||!d.issues.length){c.innerHTML='<div class="jira-result-empty">결과 없음</div>';return;}
-        c.innerHTML='';d.issues.forEach(iss=>{
+        cloneSearchResults=d.issues;cloneSelectedIdxs.clear();
+        c.innerHTML='';
+        const actions=document.createElement('div');actions.style.cssText='display:flex;justify-content:flex-end;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border)';
+        actions.innerHTML='<button class="btn btn-sm btn-secondary" onclick="cloneSearchResults.forEach((_,i)=>{cloneSelectedIdxs.add(i);document.getElementById(\'clsr_\'+i).checked=true})">전체 선택</button><button class="btn btn-sm btn-secondary" onclick="cloneSelectedIdxs.clear();cloneSearchResults.forEach((_,i)=>{document.getElementById(\'clsr_\'+i).checked=false})">선택 해제</button><button class="btn btn-sm btn-primary" onclick="loadSelectedCloneSources()">선택 항목 불러오기</button>';
+        c.appendChild(actions);
+        d.issues.forEach((iss,idx)=>{
             const div=document.createElement('div');div.className='jira-result-item';
             const type=iss.fields.issuetype?.name||'';const ver=(iss.fields.fixVersions||[]).map(v=>v.name).join(',');
-            div.innerHTML=`<span class="issue-type-badge issue-type-${type.toLowerCase().replace(/[^a-z]/g,'')}">${type}</span><span class="jira-result-key">${iss.key}</span><span class="jira-result-summary">${iss.fields.summary}</span>${ver?`<span class="version-badge">${ver}</span>`:''}`;
+            div.innerHTML=`<input type="checkbox" id="clsr_${idx}" style="accent-color:var(--primary)" onchange="cloneSelectedIdxs.has(${idx})?cloneSelectedIdxs.delete(${idx}):cloneSelectedIdxs.add(${idx})"><span class="issue-type-badge issue-type-${type.toLowerCase().replace(/[^a-z]/g,'')}">${type}</span><span class="jira-result-key">${iss.key}</span><span class="jira-result-summary">${iss.fields.summary}</span>${ver?`<span class="version-badge">${ver}</span>`:''}`;
             div.style.cursor='pointer';
-            div.onclick=()=>selectCloneSource(iss);
+            div.onclick=e=>{if(e.target.tagName!=='INPUT'){const cb=document.getElementById('clsr_'+idx);cb.checked=!cb.checked;cloneSelectedIdxs.has(idx)?cloneSelectedIdxs.delete(idx):cloneSelectedIdxs.add(idx);}};
             c.appendChild(div);
         });
     }catch(e){c.innerHTML=`<div class="jira-result-empty">오류: ${e.message}</div>`;}
 }
-async function selectCloneSource(iss){
-    const j=getJiraSettings();
-    const f=iss.fields;
-    cloneSourceData={
-        parent:{key:iss.key,summary:f.summary,type:f.issuetype?.name||'Task',
-            assignee:f.assignee?.accountId||'',assigneeName:f.assignee?.displayName||'',
-            version:(f.fixVersions||[]).map(v=>v.name).join(','),
-            component:(f.components||[]).map(c=>c.name).join(','),
-            labels:(f.labels||[]).join(',')},
-        children:[]
-    };
-    // Auto-detect milestone
-    const msMatch=f.summary.match(/\[(M\d+)\]/);
-    if(msMatch)document.getElementById('cloneFromMs').value=msMatch[1];
-    // Fetch children
+async function loadSelectedCloneSources(){
+    if(!cloneSelectedIdxs.size){showToast('티켓을 선택하세요.','error');return;}
+    cloneSourceList=[];cloneEditRows=[];
     document.getElementById('cloneSettingsSection').style.display='';
     document.getElementById('cloneBtnCsv').style.display='';
     document.getElementById('cloneBtnCreate').style.display='';
     document.getElementById('clonePreviewList').innerHTML='<div class="existing-loading">하위 항목 로딩 중...</div>';
-    try{
-        const r=await jiraFetch('/rest/api/3/search/jql?jql='+encodeURIComponent(`parent=${iss.key} ORDER BY created ASC`)+'&maxResults=50&fields=summary,issuetype,assignee,status,fixVersions,components,labels');
-        if(r.ok){
-            const d=await r.json();
-            cloneSourceData.children=(d.issues||[]).map(ch=>({
-                key:ch.key,summary:ch.fields.summary,type:ch.fields.issuetype?.name||'Sub-task',
-                assignee:ch.fields.assignee?.accountId||'',assigneeName:ch.fields.assignee?.displayName||'',
-                status:ch.fields.status?.name||'',
-                version:(ch.fields.fixVersions||[]).map(v=>v.name).join(','),
-                component:(ch.fields.components||[]).map(c=>c.name).join(','),
-                labels:(ch.fields.labels||[]).join(',')
-            }));
-        }
-    }catch(e){console.error(e);}
-    renderClonePreview();
+    let firstMs=null;
+    for(const idx of [...cloneSelectedIdxs].sort((a,b)=>a-b)){
+        const iss=cloneSearchResults[idx];const f=iss.fields;
+        const src={
+            parent:{key:iss.key,summary:f.summary,type:f.issuetype?.name||'Task',
+                assignee:f.assignee?.accountId||'',assigneeName:f.assignee?.displayName||'',
+                version:(f.fixVersions||[]).map(v=>v.name).join(','),
+                component:(f.components||[]).map(c=>c.name).join(','),
+                labels:(f.labels||[]).join(',')},
+            children:[]
+        };
+        if(!firstMs){const m=f.summary.match(/\[(M\d+)\]/);if(m){firstMs=m[1];document.getElementById('cloneFromMs').value=firstMs;}}
+        try{
+            const r=await jiraFetch('/rest/api/3/search/jql?jql='+encodeURIComponent(`parent=${iss.key} ORDER BY created ASC`)+'&maxResults=50&fields=summary,issuetype,assignee,status,fixVersions,components,labels');
+            if(r.ok){const d=await r.json();
+                src.children=(d.issues||[]).filter(ch=>{const t=(ch.fields.issuetype?.name||'').toLowerCase();return t!=='bug'&&t!=='버그';}).map(ch=>({
+                    key:ch.key,summary:ch.fields.summary,type:ch.fields.issuetype?.name||'Sub-task',
+                    assignee:ch.fields.assignee?.accountId||'',assigneeName:ch.fields.assignee?.displayName||'',
+                    status:ch.fields.status?.name||'',
+                    version:(ch.fields.fixVersions||[]).map(v=>v.name).join(','),
+                    component:(ch.fields.components||[]).map(c=>c.name).join(','),
+                    labels:(ch.fields.labels||[]).join(',')
+                }));}
+        }catch(e){console.error(e);}
+        cloneSourceList.push(src);
+    }
+    // 첫 번째를 cloneSourceData로 (원본 미리보기용)
+    cloneSourceData=cloneSourceList.length===1?cloneSourceList[0]:null;
+    buildCloneEditRowsMulti();
 }
 function cloneReplaceMilestone(text){
     const from=document.getElementById('cloneFromMs').value.trim();
@@ -1794,27 +1803,34 @@ function cloneReplaceMilestone(text){
     if(!from||!to)return text;
     return text.replace(new RegExp('\\['+from+'\\]','g'),'['+to+']').replace(new RegExp(from,'g'),to);
 }
-function buildCloneEditRows(){
-    if(!cloneSourceData)return;
-    const p=cloneSourceData.parent;const ch=cloneSourceData.children;
+function buildCloneEditRowsMulti(){
     const newVer=document.getElementById('cloneNewVersion').value;
     cloneEditRows=[];
-    cloneEditRows.push({type:p.type,summary:cloneReplaceMilestone(p.summary),assignee:'',assigneeName:'',version:newVer||p.version,component:p.component,labels:p.labels,isParent:true});
-    ch.forEach(c=>{
-        cloneEditRows.push({type:c.type||'Sub-task',summary:cloneReplaceMilestone(c.summary),assignee:'',assigneeName:'',version:newVer||c.version,component:c.component,labels:c.labels,isParent:false});
+    const sources=cloneSourceList.length?cloneSourceList:(cloneSourceData?[cloneSourceData]:[]);
+    sources.forEach(src=>{
+        const p=src.parent;
+        cloneEditRows.push({type:p.type,summary:cloneReplaceMilestone(p.summary),assignee:'',assigneeName:'',version:newVer||p.version,component:p.component,labels:p.labels,isParent:true,_srcKey:p.key});
+        src.children.forEach(c=>{
+            cloneEditRows.push({type:c.type||'Sub-task',summary:cloneReplaceMilestone(c.summary),assignee:'',assigneeName:'',version:newVer||c.version,component:c.component,labels:c.labels,isParent:false,_parentSrcKey:p.key});
+        });
     });
     renderCloneEditUI();
 }
-function renderClonePreview(){buildCloneEditRows();}
+function renderClonePreview(){buildCloneEditRowsMulti();}
 function renderCloneEditUI(){
-    if(!cloneSourceData)return;
-    const p=cloneSourceData.parent;const ch=cloneSourceData.children;
-    // Original structure
+    const sources=cloneSourceList.length?cloneSourceList:(cloneSourceData?[cloneSourceData]:[]);
+    if(!sources.length)return;
+    // Original structure (all sources)
     const origEl=document.getElementById('clonePreviewList');
-    let origHtml=`<div class="existing-parent"><div class="existing-parent-header"><span class="issue-type-badge issue-type-${p.type.toLowerCase().replace(/[^a-z]/g,'')}">${p.type}</span>${p.key} ${p.summary}${p.version?` <span class="version-badge">${p.version}</span>`:''}</div>`;
-    if(ch.length){origHtml+='<ul class="existing-child-list">';ch.forEach(c=>{origHtml+=`<li class="existing-child-item"><span class="issue-type-badge issue-type-${c.type.toLowerCase().replace(/[^a-z]/g,'')}" style="font-size:10px">${c.type}</span><span class="child-key">${c.key}</span><span class="child-summary">${c.summary}</span><span class="child-assignee">${c.assigneeName||'-'}</span><span class="child-status">${c.status}</span></li>`;});origHtml+='</ul>';}
-    else origHtml+='<div class="existing-empty">하위 항목 없음</div>';
-    origHtml+='</div>';origEl.innerHTML=origHtml;
+    let origHtml='';
+    sources.forEach(src=>{
+        const p=src.parent;const ch=src.children;
+        origHtml+=`<div class="existing-parent" style="margin-bottom:8px"><div class="existing-parent-header"><span class="issue-type-badge issue-type-${p.type.toLowerCase().replace(/[^a-z]/g,'')}">${p.type}</span>${p.key} ${p.summary}${p.version?` <span class="version-badge">${p.version}</span>`:''}</div>`;
+        if(ch.length){origHtml+='<ul class="existing-child-list">';ch.forEach(c=>{origHtml+=`<li class="existing-child-item"><span class="issue-type-badge issue-type-${c.type.toLowerCase().replace(/[^a-z]/g,'')}" style="font-size:10px">${c.type}</span><span class="child-key">${c.key}</span><span class="child-summary">${c.summary}</span><span class="child-assignee">${c.assigneeName||'-'}</span><span class="child-status">${c.status}</span></li>`;});origHtml+='</ul>';}
+        else origHtml+='<div class="existing-empty">하위 항목 없음 (버그 제외)</div>';
+        origHtml+='</div>';
+    });
+    origEl.innerHTML=origHtml;
     // Editable clone rows
     const el=document.getElementById('cloneEditList');el.innerHTML='';
     cloneEditRows.forEach((r,i)=>{
@@ -1903,27 +1919,28 @@ function downloadCloneCsv(){
 }
 async function createCloneTickets(){
     const j=getJiraSettings();if(!j.isValid||!cloneEditRows.length){showToast('설정을 확인하세요.','error');return;}
-    const parentRow=cloneEditRows.find(r=>r.isParent);const childRows=cloneEditRows.filter(r=>!r.isParent);
-    if(!parentRow){showToast('상위 티켓이 없습니다.','error');return;}
-    if(!confirm(`상위 1건 + 서브태스크 ${childRows.length}건, 총 ${cloneEditRows.length}건을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
+    const parentRows=cloneEditRows.filter(r=>r.isParent);
+    const totalChildren=cloneEditRows.filter(r=>!r.isParent).length;
+    if(!confirm(`상위 ${parentRows.length}건 + 하위 ${totalChildren}건, 총 ${cloneEditRows.length}건을 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
     const ps=document.getElementById('cloneProgressSection'),pf=document.getElementById('cloneProgressFill'),pt=document.getElementById('cloneProgressText'),btn=document.getElementById('cloneBtnCreate');
     ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
     let created=0,errors=[];
     try{
         const mkAdf=t=>({type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:t}]}]});
-        // Create parent
-        const pFields={project:{key:j.projectKey},issuetype:{name:parentRow.type},summary:parentRow.summary,description:mkAdf(parentRow.summary),priority:{name:'Medium'}};
-        if(parentRow.version)pFields.fixVersions=[{name:parentRow.version}];
-        if(parentRow.assignee)pFields.assignee={accountId:parentRow.assignee};
-        if(parentRow.component)pFields.components=parentRow.component.split(',').filter(s=>s.trim()).map(c=>({name:c.trim()}));
-        if(parentRow.labels)pFields.labels=parentRow.labels.split(',').filter(s=>s.trim());
-        const pRes=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify({fields:pFields})});
-        let parentKey=null;
-        if(pRes.ok){const pd=await pRes.json();parentKey=pd.key;created++;}
-        else{const et=await pRes.text();errors.push('Parent: '+et);}
-        pf.style.width='30%';pt.textContent=`상위 티켓 생성 완료 (${parentKey||'실패'})`;
-        // Create children
-        if(parentKey&&childRows.length){
+        for(let pi=0;pi<parentRows.length;pi++){
+            const parentRow=parentRows[pi];
+            const pFields={project:{key:j.projectKey},issuetype:{name:parentRow.type},summary:parentRow.summary,description:mkAdf(parentRow.summary),priority:{name:'Medium'}};
+            if(parentRow.version)pFields.fixVersions=[{name:parentRow.version}];
+            if(parentRow.assignee)pFields.assignee={accountId:parentRow.assignee};
+            if(parentRow.component)pFields.components=parentRow.component.split(',').filter(s=>s.trim()).map(c=>({name:c.trim()}));
+            if(parentRow.labels)pFields.labels=parentRow.labels.split(',').filter(s=>s.trim());
+            const pRes=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify({fields:pFields})});
+            let parentKey=null;
+            if(pRes.ok){const pd=await pRes.json();parentKey=pd.key;created++;}
+            else{const et=await pRes.text();errors.push(`${parentRow.summary}: ${et}`);continue;}
+            // 이 parent의 하위 항목 찾기
+            const srcKey=parentRow._srcKey;
+            const childRows=cloneEditRows.filter(r=>!r.isParent&&r._parentSrcKey===srcKey);
             for(let ci=0;ci<childRows.length;ci++){
                 const c=childRows[ci];
                 const cFields={project:{key:j.projectKey},issuetype:{name:c.type||'Sub-task'},summary:c.summary,description:mkAdf(c.summary),parent:{key:parentKey},priority:{name:'Medium'}};
@@ -1933,8 +1950,9 @@ async function createCloneTickets(){
                 if(c.labels)cFields.labels=c.labels.split(',').filter(s=>s.trim());
                 const cRes=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify({fields:cFields})});
                 if(cRes.ok)created++;else{const et=await cRes.text();errors.push(`${c.summary}: ${et}`);}
-                pf.style.width=`${30+70*((ci+1)/childRows.length)}%`;pt.textContent=`${ci+1}/${childRows.length} 서브태스크 생성 중... (${created}건)`;
             }
+            pf.style.width=`${((pi+1)/parentRows.length*100).toFixed(0)}%`;
+            pt.textContent=`${pi+1}/${parentRows.length} 상위 티켓 처리 중... (${created}건 생성)`;
         }
         if(errors.length){showToast(`${created}건 생성, ${errors.length}건 오류`,'error');alert('오류:\n'+errors.join('\n\n'));}
         else{showToast(`${created}건 복제 생성 완료!`,'success');setTimeout(()=>closeAllModals(),1500);}
