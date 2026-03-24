@@ -254,6 +254,13 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .ac-item:hover{background:var(--tag-bg)}
 .ac-item:last-child{border-bottom:none}
 
+/* Guide */
+.guide-section{margin-bottom:20px}
+.guide-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.guide-content{padding-left:4px}
+.guide-step{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.guide-num{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:50%;background:var(--grad);color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+
 .csv-drop-active{border-color:var(--primary)!important;background:var(--tag-bg)!important}
 .section-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .section-desc{font-size:12px;color:var(--text3);margin-bottom:12px}
@@ -262,6 +269,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 <body>
 <div class="header">
     <h1>Jira 티켓 자동 생성기</h1>
+    <button class="btn" onclick="openGuide()">사용 가이드</button>
     <button class="btn" onclick="openAddMonthModal()">+ 월별 일정 추가</button>
     <button class="btn" onclick="openBulkCreate()">+ Jira 일괄 생성</button>
     <button class="btn" onclick="openCsvCreate()">CSV 일괄 생성</button>
@@ -434,6 +442,71 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         <button class="btn btn-success" onclick="downloadCSV()">CSV 다운로드</button>
         <button class="btn btn-primary btn-footer-next" id="btnCreateTickets" onclick="createJiraTickets()">Jira 티켓 생성</button>
     </div>
+</div></div>
+
+<!-- Modal: Guide -->
+<div class="modal-overlay" id="modalGuide"><div class="modal" style="width:750px;max-height:90vh">
+    <div class="modal-header"><h2>사용 가이드</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-body" style="line-height:1.9;font-size:14px">
+
+        <div class="guide-section">
+            <div class="guide-title">1. Jira 연결 설정 (최초 1회)</div>
+            <div class="guide-content">
+                <div class="guide-step"><span class="guide-num">1</span>페이지 상단의 <strong>Jira 연결 설정</strong>에서 이메일과 API 토큰을 입력합니다.</div>
+                <div class="guide-step"><span class="guide-num">2</span>API 토큰이 없다면 <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="color:var(--primary);font-weight:600">여기서 발급</a> 받으세요.</div>
+                <div class="guide-step"><span class="guide-num">3</span><strong>저장</strong> → <strong>연결 테스트</strong>를 눌러 "연결 성공"이 뜨는지 확인합니다.</div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">2. 업데이트 일정 만들기</div>
+            <div class="guide-content">
+                <div class="guide-step"><span class="guide-num">1</span><strong>+ 월별 일정 추가</strong> → 연도/월 선택 → 해당 월의 모든 목요일이 자동 생성됩니다.</div>
+                <div class="guide-step"><span class="guide-num">2</span>각 업데이트의 <strong>+ 항목 추가</strong>로 작업 항목을 등록합니다.</div>
+                <div class="guide-step"><span class="guide-num">3</span><strong>Jira에서 불러오기</strong> 탭에서 기존 Jira 티켓을 검색해 가져올 수도 있습니다.</div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">3. 새 티켓 + 서브태스크 생성</div>
+            <div class="guide-content">
+                <div class="guide-step"><span class="guide-num">1</span><strong>+ Jira 일괄 생성</strong> → <strong>새 티켓 생성</strong> 탭 선택</div>
+                <div class="guide-step"><span class="guide-num">2</span>Jira 미연결 항목을 체크 → <strong>다음</strong></div>
+                <div class="guide-step"><span class="guide-num">3</span>이슈 유형(Epic/Task), 수정버전, 담당자 설정</div>
+                <div class="guide-step"><span class="guide-num">4</span>서브태스크 템플릿을 확인/수정 (펼쳐서 담당자, 컴포넌트 등 설정)</div>
+                <div class="guide-step"><span class="guide-num">5</span><strong>Jira 티켓 생성</strong> 또는 <strong>CSV 다운로드</strong></div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">4. 기존 에픽/태스크에 서브태스크 추가</div>
+            <div class="guide-content">
+                <div class="guide-step"><span class="guide-num">A</span><strong>방법 1 - 테이블에서 직접:</strong> Jira 연결 항목의 체크박스 선택 → 하단 <strong>하위 서브태스크 생성</strong> 클릭</div>
+                <div class="guide-step"><span class="guide-num">B</span><strong>방법 2 - 일괄 생성:</strong> + Jira 일괄 생성 → <strong>기존 티켓 하위에 생성</strong> 탭</div>
+                <div class="guide-step"><span class="guide-num">!</span>기존 하위 항목이 있으면 자동으로 표시되어 중복 생성을 방지할 수 있습니다.</div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">5. CSV 일괄 생성 (빠른 생성)</div>
+            <div class="guide-content">
+                <div class="guide-step"><span class="guide-num">1</span><strong>CSV 일괄 생성</strong> 클릭 → 항목 이름을 줄 단위로 붙여넣기 또는 CSV 파일 업로드</div>
+                <div class="guide-step"><span class="guide-num">2</span><strong>항목 파싱</strong> → 티켓 설정 → <strong>Jira 티켓 생성</strong> 또는 <strong>CSV 다운로드</strong></div>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <div class="guide-title">서브태스크 템플릿 치환 규칙</div>
+            <div class="guide-content" style="background:var(--bg3);padding:12px;border-radius:6px;font-size:13px">
+                <code>[전체제목]</code> → 상위 티켓의 전체 이름 (예: [M39] 카드 시스템)<br>
+                <code>[마일스톤]</code> → 마일스톤 태그만 (예: [M39])<br>
+                <code>[항목명]</code> → 마일스톤 제외한 순수 이름 (예: 카드 시스템)<br><br>
+                예시: <code>[전체제목] - 기획서 작성</code> → <strong>[M39] 카드 시스템 - 기획서 작성</strong>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary" onclick="closeAllModals()">닫기</button></div>
 </div></div>
 
 <!-- Modal: CSV Bulk Create -->
@@ -1155,6 +1228,7 @@ async function testJiraConnection(){saveJiraSettings();const j=getJiraSettings()
 // ==========================================
 // UTILITIES
 // ==========================================
+function openGuide(){document.getElementById('modalGuide').classList.add('active');}
 function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('active'));}
 function showToast(msg,type='info'){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
 function showConfirm(msg,cb){document.getElementById('confirmMessage').textContent=msg;confirmCallback=cb;document.getElementById('confirmDialog').classList.add('active');}
