@@ -682,6 +682,11 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
             <div id="maintEditList"></div>
         </div>
 
+        <div id="maintFinalPreview" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+            <div class="section-title">최종 생성 미리보기</div>
+            <div id="maintFinalList"></div>
+        </div>
+
         <div id="maintProgressSection" style="display:none;margin-top:12px">
             <div class="progress-bar"><div class="progress-fill" id="maintProgressFill"></div></div>
             <p class="progress-text" id="maintProgressText">생성 중...</p>
@@ -2370,6 +2375,18 @@ function renderMaintPreview(){
     document.getElementById('maintPreviewSection').style.display='';
     document.getElementById('maintBtnCsv').style.display='';
     document.getElementById('maintBtnCreate').style.display='';
+    // 최종 미리보기
+    const fp=document.getElementById('maintFinalList');fp.innerHTML='';
+    const checked=maintItems.filter(v=>v.checked);
+    if(checked.length){
+        document.getElementById('maintFinalPreview').style.display='';
+        checked.forEach(item=>{
+            const div=document.createElement('div');
+            div.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:4px;font-size:14px';
+            div.innerHTML=`<span class="issue-type-badge issue-type-epic">Epic</span><span style="flex:1">${item.summary}</span><span class="version-badge">${item.version||'-'}</span><span style="font-size:12px;color:var(--text3)">${item.date}</span><span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(255,152,0,.12);color:#ff9800">High</span>`;
+            fp.appendChild(div);
+        });
+    }else{document.getElementById('maintFinalPreview').style.display='none';}
 }
 function downloadMaintCsv(){
     const items=maintItems.filter(v=>v.checked);if(!items.length){showToast('항목을 선택하세요.','error');return;}
