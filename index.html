@@ -2294,6 +2294,12 @@ async function openMaintenanceModal(){
                 const tmpl=document.getElementById('maintTemplate');
                 tmpl.value=tmpl.value.replace(/\[M\d+\]/,`[${m[1]}]`).replace(/\[마일스톤\]/,`[${m[1]}]`);
             }
+            // 날짜 자동 추출: M38_260409_정기점검 → 2026-04-09
+            const dm=val.match(/(\d{2})(\d{2})(\d{2})/);
+            if(dm){
+                const dateStr=`20${dm[1]}-${dm[2]}-${dm[3]}`;
+                document.getElementById('maintDate').value=dateStr;
+            }
         });
 }
 let maintMilestone='';let maintThurDate=null;
