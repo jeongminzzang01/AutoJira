@@ -485,7 +485,21 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
                 <div class="form-group"><label>우선순위</label>
                     <select id="csvPriority"><option value="Highest">Highest</option><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option><option value="Lowest">Lowest</option></select>
                 </div>
-                <div class="form-group"><label>담당자 (accountId)</label><input type="text" id="csvAssignee" placeholder="accountId"></div>
+                <div class="form-group"><label>담당자</label>
+                    <div><div class="st-label-tags" id="csvAssigneeTag"></div><input type="text" id="csvAssignee" class="csv-ac-assignee" placeholder="이름 검색..."></div>
+                </div>
+                <div class="form-group"><label>컴포넌트</label>
+                    <div><div class="st-label-tags" id="csvCompTags"></div><input type="text" id="csvComp" class="csv-ac-comp" placeholder="검색..."></div>
+                </div>
+                <div class="form-group"><label>레이블</label>
+                    <div><div class="st-label-tags" id="csvLabelTags"></div><input type="text" id="csvLabel" class="csv-ac-label" placeholder="검색..."></div>
+                </div>
+                <div class="form-group"><label>Watcher</label>
+                    <div><div class="st-label-tags" id="csvWatcherTags"></div><input type="text" id="csvWatcher" class="csv-ac-watcher" placeholder="이름 검색..."></div>
+                </div>
+                <div class="form-group"><label>Watcher Groups</label>
+                    <div><div class="st-label-tags" id="csvGroupTags"></div><input type="text" id="csvGroup" class="csv-ac-group" placeholder="검색..."></div>
+                </div>
             </div>
 
             <div class="section-title" style="margin-top:16px">생성 미리보기 (<span id="csvPreviewCount">0</span>건)</div>
@@ -1222,6 +1236,8 @@ function createSubFromTable(){
 // CSV BULK CREATE
 // ==========================================
 let csvParsedItems=[],csvSelectedItems=new Set();
+let csvFields={assignee:'',_assigneeName:'',component:'',labels:'',watcher:'',_watcherNames:{},watcherGroup:''};
+let csvAcInitialized=false;
 function switchCsvTab(tab,btn){
     document.querySelectorAll('#modalCsv .tab-bar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
     document.getElementById('csvTabPaste').style.display=tab==='paste'?'':'none';
@@ -1249,6 +1265,61 @@ function openCsvCreate(){
         vers.filter(v=>!v.released).reverse().forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=v.name;sel.appendChild(o);});
         if(!vers.length)console.warn('버전 로드 실패 - 프록시 서버 및 Jira 설정 확인');
     });
+    // Reset fields & tags
+    csvFields={assignee:'',_assigneeName:'',component:'',labels:'',watcher:'',_watcherNames:{},watcherGroup:''};
+    ['csvAssigneeTag','csvCompTags','csvLabelTags','csvWatcherTags','csvGroupTags'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+    ['csvAssignee','csvComp','csvLabel','csvWatcher','csvGroup'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    // Init autocomplete (once)
+    if(!csvAcInitialized){csvAcInitialized=true;initCsvAutocomplete();}
+}
+function initCsvAutocomplete(){
+    // Assignee
+    makeAutocomplete(document.getElementById('csvAssignee'),async q=>{
+        try{const r=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(q)+'&maxResults=5');if(!r.ok)return[];const d=await r.json();return d.map(u=>({value:u.accountId,label:u.displayName}));}catch(e){return[];}
+    },(val,label)=>{csvFields.assignee=val;csvFields._assigneeName=label;renderCsvTag('csvAssigneeTag',label,()=>{csvFields.assignee='';csvFields._assigneeName='';renderCsvTag('csvAssigneeTag',null);});});
+    // Watcher
+    makeAutocomplete(document.getElementById('csvWatcher'),async q=>{
+        try{const r=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(q)+'&maxResults=5');if(!r.ok)return[];const d=await r.json();return d.map(u=>({value:u.accountId,label:u.displayName}));}catch(e){return[];}
+    },(val,label)=>{csvAddMulti('watcher',val);csvFields._watcherNames[val]=label;renderCsvMultiTags('csvWatcherTags','watcher');});
+    // Component
+    fetchComponents().then(comps=>{const names=comps.map(c=>c.name);
+        makeAutocomplete(document.getElementById('csvComp'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+        (val)=>{csvAddMulti('component',val);renderCsvMultiTags('csvCompTags','component');});
+    });
+    // Label
+    fetchLabels().then(lbls=>{const names=Array.isArray(lbls)?lbls:[];
+        makeAutocomplete(document.getElementById('csvLabel'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+        (val)=>{csvAddMulti('labels',val);renderCsvMultiTags('csvLabelTags','labels');});
+    });
+    // Groups
+    fetchGroups().then(grps=>{
+        makeAutocomplete(document.getElementById('csvGroup'),async q=>grps.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+        (val)=>{csvAddMulti('watcherGroup',val);renderCsvMultiTags('csvGroupTags','watcherGroup');});
+    });
+}
+function csvAddMulti(field,val){
+    const cur=(csvFields[field]||'').split(',').filter(s=>s.trim());
+    if(!cur.includes(val)){cur.push(val);csvFields[field]=cur.join(',');}
+}
+function csvRemoveMulti(field,val,tagElId){
+    const cur=(csvFields[field]||'').split(',').filter(s=>s.trim()&&s.trim()!==val);
+    csvFields[field]=cur.join(',');
+    renderCsvMultiTags(tagElId,field);
+}
+function renderCsvTag(elId,label,onRemove){
+    const el=document.getElementById(elId);if(!el)return;
+    if(!label){el.innerHTML='';return;}
+    el.innerHTML=`<span class="tag selected" style="margin-bottom:4px;font-size:12px">${label} <span class="tag-remove" style="cursor:pointer">&times;</span></span>`;
+    el.querySelector('.tag-remove').onclick=onRemove;
+}
+function renderCsvMultiTags(elId,field){
+    const el=document.getElementById(elId);if(!el)return;
+    const vals=(csvFields[field]||'').split(',').filter(s=>s.trim());
+    const names=csvFields._watcherNames||{};
+    el.innerHTML=vals.map(v=>{
+        const display=(field==='watcher'&&names[v])?names[v]:v;
+        return`<span class="tag selected" style="margin-bottom:4px;font-size:12px">${display} <span class="tag-remove" onclick="csvRemoveMulti('${field}','${v.replace(/'/g,"\\'")}','${elId}')">&times;</span></span>`;
+    }).join('');
 }
 function handleCsvFile(input){
     const file=input.files[0];if(!file)return;
@@ -1324,14 +1395,13 @@ function buildCsvTicketData(){
     const type=document.getElementById('csvIssueType').value;
     const fixVer=document.getElementById('csvFixVersion').value;
     const pri=document.getElementById('csvPriority').value;
-    const assignee=document.getElementById('csvAssignee').value.trim();
     const enabledSTs=subtaskTemplates.filter(st=>st.enabled);
     const rows=[];
     csvSelectedItems.forEach(i=>{
         const name=csvParsedItems[i];
-        rows.push({type,parent:'',summary:name,assignee,priority:pri,fixVersion:fixVer,component:'',labels:'',_isParent:true,_mode:'new',_itemName:name});
+        rows.push({type,parent:'',summary:name,assignee:csvFields.assignee,priority:pri,fixVersion:fixVer,component:csvFields.component||'',labels:csvFields.labels||'',watcher:csvFields.watcher||'',watcherGroup:csvFields.watcherGroup||'',_isParent:true,_mode:'new',_itemName:name});
         enabledSTs.forEach(st=>{
-            rows.push({type:'Sub-task',parent:name,summary:applySummaryTemplate(st.summary,name,name),assignee:st.assignee,priority:pri,fixVersion:fixVer,component:st.component||'',labels:st.labels||'',watcher:st.watcher||'',watcherGroup:st.watcherGroup||'',_isParent:false,_mode:'new'});
+            rows.push({type:'Sub-task',parent:name,summary:applySummaryTemplate(st.summary,name,name),assignee:st.assignee||csvFields.assignee,priority:pri,fixVersion:fixVer,component:st.component||csvFields.component||'',labels:st.labels||csvFields.labels||'',watcher:st.watcher||csvFields.watcher||'',watcherGroup:st.watcherGroup||csvFields.watcherGroup||'',_isParent:false,_mode:'new'});
         });
     });
     return rows;
@@ -1361,7 +1431,12 @@ async function createFromCsv(){
         for(let pi=0;pi<parents.length;pi++){
             const p=parents[pi];
             const pAdf={type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:p.summary}]}]};
-            const pPayload={fields:{project:{key:j.projectKey},issuetype:{name:p.type},summary:p.summary,description:pAdf,priority:{name:p.priority},...(p.fixVersion&&{fixVersions:[{name:p.fixVersion}]}),...(p.assignee&&{assignee:{accountId:p.assignee}})}};
+            const pf={project:{key:j.projectKey},issuetype:{name:p.type},summary:p.summary,description:pAdf,priority:{name:p.priority}};
+            if(p.fixVersion)pf.fixVersions=[{name:p.fixVersion}];
+            if(p.assignee)pf.assignee={accountId:p.assignee};
+            if(p.component)pf.components=p.component.split(',').filter(c=>c.trim()).map(c=>({name:c.trim()}));
+            if(p.labels)pf.labels=p.labels.split(',').filter(l=>l.trim()).map(l=>l.trim());
+            const pPayload={fields:pf};
             const pRes=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(pPayload)});
             let parentKey=null;
             if(pRes.ok){const pd=await pRes.json();parentKey=pd.key;created++;}
