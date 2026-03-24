@@ -286,6 +286,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     <button class="btn" onclick="openBulkCreate()">+ Jira 일괄 생성</button>
     <button class="btn" onclick="openCsvCreate()">CSV 일괄 생성</button>
     <button class="btn" onclick="openCloneModal()">복제 생성</button>
+    <button class="btn" onclick="openVersionModal()">수정버전 생성</button>
     <button class="btn-icon-header" onclick="toggleTheme()" id="themeToggleBtn" title="라이트/다크 모드 전환">
         <svg id="themeIcon" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
     </button>
@@ -317,9 +318,6 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     </div>
 </div>
 
-<div class="table-container">
-    <table class="schedule-table"><thead><tr><th class="col-month">월</th><th class="col-update">업데이트</th><th>항목</th></tr></thead><tbody id="scheduleBody"></tbody></table>
-</div>
 
 <!-- Modal: Add Month -->
 <div class="modal-overlay" id="modalAddSchedule"><div class="modal" style="width:480px">
@@ -662,6 +660,32 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         </div>
     </div>
     <div class="modal-footer"><button class="btn btn-secondary" onclick="closeAllModals()">취소</button><button class="btn btn-primary" onclick="applyBulkEdit()">일괄 적용</button></div>
+</div></div>
+
+<!-- Modal: Create Version -->
+<div class="modal-overlay" id="modalVersion"><div class="modal" style="width:500px">
+    <div class="modal-header"><h2>수정버전 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-body">
+        <div class="section-desc">Jira 프로젝트에 새 수정버전(Fix Version)을 생성합니다.</div>
+        <div class="form-group" style="margin-bottom:12px"><label>버전 이름</label><input type="text" id="newVersionName" placeholder="예: M41_260612_정기점검"></div>
+        <div class="form-group" style="margin-bottom:12px"><label>설명 (선택)</label><input type="text" id="newVersionDesc" placeholder="예: M41 정기 업데이트"></div>
+        <div class="settings-form">
+            <div class="form-group"><label>시작일 (선택)</label><input type="date" id="newVersionStart"></div>
+            <div class="form-group"><label>릴리즈 예정일 (선택)</label><input type="date" id="newVersionRelease"></div>
+        </div>
+        <div id="versionResult" style="margin-top:12px"></div>
+
+        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+            <div class="section-title">기존 수정버전 목록</div>
+            <div id="versionListContainer" style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:6px">
+                <div class="jira-result-empty">로딩 중...</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer" style="flex-shrink:0">
+        <button class="btn btn-secondary" onclick="closeAllModals()">닫기</button>
+        <button class="btn btn-primary" id="btnCreateVersion" onclick="createNewVersion()">수정버전 생성</button>
+    </div>
 </div></div>
 
 <!-- Confirm -->
@@ -2054,6 +2078,63 @@ async function applyBulkEdit(){
     closeAllModals();clearTableSelection();
     if(errors.length){showToast(`${updated}건 업데이트, ${errors.length}건 오류`,'error');alert('오류:\n'+errors.join('\n'));}
     else showToast(`${updated}건 일괄 편집 완료`,'success');
+}
+
+// ==========================================
+// VERSION CREATE
+// ==========================================
+async function openVersionModal(){
+    document.getElementById('newVersionName').value='';
+    document.getElementById('newVersionDesc').value='';
+    document.getElementById('newVersionStart').value='';
+    document.getElementById('newVersionRelease').value='';
+    document.getElementById('versionResult').innerHTML='';
+    document.getElementById('modalVersion').classList.add('active');
+    loadVersionList();
+}
+async function loadVersionList(){
+    const container=document.getElementById('versionListContainer');
+    container.innerHTML='<div class="jira-result-empty">로딩 중...</div>';
+    _cachedVersions=null;
+    const vers=await fetchVersions();
+    if(!vers.length){container.innerHTML='<div class="jira-result-empty">버전 없음</div>';return;}
+    container.innerHTML='';
+    vers.reverse().forEach(v=>{
+        const div=document.createElement('div');
+        div.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px';
+        const released=v.released?'<span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(74,222,128,.12);color:var(--success)">릴리즈됨</span>':'<span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(251,191,36,.12);color:var(--warn)">미릴리즈</span>';
+        div.innerHTML=`<span style="font-weight:600;flex:1">${v.name}</span>${released}${v.releaseDate?`<span style="font-size:11px;color:var(--text3)">${v.releaseDate}</span>`:''}`;
+        container.appendChild(div);
+    });
+}
+async function createNewVersion(){
+    const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
+    const name=document.getElementById('newVersionName').value.trim();
+    if(!name){showToast('버전 이름을 입력하세요.','error');return;}
+    const desc=document.getElementById('newVersionDesc').value.trim();
+    const start=document.getElementById('newVersionStart').value;
+    const release=document.getElementById('newVersionRelease').value;
+    const payload={name,project:j.projectKey};
+    if(desc)payload.description=desc;
+    if(start)payload.startDate=start;
+    if(release)payload.releaseDate=release;
+    if(!confirm(`수정버전 "${name}"을(를) 생성합니다.\n\n이대로 생성하시겠습니까?`))return;
+    const btn=document.getElementById('btnCreateVersion');btn.disabled=true;btn.textContent='생성 중...';
+    try{
+        const r=await jiraFetch('/rest/api/3/version',{method:'POST',body:JSON.stringify(payload)});
+        if(r.ok){
+            const d=await r.json();
+            document.getElementById('versionResult').innerHTML=`<div style="padding:10px;background:rgba(74,222,128,.12);border-radius:6px;color:var(--success);font-size:14px">✓ 수정버전 <strong>${d.name}</strong> 생성 완료</div>`;
+            showToast(`수정버전 "${d.name}" 생성 완료`,'success');
+            _cachedVersions=null;
+            loadVersionList();
+        }else{
+            const et=await r.text();
+            document.getElementById('versionResult').innerHTML=`<div style="padding:10px;background:rgba(248,113,113,.12);border-radius:6px;color:var(--danger);font-size:13px">✕ 생성 실패: ${et}</div>`;
+            showToast('수정버전 생성 실패','error');
+        }
+    }catch(e){showToast('오류: '+e.message,'error');}
+    finally{btn.disabled=false;btn.textContent='수정버전 생성';}
 }
 
 // 초기화
