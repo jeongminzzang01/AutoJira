@@ -1927,9 +1927,16 @@ async function createCloneTickets(){
     finally{ps.style.display='none';btn.disabled=false;btn.textContent='Jira 티켓 생성';}
 }
 // Clone settings change → preview
-['cloneNewVersion','cloneFromMs','cloneToMs'].forEach(id=>{
+['cloneFromMs','cloneToMs'].forEach(id=>{
     document.getElementById(id)?.addEventListener('change',renderClonePreview);
     document.getElementById(id)?.addEventListener('input',renderClonePreview);
+});
+document.getElementById('cloneNewVersion')?.addEventListener('change',function(){
+    // 수정버전에서 마일스톤 자동 추출: "M40_260521_정기점검" → M40
+    const ver=this.value;
+    const m=ver.match(/^(M\d+)/i);
+    if(m)document.getElementById('cloneToMs').value=m[1];
+    renderClonePreview();
 });
 document.getElementById('cloneSearchQuery')?.addEventListener('keydown',e=>{if(e.key==='Enter')searchCloneTickets();});
 
