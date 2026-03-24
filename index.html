@@ -606,16 +606,19 @@ function saveData(){localStorage.setItem('scheduleData',JSON.stringify(scheduleD
 
 const ST_FIELDS={assignee:'',component:'',labels:'',watcher:'',watcherGroup:''};
 const DEFAULT_SUBTASKS=[
-    {grp:'기획',summary:'[전체제목] - 기획서 작성',enabled:true,...ST_FIELDS},
-    {grp:'기획',summary:'[전체제목] - 데이터 입력',enabled:true,...ST_FIELDS},
-    {grp:'기획',summary:'[전체제목] - QA 검수',enabled:true,...ST_FIELDS},
-    {grp:'아트',summary:'[전체제목] - 리소스 제작',enabled:true,...ST_FIELDS},
-    {grp:'아트',summary:'[전체제목] - 리소스 적용',enabled:true,...ST_FIELDS},
-    {grp:'UI',summary:'[전체제목] - UI 리소스 제작',enabled:true,...ST_FIELDS},
-    {grp:'UI',summary:'[전체제목] - UI 작업',enabled:true,...ST_FIELDS},
-    {grp:'프로그램',summary:'[전체제목] - 클라이언트 개발',enabled:true,...ST_FIELDS},
-    {grp:'프로그램',summary:'[전체제목] - 서버 개발',enabled:true,...ST_FIELDS},
-    {grp:'사운드',summary:'[전체제목] - 사운드 제작',enabled:false,...ST_FIELDS},
+    {grp:'기획',summary:'[전체제목] - 테스트데이터 원복',enabled:true,...ST_FIELDS},
+    {grp:'기획',summary:'[전체제목] - 데이터',enabled:true,...ST_FIELDS},
+    {grp:'UI',summary:'[전체제목] - UI',enabled:true,...ST_FIELDS},
+    {grp:'UI',summary:'[전체제목] - UI 위젯',enabled:true,...ST_FIELDS},
+    {grp:'UI',summary:'[전체제목] - UI 디자인',enabled:true,...ST_FIELDS},
+    {grp:'아트',summary:'[전체제목] - 원화 + 모델링',enabled:true,...ST_FIELDS},
+    {grp:'아트',summary:'[전체제목] - 애니메이션',enabled:true,...ST_FIELDS},
+    {grp:'아트',summary:'[전체제목] - BP 및 몽타주 생성',enabled:true,...ST_FIELDS},
+    {grp:'아트',summary:'[전체제목] - 스킬',enabled:true,...ST_FIELDS},
+    {grp:'아트',summary:'[전체제목] - 인게임 등록',enabled:true,...ST_FIELDS},
+    {grp:'프로그램',summary:'[전체제목] - 클라',enabled:true,...ST_FIELDS},
+    {grp:'프로그램',summary:'[전체제목] - 서버',enabled:true,...ST_FIELDS},
+    {grp:'사운드',summary:'[전체제목] - 사운드',enabled:false,...ST_FIELDS},
 ];
 let subtaskTemplates=JSON.parse(localStorage.getItem('subtaskTemplates')||'null')||JSON.parse(JSON.stringify(DEFAULT_SUBTASKS));
 // Migrate old templates
