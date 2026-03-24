@@ -1774,9 +1774,9 @@ function buildCloneEditRows(){
     const p=cloneSourceData.parent;const ch=cloneSourceData.children;
     const newVer=document.getElementById('cloneNewVersion').value;
     cloneEditRows=[];
-    cloneEditRows.push({type:p.type,summary:cloneReplaceMilestone(p.summary),assignee:p.assignee,assigneeName:p.assigneeName,version:newVer||p.version,component:p.component,labels:p.labels,isParent:true});
+    cloneEditRows.push({type:p.type,summary:cloneReplaceMilestone(p.summary),assignee:'',assigneeName:'',version:newVer||p.version,component:p.component,labels:p.labels,isParent:true});
     ch.forEach(c=>{
-        cloneEditRows.push({type:c.type||'Sub-task',summary:cloneReplaceMilestone(c.summary),assignee:c.assignee,assigneeName:c.assigneeName,version:newVer||c.version,component:c.component,labels:c.labels,isParent:false});
+        cloneEditRows.push({type:c.type||'Sub-task',summary:cloneReplaceMilestone(c.summary),assignee:'',assigneeName:'',version:newVer||c.version,component:c.component,labels:c.labels,isParent:false});
     });
     renderCloneEditUI();
 }
@@ -1798,10 +1798,30 @@ function renderCloneEditUI(){
         if(r.isParent){
             titleInput.addEventListener('change',function(){
                 const oldSummary=cloneEditRows[i].summary;const newSummary=this.value;
+                // 공통 접두사 찾기: 서브태스크와 에픽이 공유하는 부분
+                // 에픽: "[M32] 신규 클래스 총사(캐논) - 데이터" → 서브태스크: "[M32] 신규 클래스 총사(캐논) - 코스튬"
+                // 공통: "[M32] 신규 클래스 총사(캐논)"
+                // 방법: 에픽 제목과 첫 서브태스크에서 가장 긴 공통 접두사 사용
+                let oldBase=oldSummary;
+                const firstChild=cloneEditRows.find(cr=>!cr.isParent);
+                if(firstChild){
+                    // 두 문자열의 공통 접두사 찾기
+                    let common='';
+                    for(let k=0;k<Math.min(oldSummary.length,firstChild.summary.length);k++){
+                        if(oldSummary[k]===firstChild.summary[k])common+=oldSummary[k];else break;
+                    }
+                    if(common.length>5)oldBase=common.trimEnd();
+                }
+                // 새 base 계산
+                let newBase=newSummary;
+                // 에픽에 접미사가 있으면 (예: " - 데이터") base는 그 앞부분
+                const suffixStart=oldSummary.indexOf(oldBase)+oldBase.length;
+                const parentSuffix=oldSummary.substring(suffixStart);
+                if(parentSuffix)newBase=newSummary.replace(new RegExp(parentSuffix.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$'),'').trimEnd();
+
                 cloneEditRows[i].summary=newSummary;
-                // 하위 서브태스크 제목도 연동 변경
-                cloneEditRows.forEach((cr,ci)=>{if(!cr.isParent&&cr.summary.includes(oldSummary)){
-                    cr.summary=cr.summary.replace(oldSummary,newSummary);
+                cloneEditRows.forEach((cr,ci)=>{if(!cr.isParent){
+                    cr.summary=cr.summary.replace(oldBase,newBase);
                 }});
                 renderCloneEditUI();
             });
