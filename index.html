@@ -601,7 +601,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         <div class="section-desc">과거 Jira 티켓을 검색하여 서브태스크 구조까지 복제합니다. 수정버전과 마일스톤 태그를 변경할 수 있습니다.</div>
         <!-- Search -->
         <div style="display:flex;gap:8px;margin-bottom:10px">
-            <div class="form-group" style="flex:1"><label>수정버전 필터</label><select id="cloneVersionFilter" style="width:100%"><option value="">전체</option></select></div>
+            <div class="form-group" style="flex:1"><label>수정버전 필터</label><input type="text" id="cloneVersionFilter" placeholder="버전 검색..." style="width:100%"></div>
             <div class="form-group" style="flex:1"><label>이슈 유형</label><select id="cloneTypeFilter" style="width:100%"><option value="">전체</option><option value="Epic">Epic</option><option value="Task">Task</option></select></div>
         </div>
         <div class="jira-search-box"><input type="text" id="cloneSearchQuery" placeholder="복제할 티켓 검색..."><button class="btn btn-primary" onclick="searchCloneTickets()">검색</button></div>
@@ -611,7 +611,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
         <div id="cloneSettingsSection" style="display:none;margin-top:16px">
             <div class="section-title">복제 설정</div>
             <div class="settings-form">
-                <div class="form-group"><label>새 수정버전</label><select id="cloneNewVersion"><option value="">변경 없음</option></select></div>
+                <div class="form-group"><label>새 수정버전</label><input type="text" id="cloneNewVersion" placeholder="버전 검색..."></div>
                 <div class="form-group"><label>마일스톤 변환 (예: M38→M39)</label>
                     <div style="display:flex;gap:8px"><input type="text" id="cloneFromMs" placeholder="M38" style="width:80px"><span style="line-height:38px;color:var(--text3)">→</span><input type="text" id="cloneToMs" placeholder="M39" style="width:80px"></div>
                 </div>
@@ -1710,11 +1710,23 @@ async function openCloneModal(){
     document.getElementById('modalClone').classList.add('active');
     _cachedVersions=null;
     const vers=await fetchVersions();
-    populateVersionSelect(document.getElementById('cloneVersionFilter'),vers);
-    document.getElementById('cloneVersionFilter').options[0].textContent='전체';
-    const sel2=document.getElementById('cloneNewVersion');
-    sel2.innerHTML='<option value="">변경 없음</option>';
-    vers.filter(v=>!v.released).reverse().forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=v.name;sel2.appendChild(o);});
+    document.getElementById('cloneVersionFilter').value='';
+    // 버전 검색 자동완성
+    const versionNames=vers.map(v=>v.name);
+    makeAutocomplete(document.getElementById('cloneVersionFilter'),
+        async q=>versionNames.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+        (val)=>{document.getElementById('cloneVersionFilter').value=val;});
+    document.getElementById('cloneNewVersion').value='';
+    const unreleasedNames=vers.filter(v=>!v.released).map(v=>v.name);
+    makeAutocomplete(document.getElementById('cloneNewVersion'),
+        async q=>unreleasedNames.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+        (val)=>{
+            document.getElementById('cloneNewVersion').value=val;
+            // 마일스톤 자동 추출
+            const m=val.match(/^(M\d+)/i);
+            if(m)document.getElementById('cloneToMs').value=m[1];
+            renderClonePreview();
+        });
 }
 async function searchCloneTickets(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
@@ -1933,13 +1945,6 @@ async function createCloneTickets(){
 ['cloneFromMs','cloneToMs'].forEach(id=>{
     document.getElementById(id)?.addEventListener('change',renderClonePreview);
     document.getElementById(id)?.addEventListener('input',renderClonePreview);
-});
-document.getElementById('cloneNewVersion')?.addEventListener('change',function(){
-    // 수정버전에서 마일스톤 자동 추출: "M40_260521_정기점검" → M40
-    const ver=this.value;
-    const m=ver.match(/^(M\d+)/i);
-    if(m)document.getElementById('cloneToMs').value=m[1];
-    renderClonePreview();
 });
 document.getElementById('cloneSearchQuery')?.addEventListener('keydown',e=>{if(e.key==='Enter')searchCloneTickets();});
 
