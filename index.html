@@ -1856,7 +1856,7 @@ function renderCloneEditUI(){
         });
         assigneeInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();assigneeInput.blur();}});
 
-        div.innerHTML=`<span class="clone-type" style="color:${r.isParent?'var(--primary)':'var(--text3)'}">${r.isParent?r.type:'Sub-task'}</span>`;
+        div.innerHTML=`<span class="clone-type" style="color:${r.isParent?'var(--primary)':'var(--text3)'}">${r.type||'Sub-task'}</span>`;
         div.appendChild(titleInput);
         div.appendChild(assigneeInput);
         if(!r.isParent){const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.title='삭제';delBtn.onclick=()=>{cloneEditRows.splice(i,1);renderCloneEditUI();};div.appendChild(delBtn);}
@@ -1871,7 +1871,10 @@ function renderCloneEditUI(){
 function addCloneChild(){
     if(!cloneEditRows.length)return;
     const parentSummary=cloneEditRows[0].summary;
-    cloneEditRows.push({type:'Sub-task',summary:parentSummary+' - 새 작업',assignee:'',assigneeName:'',version:cloneEditRows[0].version,component:'',labels:'',isParent:false});
+    // 기존 하위 항목의 유형을 따름
+    const existingChild=cloneEditRows.find(r=>!r.isParent);
+    const childType=existingChild?existingChild.type:'Sub-task';
+    cloneEditRows.push({type:childType,summary:parentSummary+' - 새 작업',assignee:'',assigneeName:'',version:cloneEditRows[0].version,component:'',labels:'',isParent:false});
     renderCloneEditUI();
 }
 function downloadCloneCsv(){
@@ -1911,7 +1914,7 @@ async function createCloneTickets(){
         if(parentKey&&childRows.length){
             for(let ci=0;ci<childRows.length;ci++){
                 const c=childRows[ci];
-                const cFields={project:{key:j.projectKey},issuetype:{name:'Sub-task'},summary:c.summary,description:mkAdf(c.summary),parent:{key:parentKey},priority:{name:'Medium'}};
+                const cFields={project:{key:j.projectKey},issuetype:{name:c.type||'Sub-task'},summary:c.summary,description:mkAdf(c.summary),parent:{key:parentKey},priority:{name:'Medium'}};
                 if(c.version)cFields.fixVersions=[{name:c.version}];
                 if(c.assignee)cFields.assignee={accountId:c.assignee};
                 if(c.component)cFields.components=c.component.split(',').filter(s=>s.trim()).map(cc=>({name:cc.trim()}));
