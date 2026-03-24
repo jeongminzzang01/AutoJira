@@ -159,9 +159,13 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 
 /* Toast */
 .toast-container{position:fixed;top:20px;right:20px;z-index:2000}
-.toast{padding:12px 20px;border-radius:8px;font-size:14px;margin-bottom:8px;box-shadow:0 4px 12px rgba(0,0,0,.3);animation:slideIn .3s ease;border:1px solid var(--border);background:var(--bg2);color:var(--text)}
-.toast.success{background:rgba(74,222,128,.12);color:var(--success);border-color:rgba(74,222,128,.3)}
-.toast.error{background:rgba(248,113,113,.12);color:var(--danger);border-color:rgba(248,113,113,.3)}
+.toast{padding:14px 22px;border-radius:10px;font-size:15px;font-weight:500;margin-bottom:10px;box-shadow:0 6px 20px rgba(0,0,0,.2);animation:slideIn .3s ease;border:none;display:flex;align-items:center;gap:10px;min-width:200px}
+.toast::before{font-size:18px;flex-shrink:0}
+.toast.success{background:#16a34a;color:#fff}.toast.success::before{content:'✓'}
+.toast.error{background:#dc2626;color:#fff}.toast.error::before{content:'✕'}
+.toast.info{background:var(--primary);color:#fff}.toast.info::before{content:'ℹ'}
+[data-theme="dark"] .toast.success{background:#16a34a}
+[data-theme="dark"] .toast.error{background:#dc2626}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* Thursday preview */
