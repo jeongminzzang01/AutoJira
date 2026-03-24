@@ -1832,6 +1832,14 @@ function renderCloneEditUI(){
         assigneeInput.value=r.assigneeName||'';assigneeInput.placeholder='담당자';assigneeInput.title='담당자';
         assigneeInput.style.cssText='width:100px;flex:none';
         assigneeInput.className='clone-ac-assignee';
+        // 직접 입력 후 blur → 자동으로 첫 번째 검색 결과 매칭
+        assigneeInput.addEventListener('blur',async()=>{
+            const v=assigneeInput.value.trim();
+            if(!v){cloneEditRows[i].assignee='';cloneEditRows[i].assigneeName='';return;}
+            if(cloneEditRows[i].assigneeName===v&&cloneEditRows[i].assignee)return; // 이미 자동완성으로 설정됨
+            try{const r2=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(v)+'&maxResults=1');if(r2.ok){const d=await r2.json();if(d.length){cloneEditRows[i].assignee=d[0].accountId;cloneEditRows[i].assigneeName=d[0].displayName;assigneeInput.value=d[0].displayName;}}}catch(e){}
+        });
+        assigneeInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();assigneeInput.blur();}});
 
         div.innerHTML=`<span class="clone-type" style="color:${r.isParent?'var(--primary)':'var(--text3)'}">${r.isParent?r.type:'Sub-task'}</span>`;
         div.appendChild(titleInput);
