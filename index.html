@@ -2296,41 +2296,68 @@ async function openMaintenanceModal(){
             }
         });
 }
+let maintMilestone='';let maintThurDate=null;
 function generateMaintPreview(){
     const ver=document.getElementById('maintVersion').value.trim();
     const dateStr=document.getElementById('maintDate').value;
-    const tmpl=document.getElementById('maintTemplate').value;
     if(!dateStr){showToast('업데이트 날짜를 선택하세요.','error');return;}
-    const thurDate=new Date(dateStr);
-    maintItems=[];
-    for(let i=3;i>=1;i--){
-        const d=new Date(thurDate);d.setDate(d.getDate()-i);
-        const n=3-i+1;
-        const mm=d.getMonth()+1;const dd=d.getDate();
-        const summary=tmpl.replace('{날짜}',`${mm}/${dd}`).replace('{N}',n);
-        maintItems.push({summary,date:`${d.getFullYear()}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`,checked:true,version:ver});
-    }
+    maintThurDate=new Date(dateStr);
+    const ms=ver.match(/^(M\d+)/i);maintMilestone=ms?ms[1]:'';
+    maintItems=[
+        {label:'서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드',checked:true,version:ver},
+        {label:'서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드',checked:true,version:ver},
+        {label:'서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드',checked:true,version:ver},
+    ];
+    recalcMaintItems();
     renderMaintPreview();
 }
 function addMaintItem(){
-    const ver=document.getElementById('maintVersion').value.trim();
-    const ms=ver.match(/^(M\d+)/i);
-    const prefix=ms?`[${ms[1]}] `:'';
-    maintItems.push({summary:`${prefix}PC/AOS/OneStore App 빌드`,date:'',checked:true,version:ver});
+    maintItems.push({label:'PC/AOS/OneStore App 빌드',checked:true,version:document.getElementById('maintVersion').value.trim()});
+    recalcMaintItems();
+    renderMaintPreview();
+}
+function recalcMaintItems(){
+    if(!maintThurDate)return;
+    const total=maintItems.length;
+    // 날짜 배분: 총 N건을 목요일 전 3일(월~수)에 분배
+    // 3일에 N건을 순서대로 배치: 1일차에 ceil(N/3)건, ...
+    // 간단하게: 3일을 N등분. i번째 항목의 날짜 = 월 + floor(i * 3 / N)
+    for(let i=0;i<total;i++){
+        const dayOffset=Math.floor(i*3/total); // 0=월, 1=화, 2=수
+        const d=new Date(maintThurDate);d.setDate(d.getDate()-3+dayOffset);
+        const mm=d.getMonth()+1;const dd=d.getDate();
+        const n=i+1;
+        const prefix=maintMilestone?`[${maintMilestone}] `:'';
+        maintItems[i].summary=`${prefix}${mm}/${dd} ${n}차 ${maintItems[i].label}`;
+        maintItems[i].date=`${d.getFullYear()}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`;
+    }
+}
+function moveMaintItem(from,to){
+    if(to<0||to>=maintItems.length)return;
+    const item=maintItems.splice(from,1)[0];
+    maintItems.splice(to,0,item);
+    recalcMaintItems();
     renderMaintPreview();
 }
 function renderMaintPreview(){
     const el=document.getElementById('maintEditList');el.innerHTML='';
     maintItems.forEach((item,i)=>{
         const div=document.createElement('div');div.className='clone-row';
+        div.style.cssText+='gap:6px';
+        // 이동 버튼
+        const moveDiv=document.createElement('div');moveDiv.style.cssText='display:flex;flex-direction:column;gap:1px;flex-shrink:0';
+        const upBtn=document.createElement('button');upBtn.style.cssText='background:none;border:none;cursor:pointer;color:var(--text3);font-size:10px;padding:0 4px;line-height:1';upBtn.textContent='▲';upBtn.onclick=()=>moveMaintItem(i,i-1);
+        const dnBtn=document.createElement('button');dnBtn.style.cssText='background:none;border:none;cursor:pointer;color:var(--text3);font-size:10px;padding:0 4px;line-height:1';dnBtn.textContent='▼';dnBtn.onclick=()=>moveMaintItem(i,i+1);
+        moveDiv.appendChild(upBtn);moveDiv.appendChild(dnBtn);
         const cb=document.createElement('input');cb.type='checkbox';cb.checked=item.checked;cb.style.cssText='accent-color:var(--primary);flex-shrink:0';
         cb.onchange=()=>{item.checked=cb.checked;};
-        const typeSpan=document.createElement('span');typeSpan.className='clone-type';typeSpan.style.color='var(--primary)';typeSpan.textContent='Epic';
-        const titleInput=document.createElement('input');titleInput.type='text';titleInput.value=item.summary;
-        titleInput.onchange=()=>{item.summary=titleInput.value;};
+        const numSpan=document.createElement('span');numSpan.style.cssText='font-size:12px;font-weight:700;color:var(--primary);min-width:24px;text-align:center;flex-shrink:0';numSpan.textContent=`${i+1}차`;
+        const titleInput=document.createElement('input');titleInput.type='text';titleInput.value=item.label;
+        titleInput.onchange=()=>{item.label=titleInput.value;recalcMaintItems();renderMaintPreview();};
+        titleInput.title='빌드 유형 (차수/날짜는 자동)';
         const dateSpan=document.createElement('span');dateSpan.style.cssText='font-size:12px;color:var(--text3);flex-shrink:0;min-width:80px';dateSpan.textContent=item.date||'';
-        const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.onclick=()=>{maintItems.splice(i,1);renderMaintPreview();};
-        div.appendChild(cb);div.appendChild(typeSpan);div.appendChild(titleInput);div.appendChild(dateSpan);div.appendChild(delBtn);
+        const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.onclick=()=>{maintItems.splice(i,1);recalcMaintItems();renderMaintPreview();};
+        div.appendChild(moveDiv);div.appendChild(cb);div.appendChild(numSpan);div.appendChild(titleInput);div.appendChild(dateSpan);div.appendChild(delBtn);
         el.appendChild(div);
     });
     document.getElementById('maintPreviewCount').textContent=maintItems.filter(v=>v.checked).length;
