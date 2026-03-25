@@ -286,8 +286,8 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     <button class="btn" onclick="openBulkCreate()">+ Jira 일괄 생성</button>
     <button class="btn" onclick="openCsvCreate()">CSV 일괄 생성</button>
     <button class="btn" onclick="openCloneModal()">복제 생성</button>
-    <button class="btn" onclick="openMaintenanceModal()">정기점검 생성</button>
-    <button class="btn" onclick="openVersionModal()">수정버전 생성</button>
+    <button class="btn" onclick="openMaintenanceModal()">정기점검 에픽 생성</button>
+    <button class="btn" onclick="openVersionModal()">수정버전(릴리즈) 생성</button>
     <button class="btn-icon-header" onclick="toggleTheme()" id="themeToggleBtn" title="라이트/다크 모드 전환">
         <svg id="themeIcon" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
     </button>
@@ -665,7 +665,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 
 <!-- Modal: Maintenance Create -->
 <div class="modal-overlay" id="modalMaint"><div class="modal" style="width:700px;max-height:90vh">
-    <div class="modal-header"><h2>정기점검 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-header"><h2>정기점검 에픽 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
     <div class="modal-body">
         <div class="section-desc">목요일 업데이트 날짜를 선택하면 월~수 빌드 에픽을 자동 생성합니다.</div>
         <div class="settings-form" style="margin-bottom:12px">
@@ -673,11 +673,17 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
             <div class="form-group"><label>업데이트 날짜 (목요일)</label><input type="date" id="maintDate"></div>
         </div>
         <div class="form-group" style="margin-bottom:12px"><label>빌드 제목 템플릿</label><input type="text" id="maintTemplate" value="[마일스톤] {날짜} {N}차 서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드" style="width:100%"></div>
-        <button class="btn btn-sm btn-primary" onclick="generateMaintPreview()" style="margin-bottom:16px">미리보기 생성</button>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+            <button class="btn btn-sm btn-secondary" onclick="fetchExistingMaintEpics()">기존 에픽 불러오기</button>
+            <button class="btn btn-sm btn-primary" onclick="generateMaintPreview()">미리보기 생성</button>
+        </div>
 
         <div id="maintPreviewSection" style="display:none">
             <div class="section-title">생성될 티켓 (<span id="maintPreviewCount">0</span>건)
-                <button class="btn btn-sm btn-secondary" style="margin-left:auto" onclick="addMaintItem()">+ 에픽 추가</button>
+                <div style="margin-left:auto;display:flex;gap:4px">
+                    <button class="btn btn-sm btn-secondary" onclick="addMaintItem('서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드')">+ 데이터 패치 빌드</button>
+                    <button class="btn btn-sm btn-secondary" onclick="addMaintItem('PC/AOS/OneStore App 빌드')">+ App 빌드</button>
+                </div>
             </div>
             <div id="maintEditList"></div>
         </div>
@@ -2322,8 +2328,8 @@ function generateMaintPreview(){
     recalcMaintItems();
     renderMaintPreview();
 }
-function addMaintItem(){
-    maintItems.push({label:'PC/AOS/OneStore App 빌드',checked:true,version:document.getElementById('maintVersion').value.trim()});
+function addMaintItem(label){
+    maintItems.push({label,checked:true,version:document.getElementById('maintVersion').value.trim()});
     recalcMaintItems();
     renderMaintPreview();
 }
@@ -2334,6 +2340,7 @@ function recalcMaintItems(){
     // 3일에 N건을 순서대로 배치: 1일차에 ceil(N/3)건, ...
     // 간단하게: 3일을 N등분. i번째 항목의 날짜 = 월 + floor(i * 3 / N)
     for(let i=0;i<total;i++){
+        if(maintItems[i].existing)continue; // 기존 에픽은 summary/date 유지
         const dayOffset=Math.floor(i*3/total); // 0=월, 1=화, 2=수
         const d=new Date(maintThurDate);d.setDate(d.getDate()-3+dayOffset);
         const mm=d.getMonth()+1;const dd=d.getDate();
@@ -2355,23 +2362,33 @@ function renderMaintPreview(){
     maintItems.forEach((item,i)=>{
         const div=document.createElement('div');div.className='clone-row';
         div.style.cssText+='gap:6px';
+        if(item.existing)div.style.cssText+='opacity:0.6;background:var(--bg2)';
         // 이동 버튼
         const moveDiv=document.createElement('div');moveDiv.style.cssText='display:flex;flex-direction:column;gap:1px;flex-shrink:0';
         const upBtn=document.createElement('button');upBtn.style.cssText='background:none;border:none;cursor:pointer;color:var(--text3);font-size:10px;padding:0 4px;line-height:1';upBtn.textContent='▲';upBtn.onclick=()=>moveMaintItem(i,i-1);
         const dnBtn=document.createElement('button');dnBtn.style.cssText='background:none;border:none;cursor:pointer;color:var(--text3);font-size:10px;padding:0 4px;line-height:1';dnBtn.textContent='▼';dnBtn.onclick=()=>moveMaintItem(i,i+1);
         moveDiv.appendChild(upBtn);moveDiv.appendChild(dnBtn);
         const cb=document.createElement('input');cb.type='checkbox';cb.checked=item.checked;cb.style.cssText='accent-color:var(--primary);flex-shrink:0';
+        if(item.existing){cb.disabled=true;cb.checked=true;}
         cb.onchange=()=>{item.checked=cb.checked;};
         const numSpan=document.createElement('span');numSpan.style.cssText='font-size:12px;font-weight:700;color:var(--primary);min-width:24px;text-align:center;flex-shrink:0';numSpan.textContent=`${i+1}차`;
         const titleInput=document.createElement('input');titleInput.type='text';titleInput.value=item.label;
+        if(item.existing){titleInput.readOnly=true;titleInput.style.cssText+='cursor:default;color:var(--text3)';}
         titleInput.onchange=()=>{item.label=titleInput.value;recalcMaintItems();renderMaintPreview();};
-        titleInput.title='빌드 유형 (차수/날짜는 자동)';
+        titleInput.title=item.existing?`기존 Jira 에픽 (${item.jiraKey})`:'빌드 유형 (차수/날짜는 자동)';
         const dateSpan=document.createElement('span');dateSpan.style.cssText='font-size:12px;color:var(--text3);flex-shrink:0;min-width:80px';dateSpan.textContent=item.date||'';
-        const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.onclick=()=>{maintItems.splice(i,1);recalcMaintItems();renderMaintPreview();};
-        div.appendChild(moveDiv);div.appendChild(cb);div.appendChild(numSpan);div.appendChild(titleInput);div.appendChild(dateSpan);div.appendChild(delBtn);
+        if(item.existing){
+            const keySpan=document.createElement('span');keySpan.style.cssText='font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(76,175,80,.12);color:#4caf50;flex-shrink:0';keySpan.textContent=item.jiraKey;
+            div.appendChild(moveDiv);div.appendChild(cb);div.appendChild(numSpan);div.appendChild(titleInput);div.appendChild(dateSpan);div.appendChild(keySpan);
+        }else{
+            const delBtn=document.createElement('button');delBtn.className='clone-del';delBtn.innerHTML='&#10005;';delBtn.onclick=()=>{maintItems.splice(i,1);recalcMaintItems();renderMaintPreview();};
+            div.appendChild(moveDiv);div.appendChild(cb);div.appendChild(numSpan);div.appendChild(titleInput);div.appendChild(dateSpan);div.appendChild(delBtn);
+        }
         el.appendChild(div);
     });
-    document.getElementById('maintPreviewCount').textContent=maintItems.filter(v=>v.checked).length;
+    const totalChecked=maintItems.filter(v=>v.checked).length;
+    const existingChecked=maintItems.filter(v=>v.checked&&v.existing).length;
+    document.getElementById('maintPreviewCount').textContent=existingChecked?`${totalChecked} 건, 기존 ${existingChecked} + 신규 ${totalChecked-existingChecked}`:totalChecked;
     document.getElementById('maintPreviewSection').style.display='';
     document.getElementById('maintBtnCsv').style.display='';
     document.getElementById('maintBtnCreate').style.display='';
@@ -2383,7 +2400,11 @@ function renderMaintPreview(){
         checked.forEach(item=>{
             const div=document.createElement('div');
             div.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:4px;font-size:14px';
-            div.innerHTML=`<span class="issue-type-badge issue-type-epic">Epic</span><span style="flex:1">${item.summary}</span><span class="version-badge">${item.version||'-'}</span><span style="font-size:12px;color:var(--text3)">${item.date}</span><span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(255,152,0,.12);color:#ff9800">High</span>`;
+            if(item.existing)div.style.cssText+='opacity:0.6;background:var(--bg2)';
+            const statusBadge=item.existing
+                ?`<span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(76,175,80,.12);color:#4caf50">${item.jiraKey}</span>`
+                :'<span style="font-size:11px;padding:2px 6px;border-radius:3px;background:rgba(255,152,0,.12);color:#ff9800">High</span>';
+            div.innerHTML=`<span class="issue-type-badge issue-type-epic">Epic</span><span style="flex:1">${item.summary}</span><span class="version-badge">${item.version||'-'}</span><span style="font-size:12px;color:var(--text3)">${item.date}</span>${statusBadge}`;
             fp.appendChild(div);
         });
     }else{document.getElementById('maintFinalPreview').style.display='none';}
@@ -2398,11 +2419,54 @@ function downloadMaintCsv(){
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`maintenance-${new Date().toISOString().slice(0,10)}.csv`;a.click();
     showToast('CSV 다운로드 완료','success');
 }
+async function fetchExistingMaintEpics(){
+    const ver=document.getElementById('maintVersion').value.trim();
+    if(!ver){showToast('수정버전을 먼저 입력하세요.','error');return;}
+    const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
+    const dateStr=document.getElementById('maintDate').value;
+    if(dateStr){maintThurDate=new Date(dateStr);const ms=ver.match(/^(M\d+)/i);maintMilestone=ms?ms[1]:'';}
+    showToast('기존 에픽 검색 중...','info');
+    try{
+        const jql=encodeURIComponent(`fixVersion="${ver}" AND issuetype=Epic ORDER BY summary ASC`);
+        const r=await jiraFetch(`/rest/api/3/search/jql?jql=${jql}&fields=summary,fixVersions&maxResults=50`);
+        if(!r.ok){const t=await r.text();showToast('검색 실패: '+t,'error');return;}
+        const data=await r.json();
+        if(!data.issues||!data.issues.length){showToast('해당 버전에 기존 에픽이 없습니다.','info');return;}
+        // 기존 항목 유지하면서 중복 제거 후 병합
+        const existingKeys=new Set(maintItems.filter(v=>v.existing).map(v=>v.jiraKey));
+        const newExisting=[];
+        data.issues.forEach(issue=>{
+            if(existingKeys.has(issue.key))return;
+            const summary=issue.fields.summary||'';
+            // 차수/라벨 추출: "[M38] 3/23 1차 서버 / ..." → label="서버 / ..."
+            const labelMatch=summary.match(/\d+차\s+(.+)$/);
+            const label=labelMatch?labelMatch[1]:summary;
+            // 날짜 추출: summary에서 또는 start date
+            const dateMatch=summary.match(/(\d{1,2})\/(\d{1,2})/);
+            let epicDate='';
+            if(dateMatch&&maintThurDate){
+                const y=maintThurDate.getFullYear();
+                const mm=String(dateMatch[1]).padStart(2,'0');
+                const dd=String(dateMatch[2]).padStart(2,'0');
+                epicDate=`${y}-${mm}-${dd}`;
+            }
+            newExisting.push({label,checked:true,version:ver,existing:true,jiraKey:issue.key,summary,date:epicDate});
+        });
+        // 기존 에픽을 앞에 배치, 신규 항목은 뒤에
+        const newItems=[...maintItems.filter(v=>v.existing),...newExisting];
+        const addedItems=maintItems.filter(v=>!v.existing);
+        maintItems=[...newItems,...addedItems];
+        recalcMaintItems();
+        renderMaintPreview();
+        showToast(`${newExisting.length}건의 기존 에픽을 불러왔습니다.`,'success');
+    }catch(e){showToast('에픽 검색 오류: '+e.message,'error');}
+}
 async function createMaintTickets(){
     const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 완료하세요.','error');return;}
-    const items=maintItems.filter(v=>v.checked);if(!items.length){showToast('항목을 선택하세요.','error');return;}
+    const items=maintItems.filter(v=>v.checked&&!v.existing);if(!items.length){showToast('새로 생성할 항목이 없습니다.','error');return;}
     const type='Epic';
-    let preview=`${items.length}건의 정기점검 티켓을 생성합니다.\n\n`;
+    const existingCount=maintItems.filter(v=>v.existing).length;
+    let preview=`${items.length}건의 정기점검 티켓을 생성합니다.${existingCount?` (기존 ${existingCount}건 제외)`:''}\n\n`;
     items.forEach(v=>{preview+=`• [${type}] ${v.summary}\n`;});
     preview+='\n이대로 생성하시겠습니까?';
     if(!confirm(preview))return;
