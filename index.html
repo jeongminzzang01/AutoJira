@@ -7,53 +7,53 @@
 <style>
 /* Light mode (default) */
 :root,[data-theme="light"]{
-    --bg:#f5f6fa;--bg2:#ffffff;--bg3:#f0f1f5;--border:#dcdee4;--hover:#e8e9ef;
+    --bg:#f5f6f8;--bg2:#ffffff;--bg3:#eef0f3;--border:#d8dbe0;--hover:#e4e6eb;
     --text:#1a1a1a;--text2:#555;--text3:#999;
-    --primary:#5b6abf;--primary2:#7c5cbf;--grad:linear-gradient(135deg,#5b6abf,#7c5cbf);
+    --primary:#4a5568;--primary2:#4a5568;--grad:#4a5568;
     --success:#16a34a;--warn:#d97706;--danger:#dc2626;
-    --radius:10px;
-    --modal-shadow:0 20px 60px rgba(0,0,0,.15);
-    --overlay-bg:rgba(0,0,0,.35);
-    --header-btn-bg:rgba(255,255,255,.25);--header-btn-border:rgba(255,255,255,.35);--header-btn-hover:rgba(255,255,255,.4);
-    --tag-bg:rgba(91,106,191,.1);--tag-hover:rgba(91,106,191,.18);
-    --item-row-bg:rgba(91,106,191,.04);
+    --radius:8px;
+    --modal-shadow:0 16px 48px rgba(0,0,0,.12);
+    --overlay-bg:rgba(0,0,0,.3);
+    --header-btn-bg:rgba(255,255,255,.2);--header-btn-border:rgba(255,255,255,.25);--header-btn-hover:rgba(255,255,255,.35);
+    --tag-bg:rgba(74,85,104,.08);--tag-hover:rgba(74,85,104,.14);
+    --item-row-bg:rgba(74,85,104,.03);
     --toast-bg:#fff;
     --scrollbar-thumb:#ccc;--scrollbar-hover:#aaa;
 }
-/* Dark mode (gray tone) */
+/* Dark mode */
 [data-theme="dark"]{
-    --bg:#1a1a1a;--bg2:#242424;--bg3:#2e2e2e;--border:#3d3d3d;--hover:#383838;
-    --text:#e0e0e0;--text2:#aaa;--text3:#777;
-    --primary:#8b9cf7;--primary2:#a78bfa;--grad:linear-gradient(135deg,#8b9cf7,#a78bfa);
+    --bg:#18181b;--bg2:#27272a;--bg3:#323236;--border:#3f3f46;--hover:#3b3b42;
+    --text:#e4e4e7;--text2:#a1a1aa;--text3:#71717a;
+    --primary:#a1a1aa;--primary2:#a1a1aa;--grad:#3f3f46;
     --success:#4ade80;--warn:#fbbf24;--danger:#f87171;
-    --modal-shadow:0 20px 60px rgba(0,0,0,.5);
-    --overlay-bg:rgba(0,0,0,.6);
-    --header-btn-bg:rgba(255,255,255,.12);--header-btn-border:rgba(255,255,255,.2);--header-btn-hover:rgba(255,255,255,.25);
-    --tag-bg:rgba(139,156,247,.12);--tag-hover:rgba(139,156,247,.2);
-    --item-row-bg:rgba(139,156,247,.04);
-    --toast-bg:#242424;
+    --modal-shadow:0 16px 48px rgba(0,0,0,.5);
+    --overlay-bg:rgba(0,0,0,.55);
+    --header-btn-bg:rgba(255,255,255,.08);--header-btn-border:rgba(255,255,255,.12);--header-btn-hover:rgba(255,255,255,.18);
+    --tag-bg:rgba(161,161,170,.1);--tag-hover:rgba(161,161,170,.18);
+    --item-row-bg:rgba(161,161,170,.04);
+    --toast-bg:#27272a;
     --scrollbar-thumb:#444;--scrollbar-hover:#666;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothic',sans-serif;min-height:100vh;font-size:15px;transition:background .2s,color .2s}
-.header{background:var(--grad);padding:20px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.header{background:var(--grad);padding:16px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .header h1{color:#fff;font-size:22px;font-weight:700;margin-right:auto}
 .header .btn{background:var(--header-btn-bg);color:#fff;border:1px solid var(--header-btn-border)}
 .header .btn:hover{background:var(--header-btn-hover)}
 .header .btn-icon-header{background:var(--header-btn-bg);border:1px solid var(--header-btn-border);color:#fff}
 .header .btn-icon-header:hover{background:var(--header-btn-hover)}
-.btn{padding:9px 18px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:14px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-weight:500}
+.btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:14px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-weight:500;height:36px}
 .btn:hover{background:var(--hover)}
-.btn-primary{background:var(--grad);color:#fff;border:none}
-.btn-primary:hover{background:var(--grad);filter:brightness(1.1)}
+.btn-primary{background:var(--primary);color:#fff;border:none}
+.btn-primary:hover{background:var(--primary);filter:brightness(1.15)}
 .btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
 .btn-secondary:hover{background:var(--hover);color:var(--text)}
 .btn-danger{background:rgba(248,113,113,.15);color:var(--danger);border:1px solid rgba(248,113,113,.3)}
 .btn-danger:hover{background:rgba(248,113,113,.25)}
 .btn-success{background:rgba(74,222,128,.15);color:var(--success);border:1px solid rgba(74,222,128,.3)}
 .btn-success:hover{background:rgba(74,222,128,.25)}
-.btn-sm{padding:6px 14px;font-size:13px}
-.btn-icon-header{width:38px;height:38px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;color:var(--text2)}
+.btn-sm{padding:6px 14px;font-size:13px;height:30px}
+.btn-icon-header{width:34px;height:34px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;color:var(--text2)}
 .btn-icon-header:hover{background:var(--hover);color:var(--text)}
 
 /* Table */
@@ -64,7 +64,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .col-month{width:60px;text-align:center;font-weight:600;color:var(--text)}
 .col-update{width:140px;text-align:center}
 .update-date{font-weight:600;color:var(--text)}
-.update-badge{display:inline-block;background:var(--grad);color:#fff;border-radius:50%;width:22px;height:22px;line-height:22px;text-align:center;font-size:11px;margin-left:4px;vertical-align:middle}
+.update-badge{display:inline-block;background:var(--primary);color:#fff;border-radius:50%;width:22px;height:22px;line-height:22px;text-align:center;font-size:11px;margin-left:4px;vertical-align:middle}
 .milestone-tag{display:block;font-size:11px;color:var(--text3)}
 .item-row{background:var(--item-row-bg)}
 .item-cell{padding:6px 16px!important}
@@ -99,19 +99,23 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 /* Modal */
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--overlay-bg);z-index:1000;justify-content:center;align-items:center}
 .modal-overlay.active{display:flex}
-.modal{background:var(--bg2);border-radius:14px;width:700px;max-height:85vh;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:var(--modal-shadow)}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
-.modal-header h2{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;color:var(--text)}
+.modal{background:var(--bg2);border-radius:14px;width:850px;max-height:92vh;display:flex;flex-direction:column;border:1px solid var(--border);box-shadow:var(--modal-shadow)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid var(--border)}
+.modal-header h2{font-size:20px;font-weight:600;display:flex;align-items:center;gap:8px;color:var(--text)}
 .modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);padding:4px}.modal-close:hover{color:var(--text)}
-.modal-body{flex:1;overflow-y:auto;padding:20px 24px;min-height:0}
+.modal-body{flex:1;overflow-y:auto;padding:24px 28px;min-height:0;font-size:14px}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
 
 /* Forms */
 .form-group{display:flex;flex-direction:column;gap:6px}.form-group.full-width{grid-column:1/-1}
 .form-group label{font-size:13px;font-weight:600;color:var(--text2)}
-.form-group input,.form-group select,.form-group textarea{padding:10px 12px;border:1px solid var(--border);border-radius:6px;font-size:15px;background:var(--bg3);color:var(--text);transition:border-color .2s;font-family:inherit}
+.modal-body .form-group label{font-size:14px}
+.modal-body .section-title{font-size:16px}
+.modal-body .section-desc{font-size:13px}
+.form-group input,.form-group select,.form-group textarea{padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--bg3);color:var(--text);transition:border-color .2s;font-family:inherit;height:36px}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--primary)}
 .form-group input[readonly]{background:var(--bg);color:var(--text2)}
+.form-group textarea{height:auto}
 .form-group input::placeholder,.form-group textarea::placeholder{color:var(--text3)}
 .settings-form{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
@@ -131,7 +135,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 
 /* Tags */
 .tag{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:var(--tag-bg);color:var(--primary);border-radius:4px;font-size:13px;cursor:pointer;transition:all .15s;border:1px solid transparent}
-.tag:hover{background:var(--tag-hover)}.tag.selected{background:var(--grad);color:#fff}
+.tag:hover{background:var(--tag-hover)}.tag.selected{background:var(--primary);color:#fff}
 .tag-selector{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 
 /* Subtask template table */
@@ -158,14 +162,51 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .progress-text{font-size:12px;color:var(--text3);text-align:center}
 
 /* Toast */
-.toast-container{position:fixed;top:20px;right:20px;z-index:2000}
-.toast{padding:14px 22px;border-radius:10px;font-size:15px;font-weight:500;margin-bottom:10px;box-shadow:0 6px 20px rgba(0,0,0,.2);animation:slideIn .3s ease;border:none;display:flex;align-items:center;gap:10px;min-width:200px}
-.toast::before{font-size:18px;flex-shrink:0}
-.toast.success{background:#16a34a;color:#fff}.toast.success::before{content:'✓'}
-.toast.error{background:#dc2626;color:#fff}.toast.error::before{content:'✕'}
-.toast.info{background:var(--primary);color:#fff}.toast.info::before{content:'ℹ'}
-[data-theme="dark"] .toast.success{background:#16a34a}
-[data-theme="dark"] .toast.error{background:#dc2626}
+.toast-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2000;display:flex;flex-direction:column-reverse;align-items:center;gap:8px;pointer-events:none}
+.toast{padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.25);animation:toastIn .35s cubic-bezier(.21,1.02,.73,1);border:none;display:flex;align-items:center;gap:10px;min-width:240px;max-width:480px;backdrop-filter:blur(12px);pointer-events:auto}
+.toast::before{font-size:16px;flex-shrink:0}
+.toast.success{background:rgba(22,163,74,.95);color:#fff}.toast.success::before{content:'✓'}
+.toast.error{background:rgba(220,38,38,.95);color:#fff}.toast.error::before{content:'✕'}
+.toast.info{background:rgba(99,102,241,.95);color:#fff}.toast.info::before{content:'ℹ'}
+.toast.warning{background:rgba(234,179,8,.95);color:#1a1a1a}.toast.warning::before{content:'⚠'}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(16px) scale(.95)}}
+.toast.removing{animation:toastOut .25s ease forwards}
+[data-theme="dark"] .toast.success{background:rgba(22,163,74,.95)}
+[data-theme="dark"] .toast.error{background:rgba(220,38,38,.95)}
+/* 생성 결과 목록 */
+.result-list{max-height:400px;overflow-y:auto;margin:12px 0}
+.result-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);transition:background .15s}
+.result-item:hover{background:var(--hover)}
+.result-item .result-key{font-size:13px;font-weight:600;color:var(--primary);min-width:80px;cursor:pointer;text-decoration:none}
+.result-item .result-key:hover{text-decoration:underline}
+.result-item .result-title{font-size:13px;color:var(--text);flex:1}
+.result-item .result-type{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:600}
+/* 하위 태스크 리스트 입력 */
+.task-row-list{margin:8px 0}
+.task-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
+.task-row .task-row-badge{font-size:11px;color:var(--text3);min-width:24px;text-align:center}
+.task-row .task-row-existing{font-size:11px;padding:1px 6px;border-radius:3px;background:rgba(139,156,247,.12);color:var(--primary);white-space:nowrap}
+.task-row input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:4px;font-size:14px;background:var(--bg);color:var(--text)}
+.task-row input:focus{border-color:var(--primary);outline:none}
+.task-row .task-row-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 6px;flex-shrink:0}
+.task-row .task-row-del:hover{color:var(--danger)}
+/* 상세 버튼 */
+.btn-detail{padding:4px 12px;font-size:12px;height:28px;border-radius:5px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);color:rgba(59,130,246,.7);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;font-weight:500;flex-shrink:0}
+.btn-detail:hover{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35);color:rgba(59,130,246,.9)}
+.btn-detail.active{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.4);color:#3b82f6}
+[data-theme="dark"] .btn-detail{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.2);color:rgba(96,165,250,.6)}
+[data-theme="dark"] .btn-detail:hover{background:rgba(96,165,250,.15);color:rgba(96,165,250,.85)}
+[data-theme="dark"] .btn-detail.active{background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.35);color:#60a5fa}
+/* 와쳐 필드 */
+.watcher-field{display:flex;flex-direction:column;gap:4px}
+.watcher-field input{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);font-size:13px;color:var(--text);order:0}
+.watcher-field input:focus{outline:none;border-color:var(--primary)}
+.watcher-field .st-label-tags{display:flex;flex-wrap:wrap;gap:4px;order:1}
+.watcher-field .st-label-tags:empty{display:none}
+.watcher-field .tag.selected{margin:0;padding:3px 8px;font-size:11px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;background:var(--primary);color:#fff}
+.watcher-field .tag-remove{cursor:pointer;font-size:11px;line-height:1;opacity:.7}
+.watcher-field .tag-remove:hover{opacity:1}
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* Thursday preview */
@@ -208,7 +249,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .jira-conn-status.ok{background:rgba(74,222,128,.12);color:var(--success)}
 .jira-conn-status.fail{background:rgba(248,113,113,.12);color:var(--danger)}
 .empty-state{text-align:center;padding:40px;color:var(--text3)}
-.btn-footer-next{min-width:140px;padding:10px 24px;font-size:14px}
+.btn-footer-next{padding:7px 20px;font-size:13px;height:34px}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-hover)}
 
 /* Subtask cards */
@@ -274,6 +315,22 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .clone-row .clone-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;flex-shrink:0;padding:2px 6px}
 .clone-row .clone-del:hover{color:var(--danger)}
 
+/* 테마 토글 스위치 */
+.theme-toggle{position:relative;width:56px;height:28px;background:rgba(255,255,255,.2);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 6px;border:1px solid rgba(255,255,255,.25);transition:background .2s}
+.theme-toggle-icon{font-size:14px;color:rgba(255,255,255,.7);z-index:1;line-height:1;user-select:none}
+.theme-toggle-knob{position:absolute;top:2px;left:2px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .25s ease;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+[data-theme="dark"] .theme-toggle-knob{transform:translateX(28px)}
+[data-theme="dark"] .theme-toggle{background:rgba(255,255,255,.1)}
+
+/* 헤더 드롭다운 */
+.header-dropdown{position:relative;display:inline-block}
+.header-dropdown-btn{cursor:pointer}
+.header-dropdown-menu{display:none;position:absolute;top:100%;left:0;margin-top:4px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);min-width:200px;z-index:100;overflow:hidden}
+.header-dropdown.open .header-dropdown-menu{display:block}
+.header-dropdown-menu button{display:block;width:100%;text-align:left;padding:10px 16px;border:none;background:none;color:var(--text);font-size:14px;cursor:pointer;transition:background .1s}
+.header-dropdown-menu button:hover{background:var(--hover)}
+.header-dropdown-menu .divider{height:1px;background:var(--border);margin:4px 0}
+
 .csv-drop-active{border-color:var(--primary)!important;background:var(--tag-bg)!important}
 .section-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .section-desc{font-size:12px;color:var(--text3);margin-bottom:12px}
@@ -282,15 +339,24 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 <body>
 <div class="header">
     <h1>Jira 티켓 자동 생성기</h1>
-    <button class="btn" onclick="openGuide()">사용 가이드</button>
-    <button class="btn" onclick="openBulkCreate()">+ Jira 일괄 생성</button>
-    <button class="btn" onclick="openCsvCreate()">CSV 일괄 생성</button>
-    <button class="btn" onclick="openCloneModal()">복제 생성</button>
-    <button class="btn" onclick="openMaintenanceModal()">정기점검 에픽 생성</button>
-    <button class="btn" onclick="openVersionModal()">수정버전(릴리즈) 생성</button>
-    <button class="btn-icon-header" onclick="toggleTheme()" id="themeToggleBtn" title="라이트/다크 모드 전환">
-        <svg id="themeIcon" width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
-    </button>
+    <button class="btn" onclick="openJiraCreate()">+ Jira 생성</button>
+    <button class="btn" onclick="openMaintenanceModal()">정기점검 생성</button>
+    <button class="btn" onclick="openVersionModal()">수정버전 생성</button>
+    <div class="header-dropdown" id="headerMoreDropdown">
+        <button class="btn header-dropdown-btn" onclick="event.stopPropagation();toggleHeaderDropdown()">도구 ▾</button>
+        <div class="header-dropdown-menu">
+            <button onclick="openCloneModal();closeHeaderDropdown()">복제 생성</button>
+            <button onclick="openBulkMatch();closeHeaderDropdown()">일괄 Jira 매칭</button>
+            <div class="divider"></div>
+            <button onclick="showRecentHistory();closeHeaderDropdown()">최근 생성 이력</button>
+            <button onclick="openGuide();closeHeaderDropdown()">사용 가이드</button>
+        </div>
+    </div>
+    <div class="theme-toggle" onclick="toggleTheme()" id="themeToggleBtn" title="라이트/다크 모드 전환">
+        <span class="theme-toggle-icon" id="themeIconLight">&#9788;</span>
+        <span class="theme-toggle-icon" id="themeIconDark">&#9790;</span>
+        <span class="theme-toggle-knob" id="themeKnob"></span>
+    </div>
 </div>
 
 <div class="jira-settings-inline" id="jiraSettingsPanel">
@@ -317,8 +383,46 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
             <span class="jira-conn-status" id="jiraConnStatus"></span>
         </div>
     </div>
+    <!-- 프리셋 관리 -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <h4 style="margin:0;font-size:14px;color:var(--text)">프리셋 관리</h4>
+            <button class="btn btn-sm btn-secondary" onclick="openPresetEditor()" style="padding:3px 10px;font-size:11px">+ 새 프리셋</button>
+        </div>
+        <div id="presetList" style="font-size:13px;color:var(--text2)"></div>
+    </div>
 </div>
 
+<!-- Modal: Preset Editor -->
+<div class="modal-overlay" id="modalPresetEdit"><div class="modal" style="width:600px;max-height:90vh">
+    <div class="modal-header" style="padding:16px 24px"><h2 style="font-size:18px" id="presetEditTitle">프리셋 추가</h2><button class="modal-close" onclick="closePresetEditor()">&times;</button></div>
+    <div class="modal-body" style="padding:20px 24px;overflow-y:auto">
+        <div class="form-group"><label>프리셋 이름</label><input type="text" id="presetName" placeholder="예: 아트-모델링, 콘텐츠-이벤트..."></div>
+        <div style="display:flex;gap:12px">
+            <div class="form-group" style="flex:0 0 120px"><label>이슈 유형</label>
+                <select id="presetIssueType" onchange="onPresetTypeChange()"><option value="">자동</option><option value="Epic">Epic</option><option value="Task">Task</option><option value="Sub-task">Sub-task</option></select>
+            </div>
+            <div class="form-group" style="flex:1"><label>담당자</label><input type="text" id="presetAssignee" placeholder="이름 검색..."></div>
+        </div>
+        <div style="display:flex;gap:12px">
+            <div class="form-group" style="flex:1"><label>컴포넌트</label><div class="watcher-field"><div class="st-label-tags" id="presetCompTags"></div><input type="text" id="presetComp" placeholder="검색..."></div></div>
+            <div class="form-group" style="flex:1"><label>레이블</label><div class="watcher-field"><div class="st-label-tags" id="presetLabelTags"></div><input type="text" id="presetLabel" placeholder="검색..."></div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+            <div class="form-group" style="flex:1"><label>와쳐</label><div class="watcher-field"><div class="st-label-tags" id="presetWatcherTags"></div><input type="text" id="presetWatcher" placeholder="이름 검색..."></div></div>
+            <div class="form-group" style="flex:1"><label>그룹 와쳐</label><div class="watcher-field"><div class="st-label-tags" id="presetGroupTags"></div><input type="text" id="presetGroup" placeholder="그룹 검색..."></div></div>
+        </div>
+        <div id="presetSubtaskSection">
+            <div class="section-title" style="font-size:15px;margin-top:4px">하위 태스크 템플릿 <button class="btn btn-sm btn-secondary" style="margin-left:auto" onclick="addPresetSubtask()">+ 추가</button></div>
+            <div class="section-desc">프리셋 적용 시 자동으로 추가될 하위 태스크입니다.</div>
+            <div class="task-row-list" id="presetSubtaskList"></div>
+        </div>
+    </div>
+    <div class="modal-footer" style="padding:14px 24px">
+        <button class="btn btn-secondary btn-sm" onclick="closePresetEditor()">취소</button>
+        <button class="btn btn-primary btn-sm" onclick="savePreset()" style="padding:8px 20px">저장</button>
+    </div>
+</div></div>
 
 <!-- Modal: Add Month -->
 <div class="modal-overlay" id="modalAddSchedule"><div class="modal" style="width:480px">
@@ -512,6 +616,173 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     <div class="modal-footer"><button class="btn btn-primary" onclick="closeAllModals()">닫기</button></div>
 </div></div>
 
+<!-- Modal: Jira Create -->
+<div class="modal-overlay" id="modalJiraCreate"><div class="modal" style="width:720px;max-height:none">
+    <div class="modal-header" style="padding:14px 20px"><h2 style="font-size:16px">Jira 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-body" style="padding:14px 20px;overflow:visible">
+        <div class="tab-bar" style="margin-bottom:12px">
+            <button class="active" onclick="switchJiraCreateTab('existing',this)">기존 티켓에 추가</button>
+            <button onclick="switchJiraCreateTab('new',this)">신규 티켓 생성</button>
+        </div>
+
+        <!-- Tab: 기존 티켓에 추가 -->
+        <div id="jcTabExisting">
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label>상위 티켓 검색</label><input type="text" id="jcExistingSearch" placeholder="에픽/태스크 이름 또는 키 검색..."><input type="hidden" id="jcExistingKey"></div>
+                <div class="form-group" style="flex:0 0 130px;margin-bottom:0"><label>프리셋</label><select id="jcExistingPreset" onchange="applyPreset('existing')" style="padding:5px 6px;font-size:12px"><option value="">선택...</option></select></div>
+            </div>
+            <div id="jcExistingInfo" style="display:none;margin-bottom:10px;padding:10px 12px;background:rgba(139,156,247,.08);border:1px solid rgba(139,156,247,.2);border-radius:8px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                    <span class="issue-type-badge" id="jcExistingTypeBadge"></span>
+                    <strong style="font-size:13px" id="jcExistingTitle"></strong>
+                    <span style="color:var(--text3);font-size:11px" id="jcExistingKeyLabel"></span>
+                </div>
+                <div id="jcExistingChildrenList" style="font-size:12px;max-height:200px;overflow-y:auto"></div>
+            </div>
+            <div class="section-title" style="font-size:14px;margin-bottom:4px">추가할 하위 태스크 <button class="btn btn-sm btn-secondary" style="margin-left:auto;padding:2px 8px;font-size:11px" onclick="addJcTaskRow('existing')">+ 추가</button></div>
+            <div class="task-row-list" id="jcExistingTaskList"></div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">이슈 유형</label>
+                    <select id="jcExistingChildType" style="padding:5px 6px;font-size:12px"><option value="Task">Task</option><option value="Sub-task">Sub-task</option></select>
+                </div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">수정버전</label><select id="jcExistingFixVer" style="padding:5px 6px;font-size:12px"><option value="">상위에서 상속</option></select></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">우선순위</label>
+                    <select id="jcExistingPriority" style="padding:5px 6px;font-size:12px"><option value="Highest">Highest</option><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option><option value="Lowest">Lowest</option></select>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:6px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">컴포넌트</label><div class="watcher-field"><div class="st-label-tags" id="jcExistingCompTags"></div><input type="text" id="jcExistingComp" placeholder="검색..." style="font-size:12px"></div></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">레이블</label><div class="watcher-field"><div class="st-label-tags" id="jcExistingLabelTags"></div><input type="text" id="jcExistingLabel" placeholder="검색..." style="font-size:12px"></div></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:6px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">와쳐</label><div class="watcher-field"><div class="st-label-tags" id="jcExistingWatcherTags"></div><input type="text" id="jcExistingWatcher" placeholder="이름 검색..." style="font-size:12px"></div></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">그룹 와쳐</label><div class="watcher-field"><div class="st-label-tags" id="jcExistingGroupTags"></div><input type="text" id="jcExistingGroupWatcher" placeholder="그룹 검색..." style="font-size:12px"></div></div>
+            </div>
+            <div style="margin-top:6px">
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">첨부파일</label>
+                <div id="jcExistingFileList" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px"></div>
+                <div style="display:flex;gap:6px;align-items:center">
+                    <button class="btn btn-sm btn-secondary" onclick="document.getElementById('jcExistingFileInput').click()" style="padding:3px 10px;font-size:11px">+ 파일 추가</button>
+                    <span id="jcExistingFileCount" style="font-size:11px;color:var(--text3)"></span>
+                    <input type="file" id="jcExistingFileInput" multiple style="display:none" onchange="handleJcFileSelect(this,'existing')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: 신규 티켓 생성 -->
+        <div id="jcTabNew" style="display:none">
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div class="form-group" style="flex:0 0 100px;margin-bottom:0"><label style="font-size:11px">이슈 유형</label>
+                    <select id="jcNewType" onchange="onJcNewTypeChange()" style="padding:5px 6px;font-size:12px">
+                        <option value="Epic">Epic</option>
+                        <option value="Task">Task</option>
+                        <option value="Sub-task">Sub-task</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:1;margin-bottom:0" id="jcNewSummaryGroup"><label style="font-size:11px">제목</label><input type="text" id="jcNewSummary" placeholder="티켓 제목 입력..."></div>
+                <div class="form-group" style="flex:0 0 120px;margin-bottom:0"><label style="font-size:11px">프리셋</label><select id="jcNewPreset" onchange="applyPreset('new')" style="padding:5px 6px;font-size:12px"><option value="">선택...</option></select></div>
+            </div>
+            <!-- Task/Sub-task 여러 개 입력 (이슈유형이 Task/Sub-task일 때 표시) -->
+            <div id="jcNewMultiSection" style="display:none;margin-bottom:8px">
+                <div class="section-title" style="font-size:14px;margin-bottom:4px">생성할 티켓 목록 <button class="btn btn-sm btn-secondary" style="margin-left:auto;padding:2px 8px;font-size:11px" onclick="addJcTaskRow('multi')">+ 추가</button></div>
+                <div class="task-row-list" id="jcNewMultiList"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">수정버전</label><select id="jcNewFixVer" style="padding:5px 6px;font-size:12px"><option value="">없음</option></select></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">담당자</label><input type="text" id="jcNewAssignee" placeholder="이름 검색..." style="font-size:12px"></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">우선순위</label>
+                    <select id="jcNewPriority" style="padding:5px 6px;font-size:12px"><option value="Highest">Highest</option><option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option><option value="Lowest">Lowest</option></select>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">컴포넌트</label><div class="watcher-field"><div class="st-label-tags" id="jcNewCompTags"></div><input type="text" id="jcNewComp" placeholder="검색..." style="font-size:12px"></div></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">레이블</label><div class="watcher-field"><div class="st-label-tags" id="jcNewLabelTags"></div><input type="text" id="jcNewLabel" placeholder="검색..." style="font-size:12px"></div></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">와쳐</label><div class="watcher-field"><div class="st-label-tags" id="jcNewWatcherTags"></div><input type="text" id="jcNewWatcher" placeholder="이름 검색..." style="font-size:12px"></div></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label style="font-size:11px">그룹 와쳐</label><div class="watcher-field"><div class="st-label-tags" id="jcNewGroupTags"></div><input type="text" id="jcNewGroupWatcher" placeholder="그룹 검색..." style="font-size:12px"></div></div>
+            </div>
+            <div style="margin-bottom:8px">
+                <label style="font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px">첨부파일</label>
+                <div id="jcNewFileList" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px"></div>
+                <div style="display:flex;gap:6px;align-items:center">
+                    <button class="btn btn-sm btn-secondary" onclick="document.getElementById('jcNewFileInput').click()" style="padding:3px 10px;font-size:11px">+ 파일 추가</button>
+                    <span id="jcNewFileCount" style="font-size:11px;color:var(--text3)"></span>
+                    <input type="file" id="jcNewFileInput" multiple style="display:none" onchange="handleJcFileSelect(this,'new')">
+                </div>
+            </div>
+            <div id="jcNewParentGroup" style="display:none;margin-bottom:8px">
+                <div class="form-group" style="margin-bottom:0"><label style="font-size:11px">상위 티켓</label><input type="text" id="jcNewParent" placeholder="상위 티켓 검색..." style="font-size:12px"><input type="hidden" id="jcNewParentKey"></div>
+            </div>
+            <div id="jcNewChildSection">
+                <div class="section-title" style="font-size:14px;margin-bottom:4px">하위 태스크 <button class="btn btn-sm btn-secondary" style="margin-left:auto;padding:2px 8px;font-size:11px" onclick="addJcTaskRow('new')">+ 추가</button></div>
+                <div class="task-row-list" id="jcNewTaskList"></div>
+            </div>
+        </div>
+
+        <!-- 공통: 미리보기 & 진행 -->
+        <div style="margin-top:10px;display:flex;gap:8px">
+            <button class="btn btn-sm btn-primary" onclick="previewJiraCreate()">미리보기</button>
+        </div>
+        <div id="jcPreviewSection" style="display:none;margin-top:16px">
+            <div class="section-title">생성 미리보기 (<span id="jcPreviewCount">0</span>)</div>
+            <div id="jcPreviewTree" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px"></div>
+        </div>
+        <div id="jcProgressSection" style="display:none;margin-top:16px">
+            <div class="progress-bar"><div class="progress-fill" id="jcProgressFill"></div></div>
+            <div style="display:flex;align-items:center;gap:8px"><p class="progress-text" id="jcProgressText" style="flex:1">생성 중...</p><button class="btn btn-sm btn-secondary" onclick="cancelCreation()" id="jcCancelBtn">중단</button></div>
+        </div>
+    </div>
+    <div class="modal-footer" style="padding:12px 20px">
+        <button class="btn btn-secondary btn-sm" onclick="closeAllModals()">취소</button>
+        <button class="btn btn-primary btn-sm" id="btnJiraCreate" onclick="executeJiraCreate()" style="padding:8px 20px">Jira 생성</button>
+    </div>
+</div></div>
+
+<!-- Modal: Bulk Jira Match -->
+<div class="modal-overlay" id="modalBulkMatch"><div class="modal" style="width:900px;max-height:90vh">
+    <div class="modal-header"><h2>일괄 Jira 매칭</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-body">
+        <div class="section-desc" style="margin-bottom:12px">미연결 항목을 Jira에서 자동 검색하여 매칭합니다. 후보를 확인하고, 맞지 않으면 직접 검색할 수 있습니다.</div>
+        <div id="bulkMatchProgress" style="display:none;margin-bottom:12px">
+            <div class="progress-bar"><div class="progress-fill" id="bulkMatchProgressFill"></div></div>
+            <p class="progress-text" id="bulkMatchProgressText">검색 중...</p>
+        </div>
+        <table class="preview-table" id="bulkMatchTable">
+            <thead><tr><th style="width:35%">업데이트 항목</th><th style="width:5%"></th><th style="width:45%">Jira 후보</th><th style="width:15%">상태</th></tr></thead>
+            <tbody id="bulkMatchBody"></tbody>
+        </table>
+        <div id="bulkMatchEmpty" style="display:none;text-align:center;padding:40px;color:var(--text3)">미연결 항목이 없습니다.</div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAllModals()">취소</button>
+        <button class="btn btn-primary btn-footer-next" id="btnApplyMatch" onclick="applyBulkMatch()">매칭 적용 (<span id="bulkMatchCount">0</span>건)</button>
+    </div>
+</div></div>
+
+<!-- Modal: Creation Result -->
+<div class="modal-overlay" id="modalResult"><div class="modal" style="width:700px;max-height:85vh">
+    <div class="modal-header"><h2>생성 결과</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-body">
+        <div id="resultSummary" style="margin-bottom:12px;padding:12px 16px;border-radius:8px;font-size:14px"></div>
+        <div class="result-list" id="resultList"></div>
+        <div id="resultAssignSection" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+            <div class="section-title" style="font-size:15px;margin-bottom:8px">담당자 일괄 배정</div>
+            <div class="section-desc" style="font-size:13px">각 티켓의 담당자를 지정하세요. 빈 칸은 변경하지 않습니다.</div>
+            <div id="resultAssignList" style="max-height:350px;overflow-y:auto"></div>
+            <div style="margin-top:10px;display:flex;gap:8px">
+                <button class="btn btn-sm btn-primary" onclick="executeAssignAll()">담당자 배정 실행</button>
+                <span id="resultAssignStatus" style="font-size:13px;color:var(--text3);line-height:28px"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnResultCopy" onclick="copyResultKeys()">결과 복사</button>
+        <button class="btn btn-secondary" id="btnResultOpenAll" onclick="openAllInJira()">Jira에서 모두 보기</button>
+        <button class="btn btn-primary" onclick="closeAllModals()">확인</button>
+    </div>
+</div></div>
+
 <!-- Modal: CSV Bulk Create -->
 <div class="modal-overlay" id="modalCsv"><div class="modal" style="width:800px;max-height:90vh">
     <div class="modal-header"><h2>CSV 일괄 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
@@ -664,44 +935,66 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 </div></div>
 
 <!-- Modal: Maintenance Create -->
-<div class="modal-overlay" id="modalMaint"><div class="modal" style="width:700px;max-height:90vh">
-    <div class="modal-header"><h2>정기점검 에픽 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+<div class="modal-overlay" id="modalMaint"><div class="modal" style="width:900px;max-height:92vh">
+    <div class="modal-header"><h2>정기점검 생성</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
     <div class="modal-body">
-        <div class="section-desc">목요일 업데이트 날짜를 선택하면 월~수 빌드 에픽을 자동 생성합니다.</div>
+        <div class="section-desc">수정버전과 날짜를 선택하면 빌드 에픽 + 주간 업데이트 Task를 한번에 생성합니다.</div>
         <div class="settings-form" style="margin-bottom:12px">
-            <div class="form-group"><label>수정버전</label><input type="text" id="maintVersion" placeholder="버전 검색..." class="maint-ac-version"></div>
-            <div class="form-group"><label>업데이트 날짜 (목요일)</label><input type="date" id="maintDate"></div>
-        </div>
-        <div class="form-group" style="margin-bottom:12px"><label>빌드 제목 템플릿</label><input type="text" id="maintTemplate" value="[마일스톤] {날짜} {N}차 서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드" style="width:100%"></div>
-        <div style="display:flex;gap:8px;margin-bottom:16px">
-            <button class="btn btn-sm btn-secondary" onclick="fetchExistingMaintEpics()">기존 에픽 불러오기</button>
-            <button class="btn btn-sm btn-primary" onclick="generateMaintPreview()">미리보기 생성</button>
+            <div style="display:flex;gap:8px">
+                <div class="form-group" style="flex:1;margin-bottom:0"><label>수정버전</label><input type="text" id="maintVersion" placeholder="버전 검색..." class="maint-ac-version"></div>
+                <div class="form-group" style="flex:1;margin-bottom:0"><label>업데이트 날짜 (목요일)</label><input type="date" id="maintDate"></div>
+            </div>
         </div>
 
-        <div id="maintPreviewSection" style="display:none">
-            <div class="section-title">생성될 티켓 (<span id="maintPreviewCount">0</span>건)
-                <div style="margin-left:auto;display:flex;gap:4px">
-                    <button class="btn btn-sm btn-secondary" onclick="addMaintItem('서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드')">+ 데이터 패치 빌드</button>
-                    <button class="btn btn-sm btn-secondary" onclick="addMaintItem('PC/AOS/OneStore App 빌드')">+ App 빌드</button>
+        <!-- 빌드 에픽 섹션 -->
+        <div style="margin-bottom:12px">
+            <div class="section-title" style="font-size:14px;cursor:pointer" onclick="document.getElementById('maintBuildSection').style.display=document.getElementById('maintBuildSection').style.display==='none'?'':'none'">
+                빌드 에픽 <span style="font-size:11px;color:var(--text3);font-weight:400">▾</span>
+            </div>
+            <div id="maintBuildSection">
+                <div class="form-group" style="margin-bottom:8px"><label style="font-size:11px">빌드 제목 템플릿</label><input type="text" id="maintTemplate" value="[마일스톤] {날짜} {N}차 서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드" style="width:100%;font-size:12px"></div>
+                <div style="display:flex;gap:8px;margin-bottom:8px">
+                    <button class="btn btn-sm btn-secondary" onclick="fetchExistingMaintEpics()">기존 에픽 불러오기</button>
+                    <button class="btn btn-sm btn-primary" onclick="generateMaintPreview()">빌드 에픽 생성</button>
+                    <div style="margin-left:auto;display:flex;gap:4px">
+                        <button class="btn btn-sm btn-secondary" onclick="addMaintItem('서버 / AOS, iOS, PC, OneStore 데이터 패치 빌드')">+ 데이터 패치</button>
+                        <button class="btn btn-sm btn-secondary" onclick="addMaintItem('PC/AOS/OneStore App 빌드')">+ App 빌드</button>
+                    </div>
+                </div>
+                <div id="maintPreviewSection" style="display:none">
+                    <div style="font-size:13px;font-weight:600;margin-bottom:4px">에픽 목록 (<span id="maintPreviewCount">0</span>건)</div>
+                    <div id="maintEditList"></div>
                 </div>
             </div>
-            <div id="maintEditList"></div>
         </div>
 
-        <div id="maintFinalPreview" style="display:none;margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
-            <div class="section-title">최종 생성 미리보기</div>
-            <div id="maintFinalList"></div>
+        <!-- 주간 업데이트 섹션 -->
+        <div style="margin-bottom:12px">
+            <div class="section-title" style="font-size:14px;cursor:pointer" onclick="document.getElementById('maintWeeklySection').style.display=document.getElementById('maintWeeklySection').style.display==='none'?'':'none'">
+                주간 업데이트 Task <span style="font-size:11px;color:var(--text3);font-weight:400">▾</span>
+            </div>
+            <div id="maintWeeklySection">
+                <div id="maintWeeklyList" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px"></div>
+            </div>
         </div>
+
+        <!-- 통합 미리보기 -->
+        <div id="maintFinalPreview" style="display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+            <div class="section-title" style="font-size:14px">최종 미리보기 (<span id="maintTotalCount">0</span>건)</div>
+            <div id="maintFinalList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px"></div>
+        </div>
+
+        <div style="margin-top:10px"><button class="btn btn-sm btn-primary" onclick="previewMaintAll()">통합 미리보기</button></div>
 
         <div id="maintProgressSection" style="display:none;margin-top:12px">
             <div class="progress-bar"><div class="progress-fill" id="maintProgressFill"></div></div>
-            <p class="progress-text" id="maintProgressText">생성 중...</p>
+            <div style="display:flex;align-items:center;gap:8px"><p class="progress-text" id="maintProgressText" style="flex:1">생성 중...</p><button class="btn btn-sm btn-secondary" onclick="cancelCreation()">중단</button></div>
         </div>
     </div>
     <div class="modal-footer" style="flex-shrink:0">
         <button class="btn btn-secondary" onclick="closeAllModals()">취소</button>
         <button class="btn btn-success" id="maintBtnCsv" style="display:none" onclick="downloadMaintCsv()">CSV 다운로드</button>
-        <button class="btn btn-primary" id="maintBtnCreate" style="display:none" onclick="createMaintTickets()">Jira 티켓 생성</button>
+        <button class="btn btn-primary" id="maintBtnCreate" onclick="createMaintAllTickets()">Jira 생성</button>
     </div>
 </div></div>
 
@@ -754,6 +1047,26 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
     </div>
 </div></div>
 
+<!-- Modal: Weekly Item Settings -->
+<div class="modal-overlay" id="modalWeeklySettings" style="z-index:1100;display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);justify-content:center;align-items:center"><div class="modal" style="width:560px;max-height:none">
+    <div class="modal-header" style="padding:16px 24px"><h2 style="font-size:16px" id="wkSettingsTitle">항목 설정</h2><button class="modal-close" onclick="closeWeeklySettings()">&times;</button></div>
+    <div class="modal-body" style="padding:20px 24px;overflow:visible">
+        <div class="form-group" style="margin-bottom:14px"><label>담당자</label><input type="text" id="wkSetAssignee" placeholder="이름 검색..."></div>
+        <div style="display:flex;gap:12px;margin-bottom:14px">
+            <div class="form-group" style="flex:1;margin-bottom:0"><label>레이블</label><div class="watcher-field"><div class="st-label-tags" id="wkSetLabelTags"></div><input type="text" id="wkSetLabel" placeholder="검색..."></div></div>
+            <div class="form-group" style="flex:1;margin-bottom:0"><label>컴포넌트</label><div class="watcher-field"><div class="st-label-tags" id="wkSetCompTags"></div><input type="text" id="wkSetComp" placeholder="검색..."></div></div>
+        </div>
+        <div style="display:flex;gap:12px">
+            <div class="form-group" style="flex:1;margin-bottom:0"><label>와쳐</label><div class="watcher-field"><div class="st-label-tags" id="wkSetWatcherTags"></div><input type="text" id="wkSetWatcher" placeholder="이름 검색..."></div></div>
+            <div class="form-group" style="flex:1;margin-bottom:0"><label>그룹 와쳐</label><div class="watcher-field"><div class="st-label-tags" id="wkSetGroupTags"></div><input type="text" id="wkSetGroup" placeholder="그룹 검색..."></div></div>
+        </div>
+    </div>
+    <div class="modal-footer" style="padding:14px 24px">
+        <button class="btn btn-secondary btn-sm" onclick="closeWeeklySettings()">취소</button>
+        <button class="btn btn-primary btn-sm" onclick="saveWeeklySettings()" style="padding:8px 20px">적용</button>
+    </div>
+</div></div>
+
 <!-- Confirm -->
 <div class="confirm-overlay" id="confirmDialog"><div class="confirm-box"><p id="confirmMessage"></p><div class="confirm-actions"><button class="btn btn-secondary" onclick="cancelConfirm()">취소</button><button class="btn btn-danger" onclick="executeConfirm()">삭제</button></div></div></div>
 <!-- Floating action bar -->
@@ -770,7 +1083,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 // ==========================================
 // DATA
 // ==========================================
-const DEFAULT_DATA=[];
+const DEFAULT_ASSIGNEE='614be51f47a8b5006f90954b'; // 손정아 - 기본 담당자
 if(localStorage.getItem('scheduleDataVersion')!=='v2'){localStorage.removeItem('scheduleData');localStorage.setItem('scheduleDataVersion','v2');}
 let scheduleData=JSON.parse(localStorage.getItem('scheduleData')||'[]');
 function saveData(){localStorage.setItem('scheduleData',JSON.stringify(scheduleData));}
@@ -848,6 +1161,21 @@ function renderScheduleTable(){
     // 버튼 텍스트 업데이트
     const btn=document.getElementById('btnTogglePast');
     if(btn)btn.textContent=hidePast?'지난 일정 보기':'지난 일정 숨기기';
+    // 미연결 항목 카운트 + 일괄 매칭 버튼
+    let unlinkedTotal=0;
+    scheduleData.forEach(md=>{md.updates.forEach(u=>{if(u.items)u.items.forEach(it=>{if(!it.jiraLinked)unlinkedTotal++;});});});
+    // 테이블 아래 액션 바 (동적 생성)
+    const tableEl=tb.closest('table');
+    if(tableEl){
+        let actionBar=document.getElementById('scheduleActionBar');
+        if(!actionBar){
+            actionBar=document.createElement('div');
+            actionBar.id='scheduleActionBar';
+            actionBar.style.cssText='display:flex;gap:8px;padding:12px 0;align-items:center';
+            tableEl.parentNode.insertBefore(actionBar,tableEl.nextSibling);
+        }
+        actionBar.innerHTML=`<button class="btn btn-sm btn-secondary" onclick="openBulkMatch()">일괄 Jira 매칭${unlinkedTotal?` (${unlinkedTotal}건)`:''}</button><button class="btn btn-sm btn-secondary" id="btnTogglePast" onclick="togglePastSchedule()">${hidePast?'지난 일정 보기':'지난 일정 숨기기'}</button>`;
+    }
 }
 
 // ==========================================
@@ -903,12 +1231,19 @@ function makeAutocomplete(input,fetchFn,onSelect){
                 e.preventDefault();skipBlur=true;
                 const val=el.dataset.val,label=el.textContent;
                 removeBox();
-                onSelect(val,label);
-                // 확실하게 input에 값 설정 (비동기 후에도)
-                input.value=label;
-                setTimeout(()=>{input.value=label;skipBlur=false;},10);
+                const result=onSelect(val,label);
+                // onSelect가 false를 반환하면 입력칸 비움 (태그형), 아니면 값 유지 (단일 선택형)
+                if(result===false){input.value='';setTimeout(()=>{input.value='';skipBlur=false;},10);}
+                else{input.value=label;setTimeout(()=>{input.value=label;skipBlur=false;},10);}
             };
         });
+    });
+    input.addEventListener('keydown',(e)=>{
+        if(e.key==='Enter'){
+            e.preventDefault();
+            // 자동완성 목록이 있으면 첫 번째 항목 선택
+            if(box){const first=box.querySelector('.ac-item[data-val]');if(first){first.onmousedown(e);return;}}
+        }
     });
     input.addEventListener('blur',()=>{if(!skipBlur)setTimeout(removeBox,100);});
 }
@@ -1291,7 +1626,7 @@ async function createJiraTickets(){
     pv+='\n이대로 생성하시겠습니까?';
     if(!confirm(pv))return;
     const ps=document.getElementById('progressSection'),pf=document.getElementById('progressFill'),pt=document.getElementById('progressText'),btn=document.getElementById('btnCreateTickets');
-    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
+    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
     let created=0,errors=[];
     const parents=rows.filter(r=>r._isParent);
 
@@ -1333,8 +1668,8 @@ async function createJiraTickets(){
                 else{for(const sp of subPayloads){const sr=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify({fields:sp.fields})});if(sr.ok){const sd=await sr.json();created++;createdKeys.push({key:sd.key,sp});}else{const et=await sr.text();errors.push(`Sub: ${sp.fields.summary} - ${et}`);}}}
                 // Add watchers
                 for(const ck of createdKeys){
-                    if(ck.sp._watcher){for(const w of ck.sp._watcher.split(',')){const wt=w.trim();if(wt)await jiraFetch(`/rest/api/3/issue/${ck.key}/watchers`,{method:'POST',body:JSON.stringify(wt)}).catch(()=>{});}}
-                    if(ck.sp._watcherGroup){for(const g of ck.sp._watcherGroup.split(',')){const gt=g.trim();if(gt)await jiraFetch(`/rest/api/3/issue/${ck.key}/watchers`,{method:'POST',body:JSON.stringify(gt)}).catch(()=>{});}}
+                    if(ck.sp._watcher){for(const w of ck.sp._watcher.split(',')){const wt=w.trim();if(wt)await jiraFetch(`/rest/api/3/issue/${ck.key}/watchers`,{method:'POST',body:JSON.stringify(wt)}).catch(e=>console.warn('API warning:',e));}}
+                    if(ck.sp._watcherGroup){for(const g of ck.sp._watcherGroup.split(',')){const gt=g.trim();if(gt)await jiraFetch(`/rest/api/3/issue/${ck.key}/watchers`,{method:'POST',body:JSON.stringify(gt)}).catch(e=>console.warn('API warning:',e));}}
                 }
             }
             pf.style.width=`${((pi+1)/parents.length*100).toFixed(0)}%`;pt.textContent=`${pi+1} / ${parents.length} 처리 중... (${created}건 생성)`;
@@ -1419,7 +1754,8 @@ function jiraDeselectAll(){jiraSearchSelected.clear();jiraSearchResultsData.forE
 const DEFAULT_PROXY='http://10.10.130.153:3000';
 const DEFAULT_DOMAIN='madngine.atlassian.net';
 const DEFAULT_PROJECT='PM';
-function loadJiraSettingsUI(){
+async function loadJiraSettingsUI(){
+    try{const r=await fetch('/api/config');if(r.ok){const cfg=await r.json();if(cfg.jiraDomain){Object.entries(cfg).forEach(([k,v])=>localStorage.setItem(k,v));}}}catch(e){}
     document.getElementById('jiraDomain').value=localStorage.getItem('jiraDomain')||DEFAULT_DOMAIN;
     document.getElementById('jiraEmail').value=localStorage.getItem('jiraEmail')||'';
     document.getElementById('jiraToken').value=localStorage.getItem('jiraToken')||'';
@@ -1429,7 +1765,7 @@ function loadJiraSettingsUI(){
 function toggleJiraSettings(){
     document.getElementById('jiraSettingsPanel').classList.toggle('collapsed');
 }
-function saveJiraSettings(){let pk=document.getElementById('jiraProjectKey').value.trim();const m=pk.match(/\/projects\/([A-Za-z0-9_]+)/);if(m)pk=m[1];pk=pk.toUpperCase();localStorage.setItem('jiraDomain',document.getElementById('jiraDomain').value.trim());localStorage.setItem('jiraEmail',document.getElementById('jiraEmail').value.trim());localStorage.setItem('jiraToken',document.getElementById('jiraToken').value.trim());localStorage.setItem('jiraProjectKey',pk);localStorage.setItem('proxyUrl',document.getElementById('proxyUrl').value.trim());document.getElementById('jiraProjectKey').value=pk;_cachedVersions=null;_cachedComponents=null;_cachedLabels=null;_cachedGroups=null;showToast('설정 저장됨','success');}
+async function saveJiraSettings(){let pk=document.getElementById('jiraProjectKey').value.trim();const m=pk.match(/\/projects\/([A-Za-z0-9_]+)/);if(m)pk=m[1];pk=pk.toUpperCase();const cfg={jiraDomain:document.getElementById('jiraDomain').value.trim(),jiraEmail:document.getElementById('jiraEmail').value.trim(),jiraToken:document.getElementById('jiraToken').value.trim(),jiraProjectKey:pk,proxyUrl:document.getElementById('proxyUrl').value.trim()};Object.entries(cfg).forEach(([k,v])=>localStorage.setItem(k,v));document.getElementById('jiraProjectKey').value=pk;_cachedVersions=null;_cachedComponents=null;_cachedLabels=null;_cachedGroups=null;try{await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(cfg)});showToast('설정 저장됨 (서버+로컬)','success');}catch(e){showToast('설정 저장됨 (로컬만)','warning');}}
 async function testJiraConnection(){saveJiraSettings();const j=getJiraSettings(),s=document.getElementById('jiraConnStatus');if(!j.isValid){showToast('모든 필드를 입력하세요.','error');return;}s.textContent='연결 중...';s.className='jira-conn-status';try{const r=await jiraFetch('/rest/api/3/myself');if(r.ok){const u=await r.json();s.textContent='연결 성공 ('+u.displayName+')';s.className='jira-conn-status ok';}else{s.textContent='연결 실패 ('+r.status+')';s.className='jira-conn-status fail';}}catch(e){s.textContent='오류: '+e.message;s.className='jira-conn-status fail';}}
 
 // ==========================================
@@ -1437,11 +1773,22 @@ async function testJiraConnection(){saveJiraSettings();const j=getJiraSettings()
 // ==========================================
 function openGuide(){document.getElementById('modalGuide').classList.add('active');}
 function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('active'));}
-function showToast(msg,type='info'){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast '+type;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3000);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+let _cancelCreation=false;
+function cancelCreation(){_cancelCreation=true;}
+// 최근 생성 이력
+function saveCreationHistory(tickets){
+    if(!tickets.length)return;
+    let history=JSON.parse(localStorage.getItem('creationHistory')||'[]');
+    history.unshift({date:new Date().toISOString(),count:tickets.length,tickets:tickets.slice(0,20)});
+    if(history.length>10)history=history.slice(0,10);
+    localStorage.setItem('creationHistory',JSON.stringify(history));
+}
+function showToast(msg,type='info',duration=3500){const c=document.getElementById('toastContainer'),t=document.createElement('div');t.className='toast '+type;t.textContent=msg;c.appendChild(t);t.onclick=()=>{t.classList.add('removing');setTimeout(()=>t.remove(),250);};setTimeout(()=>{t.classList.add('removing');setTimeout(()=>t.remove(),250);},duration);}
 function showConfirm(msg,cb){document.getElementById('confirmMessage').textContent=msg;confirmCallback=cb;document.getElementById('confirmDialog').classList.add('active');}
 function cancelConfirm(){confirmCallback=null;document.getElementById('confirmDialog').classList.remove('active');}
 function executeConfirm(){if(confirmCallback)confirmCallback();confirmCallback=null;document.getElementById('confirmDialog').classList.remove('active');}
-document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)closeAllModals();});});
+// 배경 클릭으로 닫히지 않음 - X 버튼으로만 닫기
 document.getElementById('addYear')?.addEventListener('change',updateThursdayPreview);
 document.getElementById('addMonth')?.addEventListener('change',updateThursdayPreview);
 document.getElementById('addDate')?.addEventListener('keydown',e=>{if(e.key==='Enter')confirmAddSchedule();});
@@ -1456,13 +1803,38 @@ document.getElementById('jiraSearchQuery')?.addEventListener('keydown',e=>{if(e.
 function applyTheme(theme){
     document.documentElement.setAttribute('data-theme',theme);
     localStorage.setItem('theme',theme);
-    const icon=document.getElementById('themeIcon');
-    if(theme==='dark'){
-        icon.innerHTML='<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>';
-    }else{
-        icon.innerHTML='<path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>';
-    }
 }
+function showRecentHistory(){
+    const history=JSON.parse(localStorage.getItem('creationHistory')||'[]');
+    const domain=localStorage.getItem('jiraDomain');
+    const list=document.getElementById('resultList');
+    const summary=document.getElementById('resultSummary');
+    const assignSection=document.getElementById('resultAssignSection');
+    assignSection.style.display='none';
+    if(!history.length){
+        summary.style.background='var(--bg3)';summary.style.border='1px solid var(--border)';
+        summary.innerHTML='최근 생성 이력이 없습니다.';
+        list.innerHTML='';
+    }else{
+        summary.style.background='var(--bg3)';summary.style.border='1px solid var(--border)';
+        summary.innerHTML=`최근 ${history.length}건의 생성 이력`;
+        list.innerHTML=history.map(h=>{
+            const date=new Date(h.date);
+            const dateStr=`${date.getMonth()+1}/${date.getDate()} ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+            const ticketHtml=h.tickets.map(t=>{
+                const href=domain?`https://${domain}/browse/${t.key}`:'#';
+                const typeCls=`issue-type-${(t.type||'').toLowerCase().replace(/[^a-z-]/g,'')}`;
+                return `<div class="result-item"><a href="${href}" target="_blank" class="result-key" style="font-size:13px">${esc(t.key)}</a><span class="issue-type-badge ${typeCls} result-type">${esc(t.type||'')}</span><span class="result-title" style="font-size:13px">${esc(t.summary)}</span></div>`;
+            }).join('');
+            return `<div style="margin-bottom:12px"><div style="padding:8px 12px;background:var(--bg3);border-radius:6px 6px 0 0;font-size:13px;font-weight:600;color:var(--text2);border:1px solid var(--border);border-bottom:none">${dateStr} - ${h.count}건 생성</div><div style="border:1px solid var(--border);border-radius:0 0 6px 6px">${ticketHtml}</div></div>`;
+        }).join('');
+    }
+    closeAllModals();
+    document.getElementById('modalResult').classList.add('active');
+}
+function toggleHeaderDropdown(){document.getElementById('headerMoreDropdown').classList.toggle('open');}
+function closeHeaderDropdown(){document.getElementById('headerMoreDropdown').classList.remove('open');}
+document.addEventListener('click',e=>{const dd=document.getElementById('headerMoreDropdown');if(dd&&!dd.contains(e.target))dd.classList.remove('open');});
 function toggleTheme(){
     const cur=localStorage.getItem('theme')||'light';
     applyTheme(cur==='light'?'dark':'light');
@@ -1519,6 +1891,1158 @@ function createSubFromTable(){
 let csvParsedItems=[],csvSelectedItems=new Set();
 let csvFields={assignee:'',_assigneeName:'',component:'',labels:'',watcher:'',_watcherNames:{},watcherGroup:''};
 let csvAcInitialized=false;
+// ==========================================
+// JIRA CREATE (탭: 기존 티켓에 추가 / 신규 티켓 생성)
+// ==========================================
+let jcWatchers=[],jcWatcherNames={},jcGroupWatchers=[],jcActiveTab='existing';
+let jcComps=[],jcLabels=[],jcNewComps=[],jcNewLabels=[];
+let jcNewWatchers=[],jcNewWatcherNames={},jcNewGroupWatchers=[];
+let jcAcInitialized=false;
+
+function switchJiraCreateTab(tab,btn){
+    jcActiveTab=tab;
+    document.querySelectorAll('#modalJiraCreate .tab-bar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+    document.getElementById('jcTabExisting').style.display=tab==='existing'?'':'none';
+    document.getElementById('jcTabNew').style.display=tab==='new'?'':'none';
+    document.getElementById('jcPreviewSection').style.display='none';
+    document.getElementById('btnJiraCreate').textContent=tab==='existing'?'하위 태스크 생성':'Jira 생성';
+}
+
+async function openJiraCreate(){
+    // Reset
+    jcWatchers=[];jcWatcherNames={};jcGroupWatchers=[];jcComps=[];jcLabels=[];
+    jcNewWatchers=[];jcNewWatcherNames={};jcNewGroupWatchers=[];jcNewComps=[];jcNewLabels=[];
+    jcFiles={existing:[],new:[]};renderJcFiles('existing');renderJcFiles('new');
+    jcTaskRows.multi=[];jcRowSettings={};if(document.getElementById('jcNewMultiList'))document.getElementById('jcNewMultiList').innerHTML='';
+    jcActiveTab='existing';
+    document.getElementById('jcExistingSearch').value='';
+    document.getElementById('jcExistingKey').value='';
+    document.getElementById('jcExistingInfo').style.display='none';
+    jcTaskRows.existing=[];renderJcTaskRows('existing');
+    document.getElementById('jcNewSummary').value='';
+    jcTaskRows.new=[];renderJcTaskRows('new');
+    document.getElementById('jcNewAssignee').value='';
+    document.getElementById('jcNewParentKey').value='';
+    document.getElementById('jcNewParent').value='';
+    document.getElementById('jcPreviewSection').style.display='none';
+    document.getElementById('jcProgressSection').style.display='none';
+    document.getElementById('btnJiraCreate').disabled=false;
+    document.getElementById('btnJiraCreate').textContent='하위 태스크 생성';
+    ['jcExistingWatcherTags','jcExistingGroupTags','jcExistingCompTags','jcExistingLabelTags',
+     'jcNewWatcherTags','jcNewGroupTags','jcNewCompTags','jcNewLabelTags'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+    // Reset tabs
+    document.querySelectorAll('#modalJiraCreate .tab-bar button').forEach((b,i)=>b.classList.toggle('active',i===0));
+    document.getElementById('jcTabExisting').style.display='';
+    document.getElementById('jcTabNew').style.display='none';
+    document.getElementById('jcNewType').value='Epic';
+    onJcNewTypeChange();
+    // Load fix versions
+    for(const selId of ['jcExistingFixVer','jcNewFixVer']){
+        const sel=document.getElementById(selId);
+        sel.innerHTML=selId==='jcExistingFixVer'?'<option value="">상위 티켓에서 상속</option>':'<option value="">없음</option>';
+        try{const vers=await fetchVersions();vers.filter(v=>!v.released).reverse().forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=v.name;sel.appendChild(o);});}catch(e){}
+    }
+    // Setup autocompletes (once)
+    if(!jcAcInitialized){
+        jcAcInitialized=true;
+        // Existing tab: search parent ticket
+        makeAutocomplete(document.getElementById('jcExistingSearch'),async(q)=>{
+            try{const j=getJiraSettings();if(!j.isValid)return[];
+                const r=await jiraFetch(`/rest/api/3/search/jql?jql=${encodeURIComponent(`project=${j.projectKey} AND (issuetype=Epic OR issuetype=Task) AND summary~"${q}" ORDER BY created DESC`)}&maxResults=8&fields=summary,issuetype`);
+                if(!r.ok)return[];const d=await r.json();
+                return(d.issues||[]).map(iss=>({value:iss.key,label:`${iss.key}  [${iss.fields.issuetype?.name}] ${iss.fields.summary}`}));
+            }catch(e){return[];}
+        },async(val,label)=>{
+            document.getElementById('jcExistingKey').value=val;
+            document.getElementById('jcExistingSearch').value=label;
+            await loadJcExistingChildren(val);
+        });
+        // Existing tab: comp/label/watcher/group
+        fetchComponents().then(comps=>{const names=comps.map(c=>c.name);
+            makeAutocomplete(document.getElementById('jcExistingComp'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!jcComps.includes(val))jcComps.push(val);renderJcTags('jcExistingCompTags',jcComps,null,'removeJcExistingComp');return false;});});
+        fetchLabels().then(lbls=>{const names=Array.isArray(lbls)?lbls:[];
+            makeAutocomplete(document.getElementById('jcExistingLabel'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!jcLabels.includes(val))jcLabels.push(val);renderJcTags('jcExistingLabelTags',jcLabels,null,'removeJcExistingLabel');return false;});});
+        makeAutocomplete(document.getElementById('jcExistingWatcher'),jcUserSearch,(val,label)=>{
+            if(!jcWatchers.includes(val)){jcWatchers.push(val);jcWatcherNames[val]=label;}
+            renderJcTags('jcExistingWatcherTags',jcWatchers,jcWatcherNames,'removeJcWatcher');return false;
+        });
+        makeAutocomplete(document.getElementById('jcExistingGroupWatcher'),jcGroupSearch,(val)=>{
+            if(!jcGroupWatchers.includes(val))jcGroupWatchers.push(val);
+            renderJcTags('jcExistingGroupTags',jcGroupWatchers,null,'removeJcGroupWatcher');return false;
+        });
+        // New tab: assignee
+        makeAutocomplete(document.getElementById('jcNewAssignee'),jcUserSearch,(val)=>{document.getElementById('jcNewAssignee').dataset.accountId=val;});
+        // New tab: parent search
+        makeAutocomplete(document.getElementById('jcNewParent'),async(q)=>{
+            try{const j=getJiraSettings();if(!j.isValid)return[];
+                const r=await jiraFetch(`/rest/api/3/search/jql?jql=${encodeURIComponent(`project=${j.projectKey} AND summary~"${q}" ORDER BY created DESC`)}&maxResults=8&fields=summary,issuetype`);
+                if(!r.ok)return[];const d=await r.json();
+                return(d.issues||[]).map(iss=>({value:iss.key,label:`${iss.key}  ${iss.fields.summary}`}));
+            }catch(e){return[];}
+        },(val,label)=>{document.getElementById('jcNewParentKey').value=val;document.getElementById('jcNewParent').value=label;});
+        // New tab: comp/label/watcher
+        fetchComponents().then(comps=>{const names=comps.map(c=>c.name);
+            makeAutocomplete(document.getElementById('jcNewComp'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!jcNewComps.includes(val))jcNewComps.push(val);renderJcTags('jcNewCompTags',jcNewComps,null,'removeJcNewComp');return false;});});
+        fetchLabels().then(lbls=>{const names=Array.isArray(lbls)?lbls:[];
+            makeAutocomplete(document.getElementById('jcNewLabel'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!jcNewLabels.includes(val))jcNewLabels.push(val);renderJcTags('jcNewLabelTags',jcNewLabels,null,'removeJcNewLabel');return false;});});
+        makeAutocomplete(document.getElementById('jcNewWatcher'),jcUserSearch,(val,label)=>{
+            if(!jcNewWatchers.includes(val)){jcNewWatchers.push(val);jcNewWatcherNames[val]=label;}
+            renderJcTags('jcNewWatcherTags',jcNewWatchers,jcNewWatcherNames,'removeJcNewWatcher');return false;
+        });
+        makeAutocomplete(document.getElementById('jcNewGroupWatcher'),jcGroupSearch,(val)=>{
+            if(!jcNewGroupWatchers.includes(val))jcNewGroupWatchers.push(val);
+            renderJcTags('jcNewGroupTags',jcNewGroupWatchers,null,'removeJcNewGroupWatcher');return false;
+        });
+    }
+    populatePresetDropdowns();
+    document.getElementById('modalJiraCreate').classList.add('active');
+}
+async function jcUserSearch(q){
+    try{const r=await jiraFetch('/rest/api/3/user/search?query='+encodeURIComponent(q)+'&maxResults=5');if(!r.ok)return[];const d=await r.json();return d.map(u=>({value:u.accountId,label:u.displayName}));}catch(e){return[];}
+}
+async function jcGroupSearch(q){
+    const grps=await fetchGroups();
+    return grps.filter(g=>g.toLowerCase().includes(q.toLowerCase())).map(g=>({value:g,label:g}));
+}
+function renderJcTags(elId,arr,nameMap,removeFn){
+    const el=document.getElementById(elId);
+    el.innerHTML=arr.map(v=>`<span class="tag selected" style="margin-top:4px;font-size:12px">${nameMap?nameMap[v]||v:v} <span class="tag-remove" onclick="${removeFn}('${v.replace(/'/g,"\\'")}')">&times;</span></span>`).join('');
+}
+function removeJcWatcher(v){jcWatchers=jcWatchers.filter(w=>w!==v);renderJcTags('jcExistingWatcherTags',jcWatchers,jcWatcherNames,'removeJcWatcher');}
+function removeJcGroupWatcher(v){jcGroupWatchers=jcGroupWatchers.filter(w=>w!==v);renderJcTags('jcExistingGroupTags',jcGroupWatchers,null,'removeJcGroupWatcher');}
+function removeJcNewWatcher(v){jcNewWatchers=jcNewWatchers.filter(w=>w!==v);renderJcTags('jcNewWatcherTags',jcNewWatchers,jcNewWatcherNames,'removeJcNewWatcher');}
+function removeJcNewGroupWatcher(v){jcNewGroupWatchers=jcNewGroupWatchers.filter(w=>w!==v);renderJcTags('jcNewGroupTags',jcNewGroupWatchers,null,'removeJcNewGroupWatcher');}
+function removeJcExistingComp(v){jcComps=jcComps.filter(w=>w!==v);renderJcTags('jcExistingCompTags',jcComps,null,'removeJcExistingComp');}
+function removeJcExistingLabel(v){jcLabels=jcLabels.filter(w=>w!==v);renderJcTags('jcExistingLabelTags',jcLabels,null,'removeJcExistingLabel');}
+function removeJcNewComp(v){jcNewComps=jcNewComps.filter(w=>w!==v);renderJcTags('jcNewCompTags',jcNewComps,null,'removeJcNewComp');}
+function removeJcNewLabel(v){jcNewLabels=jcNewLabels.filter(w=>w!==v);renderJcTags('jcNewLabelTags',jcNewLabels,null,'removeJcNewLabel');}
+
+// 첨부파일 관리
+let jcFiles={existing:[],new:[]};
+function handleJcFileSelect(input,tab){
+    const files=Array.from(input.files);
+    files.forEach(f=>{if(!jcFiles[tab].some(x=>x.name===f.name&&x.size===f.size))jcFiles[tab].push(f);});
+    input.value='';
+    renderJcFiles(tab);
+}
+function removeJcFile(tab,idx){
+    jcFiles[tab].splice(idx,1);
+    renderJcFiles(tab);
+}
+function renderJcFiles(tab){
+    const listEl=document.getElementById(tab==='existing'?'jcExistingFileList':'jcNewFileList');
+    const countEl=document.getElementById(tab==='existing'?'jcExistingFileCount':'jcNewFileCount');
+    listEl.innerHTML=jcFiles[tab].map((f,i)=>{
+        const size=f.size<1024?f.size+'B':f.size<1048576?(f.size/1024).toFixed(1)+'KB':(f.size/1048576).toFixed(1)+'MB';
+        return `<span class="tag selected" style="margin:0;padding:3px 8px;font-size:11px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">${f.name} <span style="opacity:.6">(${size})</span><span class="tag-remove" onclick="removeJcFile('${tab}',${i})" style="cursor:pointer">&times;</span></span>`;
+    }).join('');
+    countEl.textContent=jcFiles[tab].length?`${jcFiles[tab].length}개 파일`:'';
+}
+async function uploadFilesToIssue(issueKey,files){
+    if(!files||!files.length)return;
+    const d=localStorage.getItem('jiraDomain'),e=localStorage.getItem('jiraEmail'),t=localStorage.getItem('jiraToken');
+    const base=getProxyBase();
+    for(const file of files){
+        const formData=new FormData();
+        formData.append('file',file);
+        try{
+            await fetch(base+'/jira-proxy/rest/api/3/issue/'+issueKey+'/attachments',{
+                method:'POST',
+                headers:{'X-Jira-Domain':d,'X-Jira-Auth':btoa(e+':'+t),'X-Atlassian-Token':'no-check'},
+                body:formData
+            });
+        }catch(err){console.error('파일 첨부 실패:',file.name,err);}
+    }
+}
+
+function getJcMilestonePrefix(){
+    const ver=document.getElementById('jcNewFixVer').value;
+    if(!ver)return'';
+    const m=ver.match(/^(M\d+)/i);
+    return m?`[${m[1]}] `:'';
+}
+function applyMilestonePrefix(title){
+    const prefix=getJcMilestonePrefix();
+    if(!prefix||!title.trim())return title;
+    if(title.match(/^\[M\d+\]\s*/))return title;// 이미 있으면 스킵
+    return prefix+title;
+}
+
+function onJcNewTypeChange(){
+    const t=document.getElementById('jcNewType').value;
+    const isEpic=t==='Epic';
+    const isMulti=t==='Task'||t==='Sub-task';
+    // Epic: 제목 1개 + 하위 태스크 목록
+    // Task/Sub-task: 제목 숨기고 여러 개 입력 리스트
+    document.getElementById('jcNewSummaryGroup').style.display=isEpic?'':'none';
+    document.getElementById('jcNewChildSection').style.display=isEpic?'':'none';
+    document.getElementById('jcNewMultiSection').style.display=isMulti?'':'none';
+    document.getElementById('jcNewParentGroup').style.display=(t==='Sub-task')?'':'none';
+    if(isMulti&&!jcTaskRows.multi){jcTaskRows.multi=[];}
+    if(isMulti)renderJcTaskRows('multi');
+}
+
+async function loadJcExistingChildren(parentKey){
+    const info=document.getElementById('jcExistingInfo');
+    const list=document.getElementById('jcExistingChildrenList');
+    info.style.display='';
+    list.innerHTML='<span style="color:var(--text3)">로딩 중...</span>';
+    try{
+        // Fetch parent info
+        const pr=await jiraFetch(`/rest/api/3/issue/${parentKey}?fields=summary,issuetype`);
+        if(pr.ok){
+            const pd=await pr.json();
+            const typeName=pd.fields.issuetype?.name||'';
+            document.getElementById('jcExistingTypeBadge').textContent=typeName;
+            document.getElementById('jcExistingTypeBadge').className=`issue-type-badge issue-type-${typeName.toLowerCase().replace(/[^a-z]/g,'')}`;
+            document.getElementById('jcExistingTitle').textContent=pd.fields.summary;
+            document.getElementById('jcExistingKeyLabel').textContent=parentKey;
+        }
+        // Fetch children
+        const r=await jiraFetch(`/rest/api/3/search/jql?jql=${encodeURIComponent(`parent=${parentKey} ORDER BY created ASC`)}&maxResults=50&fields=summary,status,issuetype`);
+        if(!r.ok){list.innerHTML='<span style="color:var(--error)">로드 실패</span>';return;}
+        const d=await r.json();
+        if(!d.issues||!d.issues.length){list.innerHTML='<span style="color:var(--text3)">하위 태스크 없음</span>';return;}
+        list.innerHTML=d.issues.map(iss=>{
+            const sc=iss.fields.status?.name==='Done'?'var(--success)':'var(--text2)';
+            return `<div style="padding:5px 0;display:flex;align-items:flex-start;gap:6px;border-bottom:1px solid var(--border);font-size:12px;line-height:1.4"><span class="issue-type-badge issue-type-${(iss.fields.issuetype?.name||'').toLowerCase().replace(/[^a-z]/g,'')}" style="font-size:10px;flex-shrink:0;margin-top:1px">${iss.fields.issuetype?.name||''}</span><span style="color:var(--text3);flex-shrink:0">${iss.key}</span><span style="flex:1;word-break:break-word">${iss.fields.summary}</span><span style="flex-shrink:0;color:${sc}">${iss.fields.status?.name||''}</span></div>`;
+        }).join('');
+    }catch(e){list.innerHTML='<span style="color:var(--error)">오류: '+e.message+'</span>';}
+}
+
+let jcTaskRows={existing:[],new:[],multi:[]};
+let jcRowSettings={}; // 'existing_0' → {assignee,assigneeName,labels,comps,watchers,watcherNames,groups}
+
+function addJcTaskRow(tab,value=''){
+    if(!jcTaskRows[tab])jcTaskRows[tab]=[];
+    jcTaskRows[tab].push(value);
+    renderJcTaskRows(tab);
+    const listId=tab==='existing'?'jcExistingTaskList':tab==='multi'?'jcNewMultiList':'jcNewTaskList';
+    const list=document.getElementById(listId);
+    const inputs=list.querySelectorAll('input[type="text"]');
+    if(inputs.length)inputs[inputs.length-1].focus();
+}
+function removeJcTaskRow(tab,idx){
+    jcTaskRows[tab].splice(idx,1);
+    renderJcTaskRows(tab);
+}
+function updateJcTaskRow(tab,idx,val){
+    jcTaskRows[tab][idx]=val;
+}
+function getParentTitle(tab){
+    if(tab==='existing'){
+        return document.getElementById('jcExistingTitle')?.textContent||'';
+    }else{
+        return document.getElementById('jcNewSummary')?.value?.trim()||'';
+    }
+}
+function buildFullTitle(parentTitle,childInput){
+    if(!childInput)return parentTitle;
+    // 이미 [KEY] 형태면 그대로
+    if(childInput.match(/^\[([A-Z]+-\d+)\]/))return childInput;
+    // 상위 제목에서 마일스톤 태그만 추출: [M39] 시즌패스
+    const msMatch=parentTitle.match(/^\[M\d+\]/);
+    const prefix=msMatch?msMatch[0]+' ':'';
+    return `${prefix}${childInput}`;
+}
+function renderJcTaskRows(tab,skipIdx){
+    const listId=tab==='existing'?'jcExistingTaskList':tab==='multi'?'jcNewMultiList':'jcNewTaskList';
+    const list=document.getElementById(listId);
+    list.innerHTML='';
+    if(!jcTaskRows[tab].length){
+        list.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:13px">+ 추가 버튼을 눌러 항목을 추가하세요</div>';
+        return;
+    }
+    const parentTitle=getParentTitle(tab);
+    jcTaskRows[tab].forEach((val,i)=>{
+        const m=val.match(/^\[([A-Z]+-\d+)\]\s*(.*)/);
+        const wrapper=document.createElement('div');
+        const div=document.createElement('div');
+        div.className='task-row';
+        let badge=`<span class="task-row-badge">${i+1}</span>`;
+        if(m) badge=`<span class="task-row-existing">${m[1]}</span>`;
+        const isMulti=tab==='multi';
+        const placeholder=isMulti?'티켓 제목 입력...':'하위 제목 입력 (마일스톤 자동 연결)';
+        const rowKey=`${tab}_${i}`;
+        const rowSet=jcRowSettings[rowKey];
+        const hasSettings=rowSet&&(rowSet.assigneeName||rowSet.labels?.length||rowSet.comps?.length||rowSet.groups?.length);
+        div.innerHTML=`<div style="display:flex;align-items:center;gap:6px;flex:1">${badge}<input type="text" value="${val.replace(/"/g,'&quot;')}" placeholder="${placeholder}"></div><button class="btn-detail${hasSettings?' active':''}" onclick="openJcRowSettings('${tab}',${i})" style="flex-shrink:0">상세</button><button class="task-row-del" onclick="removeJcTaskRow('${tab}',${i})">✕</button>`;
+        wrapper.appendChild(div);
+        // 설정 요약
+        if(hasSettings){
+            const parts=[];
+            if(rowSet.assigneeName)parts.push('담당: '+rowSet.assigneeName);
+            if(rowSet.labels?.length)parts.push('레이블: '+rowSet.labels.join(', '));
+            if(rowSet.comps?.length)parts.push('컴포넌트: '+rowSet.comps.join(', '));
+            if(rowSet.groups?.length)parts.push('그룹: '+rowSet.groups.join(', '));
+            const summaryDiv=document.createElement('div');
+            summaryDiv.style.cssText='font-size:12px;color:var(--text3);padding:1px 0 2px 34px';
+            summaryDiv.textContent=parts.join(' · ');
+            wrapper.appendChild(summaryDiv);
+        }
+        // 미리보기 (multi 모드에서는 불필요)
+        const previewDiv=document.createElement('div');
+        previewDiv.style.cssText='font-size:12px;color:var(--text3);padding:0 0 4px 34px';
+        if(!isMulti&&!m&&val.trim()&&parentTitle)previewDiv.textContent=buildFullTitle(parentTitle,val.trim());
+        wrapper.appendChild(previewDiv);
+        // 이벤트 바인딩 (DOM 유지, 재렌더링 안 함)
+        const input=div.querySelector('input');
+        input.addEventListener('input',()=>{
+            jcTaskRows[tab][i]=input.value;
+            if(!isMulti){
+                const v=input.value.trim();
+                const im=v.match(/^\[([A-Z]+-\d+)\]\s*(.*)/);
+                if(!im&&v&&parentTitle)previewDiv.textContent=buildFullTitle(parentTitle,v);
+                else previewDiv.textContent='';
+            }
+        });
+        input.addEventListener('keydown',(e)=>{
+            if(e.key==='Enter'){e.preventDefault();addJcTaskRow(tab);}
+        });
+        list.appendChild(wrapper);
+    });
+}
+
+function parseTaskLines(tab){
+    const parentTitle=getParentTitle(tab);
+    return jcTaskRows[tab].filter(v=>v.trim()).map(v=>{
+        const line=v.trim();
+        const m=line.match(/^\[([A-Z]+-\d+)\]\s*(.*)/);
+        if(m)return{key:m[1],name:m[2]||m[1],existing:true};
+        const fullTitle=buildFullTitle(parentTitle,line);
+        return{key:null,name:fullTitle,existing:false};
+    });
+}
+
+function previewJiraCreate(){
+    const tree=document.getElementById('jcPreviewTree');
+    tree.innerHTML='';
+    const tagHtml=(items,cls)=>items.map(v=>`<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:${cls};white-space:nowrap">${v}</span>`).join(' ');
+    const lbl=items=>tagHtml(items,'rgba(74,85,104,.08)');
+    const grp=items=>tagHtml(items,'rgba(99,102,241,.08)');
+
+    const fixVer=jcActiveTab==='existing'?document.getElementById('jcExistingFixVer').value:document.getElementById('jcNewFixVer').value;
+    const priority=jcActiveTab==='existing'?document.getElementById('jcExistingPriority').value:document.getElementById('jcNewPriority')?.value||'Medium';
+    const assigneeName=jcActiveTab==='new'?document.getElementById('jcNewAssignee').value:'';
+    const watchers=jcActiveTab==='existing'?jcWatchers:jcNewWatchers;
+    const watcherNames=jcActiveTab==='existing'?jcWatcherNames:jcNewWatcherNames;
+    const groups=jcActiveTab==='existing'?jcGroupWatchers:jcNewGroupWatchers;
+    const comps=jcActiveTab==='existing'?jcComps:jcNewComps;
+    const labels=jcActiveTab==='existing'?jcLabels:jcNewLabels;
+
+    const detailRow=(extra)=>{
+        let parts=[];
+        if(assigneeName)parts.push(`<span style="font-size:10px;color:var(--text3)">담당자:</span><span style="font-size:10px">${assigneeName}</span>`);
+        if(priority)parts.push(`<span style="font-size:10px;color:var(--text3)">우선순위:</span><span style="font-size:10px">${priority}</span>`);
+        if(fixVer)parts.push(`<span style="font-size:10px;color:var(--text3)">버전:</span><span style="font-size:10px">${fixVer}</span>`);
+        if(comps.length)parts.push(`<span style="font-size:10px;color:var(--text3)">컴포넌트:</span>${lbl(comps)}`);
+        if(labels.length)parts.push(`<span style="font-size:10px;color:var(--text3)">레이블:</span>${lbl(labels)}`);
+        if(watchers.length)parts.push(`<span style="font-size:10px;color:var(--text3)">와쳐:</span>${lbl(watchers.map(w=>watcherNames[w]||w))}`);
+        if(groups.length)parts.push(`<span style="font-size:10px;color:var(--text3)">그룹:</span>${grp(groups)}`);
+        if(extra)parts.push(extra);
+        return parts.length?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;padding-left:44px">${parts.join(' ')}</div>`:'';
+    };
+
+    const row=(type,title,status,indent,showDetail)=>{
+        const typeCls=`issue-type-${type.toLowerCase().replace(/[^a-z-]/g,'')}`;
+        const isNew=status==='new';
+        const statusHtml=isNew?'<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(74,85,104,.08);color:var(--primary)">신규</span>'
+            :'<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(161,161,170,.08);color:var(--text3)">기존</span>';
+        let html=`<div style="padding:6px 12px;${indent?'padding-left:32px;':''}border-bottom:1px solid var(--border);${!indent?'background:var(--bg3);':''}"><div style="display:flex;align-items:center;gap:8px"><span class="issue-type-badge ${typeCls}" style="font-size:10px;flex-shrink:0">${type}</span><span style="flex:1;${!indent?'font-weight:600;':''}color:var(--text)">${title}</span>${statusHtml}</div>${showDetail?detailRow():''}</div>`;
+        return html;
+    };
+
+    if(jcActiveTab==='existing'){
+        const parentKey=document.getElementById('jcExistingKey').value;
+        if(!parentKey){showToast('상위 티켓을 검색하여 선택하세요.','error');return;}
+        const tasks=parseTaskLines('existing');
+        const childType=document.getElementById('jcExistingChildType').value;
+        if(!tasks.length){showToast('추가할 하위 태스크를 입력하세요.','error');return;}
+        const parentTitle=document.getElementById('jcExistingTitle').textContent;
+        const parentType=document.getElementById('jcExistingTypeBadge').textContent;
+        tree.innerHTML=row(parentType||'상위',`${parentTitle} <span style="color:var(--text3);font-weight:400;font-size:11px">${parentKey}</span>`,'existing',false,false)
+            +tasks.map(t=>row(childType,t.existing?`[${t.key}] ${t.name}`:t.name,t.existing?'existing':'new',true,!t.existing)).join('')
+            +detailRow();
+        const nc=tasks.filter(t=>!t.existing).length,ec=tasks.filter(t=>t.existing).length;
+        document.getElementById('jcPreviewCount').textContent=`신규 ${nc}건${ec?`, 이동 ${ec}건`:''}`;
+    }else{
+        const type=document.getElementById('jcNewType').value;
+        const isMulti=type==='Task'||type==='Sub-task';
+
+        if(isMulti){
+            const multiInputs=document.getElementById('jcNewMultiList').querySelectorAll('input[type="text"]');
+            const names=Array.from(multiInputs).map(inp=>applyMilestonePrefix(inp.value.trim())).filter(v=>v);
+            if(!names.length){showToast('생성할 티켓을 추가하세요.','error');return;}
+            let html='';
+            if(type==='Sub-task'){
+                const pKey=document.getElementById('jcNewParentKey').value;
+                const pTitle=document.getElementById('jcNewParent').value;
+                if(pKey)html+=row('상위',`${pTitle} <span style="color:var(--text3);font-weight:400;font-size:11px">${pKey}</span>`,'existing',false,false);
+            }
+            html+=names.map((n,i)=>row(type,n,n.match(/^\[([A-Z]+-\d+)\]/)?'existing':'new',type==='Sub-task',i===0)).join('');
+            const nc=names.filter(n=>!n.match(/^\[([A-Z]+-\d+)\]/)).length;
+            document.getElementById('jcPreviewCount').textContent=`신규 ${nc}건`;
+            tree.innerHTML=html;
+        }else{
+            const summary=applyMilestonePrefix(document.getElementById('jcNewSummary').value.trim());
+            if(!summary){showToast('티켓 제목을 입력하세요.','error');return;}
+            let html=row(type,summary,'new',false,true);
+            const tasks=parseTaskLines('new');
+            html+=tasks.map(t=>row('Task',t.existing?`[${t.key}] ${t.name}`:t.name,t.existing?'existing':'new',true,false)).join('');
+            const nc=1+tasks.filter(t=>!t.existing).length,ec=tasks.filter(t=>t.existing).length;
+            document.getElementById('jcPreviewCount').textContent=`신규 ${nc}건${ec?`, 연결 ${ec}건`:''}`;
+            tree.innerHTML=html;
+        }
+    }
+    document.getElementById('jcPreviewSection').style.display='';
+}
+
+async function executeJiraCreate(){
+    const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 먼저 완료하세요.','error');return;}
+    const ps=document.getElementById('jcProgressSection'),pf=document.getElementById('jcProgressFill'),pt=document.getElementById('jcProgressText'),btn=document.getElementById('btnJiraCreate');
+
+    if(jcActiveTab==='existing'){
+        // === 기존 티켓에 추가 ===
+        const parentKey=document.getElementById('jcExistingKey').value;
+        if(!parentKey){showToast('상위 티켓을 선택하세요.','error');return;}
+        const tasks=parseTaskLines('existing');
+        const newTasks=tasks.filter(t=>!t.existing),existTasks=tasks.filter(t=>t.existing);
+        if(!tasks.length){showToast('추가할 태스크를 입력하세요.','error');return;}
+        const childType=document.getElementById('jcExistingChildType').value;
+        const fixVer=document.getElementById('jcExistingFixVer').value;
+        if(!confirm(`${parentKey} 하위에 신규 ${newTasks.length}건 생성${existTasks.length?`, ${existTasks.length}건 이동`:''}\n계속하시겠습니까?`))return;
+
+        ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
+        let created=0,errors=[];const total=newTasks.length;const createdTickets=[];
+
+        try{
+            for(let i=0;i<newTasks.length;i++){
+                if(_cancelCreation)break;
+                pt.textContent=`생성 중... (${i+1}/${total}) - ${newTasks[i].name}`;
+                pf.style.width=`${((i+1)/total)*100}%`;
+                const ePri=document.getElementById('jcExistingPriority').value;
+                const rowSet=jcRowSettings[`existing_${i}`];
+                const body={fields:{project:{key:j.projectKey},summary:newTasks[i].name,issuetype:{name:childType},parent:{key:parentKey},priority:{name:ePri},description:{type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:'-'}]}]}}};
+                const useComps=rowSet?.comps?.length?rowSet.comps:jcComps;
+                const useLabels=rowSet?.labels?.length?rowSet.labels:jcLabels;
+                if(useComps.length)body.fields.components=useComps.map(c=>({name:c}));
+                if(useLabels.length)body.fields.labels=useLabels;
+                if(rowSet?.assignee)body.fields.assignee={accountId:rowSet.assignee};
+                if(fixVer)body.fields.fixVersions=[{name:fixVer}];
+                const r=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(body)});
+                if(!r.ok){errors.push(await r.text());}
+                else{
+                    const td=await r.json();created++;
+                    createdTickets.push({key:td.key,type:childType,summary:newTasks[i].name});
+                    const useWatchers=rowSet?.watchers?.length?rowSet.watchers:jcWatchers;
+                    const useGroups=rowSet?.groups?.length?rowSet.groups:jcGroupWatchers;
+                    for(const w of useWatchers){await jiraFetch(`/rest/api/3/issue/${td.key}/watchers`,{method:'POST',body:JSON.stringify(w)}).catch(e=>console.warn('API warning:',e));}
+                    for(const g of useGroups){await jiraFetch(`/rest/api/3/issue/${td.key}/watchers`,{method:'POST',body:JSON.stringify(g)}).catch(e=>console.warn('API warning:',e));}
+                }
+            }
+            for(const t of existTasks){
+                try{await jiraFetch(`/rest/api/3/issue/${t.key}`,{method:'PUT',body:JSON.stringify({fields:{parent:{key:parentKey}}})});}
+                catch(e){errors.push(`이동 실패 [${t.key}]`);}
+            }
+            // 상위 티켓에 첨부파일
+            if(jcFiles.existing.length){pt.textContent=`파일 첨부 중...`;await uploadFilesToIssue(parentKey,jcFiles.existing);}
+            pf.style.width='100%';
+            pt.textContent=_cancelCreation?`중단됨: ${created}건 생성됨`:errors.length?`완료: ${created}건 생성, ${errors.length}건 오류`:`완료! ${created}건 생성됨`;
+            showCreationResult(createdTickets,errors);
+        }catch(e){pt.textContent=`오류: ${e.message}`;showToast('생성 중 오류','error');}
+        btn.disabled=false;btn.textContent='하위 태스크 생성';
+
+    }else{
+        // === 신규 티켓 생성 ===
+        const type=document.getElementById('jcNewType').value;
+        const isMulti=type==='Task'||type==='Sub-task';
+        const fixVer=document.getElementById('jcNewFixVer').value;
+        const assigneeId=document.getElementById('jcNewAssignee').dataset.accountId||'';
+        const parentKey=document.getElementById('jcNewParentKey').value;
+
+        if(isMulti){
+            // === Task/Sub-task 여러 개 독립 생성 ===
+            // DOM에서 직접 값 수집 (한글 IME 동기화 보장)
+            const multiInputs=document.getElementById('jcNewMultiList').querySelectorAll('input[type="text"]');
+            const names=Array.from(multiInputs).map(inp=>applyMilestonePrefix(inp.value.trim())).filter(v=>v);
+            if(!names.length){showToast('생성할 티켓을 추가하세요.','error');return;}
+            const total=names.length;
+            if(!confirm(`${type} ${total}건 생성\n계속하시겠습니까?`))return;
+
+            ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
+            let created=0,errors=[];const createdTickets=[];
+            const nPri=document.getElementById('jcNewPriority').value;
+
+            try{
+                for(let i=0;i<names.length;i++){
+                    if(_cancelCreation)break;
+                    pt.textContent=`생성 중... (${i+1}/${total}) - ${names[i]}`;
+                    pf.style.width=`${((i+1)/total)*100}%`;
+                    const body={fields:{project:{key:j.projectKey},summary:names[i],issuetype:{name:type},priority:{name:nPri},description:{type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:'-'}]}]}}};
+                    if(jcNewComps.length)body.fields.components=jcNewComps.map(c=>({name:c}));
+                    if(jcNewLabels.length)body.fields.labels=jcNewLabels;
+                    if(fixVer)body.fields.fixVersions=[{name:fixVer}];
+                    if(type==='Sub-task'&&parentKey)body.fields.parent={key:parentKey};
+                    const r=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(body)});
+                    if(!r.ok){errors.push(await r.text());}
+                    else{
+                        const td=await r.json();created++;
+                        createdTickets.push({key:td.key,type,summary:names[i]});
+                        for(const w of jcNewWatchers){await jiraFetch(`/rest/api/3/issue/${td.key}/watchers`,{method:'POST',body:JSON.stringify(w)}).catch(e=>console.warn('API warning:',e));}
+                        for(const g of jcNewGroupWatchers){await jiraFetch(`/rest/api/3/issue/${td.key}/watchers`,{method:'POST',body:JSON.stringify(g)}).catch(e=>console.warn('API warning:',e));}
+                    }
+                }
+                // 첫 번째 티켓에 첨부파일
+                if(jcFiles.new.length&&createdTickets.length){pt.textContent='파일 첨부 중...';await uploadFilesToIssue(createdTickets[0].key,jcFiles.new);}
+                pf.style.width='100%';
+                pt.textContent=_cancelCreation?`중단됨: ${created}건 생성됨`:errors.length?`완료: ${created}건 생성, ${errors.length}건 오류`:`완료! ${created}건 생성됨`;
+                showCreationResult(createdTickets,errors);
+            }catch(e){pt.textContent=`오류: ${e.message}`;showToast('생성 중 오류','error');}
+            btn.disabled=false;btn.textContent='Jira 생성';
+            return;
+        }
+
+        // === Epic 생성 (기존 로직) ===
+        const summary=applyMilestonePrefix(document.getElementById('jcNewSummary').value.trim());
+        if(!summary){showToast('티켓 제목을 입력하세요.','error');return;}
+        const tasks=parseTaskLines('new');
+        const newTasks=tasks.filter(t=>!t.existing),existTasks=tasks.filter(t=>t.existing);
+        const total=1+newTasks.length;
+        if(!confirm(`${type} 1건${newTasks.length?` + 하위 ${newTasks.length}건`:''} 생성\n계속하시겠습니까?`))return;
+
+        ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
+        let created=0,errors=[];const createdTickets=[];
+
+        try{
+            // Create main ticket
+            pt.textContent=`${type} 생성 중... (1/${total})`;pf.style.width='0%';
+            const nPri=document.getElementById('jcNewPriority').value;
+            const body={fields:{project:{key:j.projectKey},summary,issuetype:{name:type},priority:{name:nPri},description:{type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:'-'}]}]}}};
+            if(jcNewComps.length)body.fields.components=jcNewComps.map(c=>({name:c}));
+            if(jcNewLabels.length)body.fields.labels=jcNewLabels;
+            if(fixVer)body.fields.fixVersions=[{name:fixVer}];
+            if(assigneeId)body.fields.assignee={accountId:assigneeId};
+            if((type==='Task'||type==='Sub-task')&&parentKey)body.fields.parent={key:parentKey};
+            const r=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(body)});
+            if(!r.ok){const e=await r.text();throw new Error(e);}
+            const mainData=await r.json();const mainKey=mainData.key;created++;
+            createdTickets.push({key:mainKey,type,summary});
+            pf.style.width=`${(created/total)*100}%`;
+            // Watchers on main
+            for(const w of jcNewWatchers){await jiraFetch(`/rest/api/3/issue/${mainKey}/watchers`,{method:'POST',body:JSON.stringify(w)}).catch(e=>console.warn('API warning:',e));}
+            for(const g of jcNewGroupWatchers){await jiraFetch(`/rest/api/3/issue/${mainKey}/watchers`,{method:'POST',body:JSON.stringify(g)}).catch(e=>console.warn('API warning:',e));}
+            // 첨부파일
+            if(jcFiles.new.length){pt.textContent=`파일 첨부 중...`;await uploadFilesToIssue(mainKey,jcFiles.new);}
+
+            // Create children
+            for(let i=0;i<newTasks.length;i++){
+                if(_cancelCreation)break;
+                pt.textContent=`하위 생성 중... (${created+1}/${total}) - ${newTasks[i].name}`;
+                const cb={fields:{project:{key:j.projectKey},summary:newTasks[i].name,issuetype:{name:'Task'},parent:{key:mainKey},priority:{name:nPri},description:{type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:'-'}]}]}}};
+                if(jcNewComps.length)cb.fields.components=jcNewComps.map(c=>({name:c}));
+                if(jcNewLabels.length)cb.fields.labels=jcNewLabels;
+                if(fixVer)cb.fields.fixVersions=[{name:fixVer}];
+                const cr=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(cb)});
+                if(!cr.ok){errors.push(await cr.text());}
+                else{
+                    const cd=await cr.json();created++;
+                    createdTickets.push({key:cd.key,type:'Task',summary:newTasks[i].name});
+                    for(const w of jcNewWatchers){await jiraFetch(`/rest/api/3/issue/${cd.key}/watchers`,{method:'POST',body:JSON.stringify(w)}).catch(e=>console.warn('API warning:',e));}
+                    for(const g of jcNewGroupWatchers){await jiraFetch(`/rest/api/3/issue/${cd.key}/watchers`,{method:'POST',body:JSON.stringify(g)}).catch(e=>console.warn('API warning:',e));}
+                }
+                pf.style.width=`${(created/total)*100}%`;
+            }
+            // Link existing
+            for(const t of existTasks){
+                try{await jiraFetch(`/rest/api/3/issue/${t.key}`,{method:'PUT',body:JSON.stringify({fields:{parent:{key:mainKey}}})});}
+                catch(e){errors.push(`연결 실패 [${t.key}]`);}
+            }
+            pf.style.width='100%';
+            pt.textContent=errors.length?`완료: ${created}건 생성, ${errors.length}건 오류`:`완료! ${created}건 생성됨 (${mainKey})`;
+            showCreationResult(createdTickets,errors);
+        }catch(e){pt.textContent=`오류: ${e.message}`;showToast('생성 중 오류','error');}
+        btn.disabled=false;btn.textContent='Jira 생성';
+    }
+}
+
+// ==========================================
+// BULK JIRA MATCH
+// ==========================================
+let bulkMatchItems=[];
+
+function extractKeywords(name){
+    // [M39] 등 마일스톤 태그 제거, 특수문자 제거, 핵심 키워드 추출
+    let clean=name.replace(/^\[.*?\]\s*/,'').replace(/[-_\/,]/g,' ').trim();
+    // 불용어 제거
+    const stopwords=['및','의','등','에','를','을','이','가','로','으로','에서','대한','관련','작업','추가','수정','개선','변경','구현','적용'];
+    const words=clean.split(/\s+/).filter(w=>w.length>=2&&!stopwords.includes(w));
+    return words.slice(0,3); // 최대 3개 키워드
+}
+
+async function openBulkMatch(){
+    const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 먼저 완료하세요.','error');return;}
+    bulkMatchItems=[];
+    // Collect unlinked items
+    scheduleData.forEach((md,mi)=>{md.updates.forEach((u,ui)=>{if(u.items)u.items.forEach((it,ii)=>{
+        if(!it.jiraLinked){
+            bulkMatchItems.push({mi,ui,ii,name:it.name,ref:it,match:null,candidates:[],status:'pending'});
+        }
+    });});});
+
+    const body=document.getElementById('bulkMatchBody');body.innerHTML='';
+    document.getElementById('bulkMatchProgress').style.display='none';
+
+    if(!bulkMatchItems.length){
+        document.getElementById('bulkMatchTable').style.display='none';
+        document.getElementById('bulkMatchEmpty').style.display='';
+        document.getElementById('modalBulkMatch').classList.add('active');
+        return;
+    }
+    document.getElementById('bulkMatchTable').style.display='';
+    document.getElementById('bulkMatchEmpty').style.display='none';
+
+    // Render initial rows
+    bulkMatchItems.forEach((item,idx)=>{
+        const tr=document.createElement('tr');tr.id=`bmRow_${idx}`;
+        tr.innerHTML=`<td>${item.name}</td><td style="text-align:center;color:var(--text3)">→</td><td id="bmCandidate_${idx}"><span style="color:var(--text3)">검색 중...</span></td><td id="bmStatus_${idx}"><span style="color:var(--text3)">대기</span></td>`;
+        body.appendChild(tr);
+    });
+
+    document.getElementById('modalBulkMatch').classList.add('active');
+    updateMatchCount();
+
+    // Start searching
+    const pf=document.getElementById('bulkMatchProgressFill'),pt=document.getElementById('bulkMatchProgressText');
+    document.getElementById('bulkMatchProgress').style.display='';
+
+    for(let i=0;i<bulkMatchItems.length;i++){
+        const item=bulkMatchItems[i];
+        pt.textContent=`검색 중... (${i+1}/${bulkMatchItems.length})`;
+        pf.style.width=`${((i+1)/bulkMatchItems.length)*100}%`;
+
+        const keywords=extractKeywords(item.name);
+        if(!keywords.length){
+            renderMatchRow(i,[],'no_result');
+            continue;
+        }
+
+        try{
+            // 키워드로 JQL 검색
+            const jql=`project=${j.projectKey} AND summary~"${keywords.join(' ')}" ORDER BY created DESC`;
+            const r=await jiraFetch(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=5&fields=summary,issuetype,status,fixVersions`);
+            if(r.ok){
+                const d=await r.json();
+                const candidates=(d.issues||[]).map(iss=>({
+                    key:iss.key,
+                    summary:iss.fields.summary,
+                    type:iss.fields.issuetype?.name||'',
+                    status:iss.fields.status?.name||'',
+                    version:(iss.fields.fixVersions||[]).map(v=>v.name).join(', ')
+                }));
+                item.candidates=candidates;
+                if(candidates.length){
+                    item.match=candidates[0]; // 자동으로 첫 번째 후보 선택
+                    item.status='matched';
+                }else{
+                    item.status='no_result';
+                }
+            }else{
+                item.status='error';
+            }
+        }catch(e){
+            item.status='error';
+        }
+        renderMatchRow(i,item.candidates,item.status);
+        updateMatchCount();
+    }
+    pt.textContent=`검색 완료! ${bulkMatchItems.filter(it=>it.status==='matched').length}건 매칭됨`;
+}
+
+function renderMatchRow(idx,candidates,status){
+    const tdCandidate=document.getElementById(`bmCandidate_${idx}`);
+    const tdStatus=document.getElementById(`bmStatus_${idx}`);
+
+    if(status==='matched'&&candidates.length){
+        const item=bulkMatchItems[idx];
+        let html=`<select id="bmSelect_${idx}" onchange="onMatchSelect(${idx})" style="width:100%;padding:4px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:var(--text);font-size:13px">`;
+        candidates.forEach((c,ci)=>{
+            html+=`<option value="${ci}">${c.key}  ${c.summary}</option>`;
+        });
+        html+=`<option value="-1">매칭 안 함</option>`;
+        html+=`</select>`;
+        html+=`<button class="btn btn-sm btn-secondary" style="margin-left:4px;padding:2px 6px;font-size:11px" onclick="manualSearch(${idx})" title="직접 검색">🔍</button>`;
+        tdCandidate.innerHTML=html;
+        tdStatus.innerHTML=`<span style="color:var(--success)">매칭됨</span>`;
+    }else if(status==='no_result'){
+        tdCandidate.innerHTML=`<span style="color:var(--text3)">후보 없음</span> <button class="btn btn-sm btn-secondary" style="padding:2px 6px;font-size:11px" onclick="manualSearch(${idx})">직접 검색</button>`;
+        tdStatus.innerHTML=`<span style="color:var(--text3)">미매칭</span>`;
+    }else if(status==='error'){
+        tdCandidate.innerHTML=`<span style="color:var(--error)">검색 오류</span> <button class="btn btn-sm btn-secondary" style="padding:2px 6px;font-size:11px" onclick="manualSearch(${idx})">직접 검색</button>`;
+        tdStatus.innerHTML=`<span style="color:var(--error)">오류</span>`;
+    }else if(status==='skipped'){
+        tdCandidate.innerHTML=`<span style="color:var(--text3)">건너뜀</span>`;
+        tdStatus.innerHTML=`<span style="color:var(--text3)">건너뜀</span>`;
+    }
+}
+
+function onMatchSelect(idx){
+    const sel=document.getElementById(`bmSelect_${idx}`);
+    const val=parseInt(sel.value);
+    const item=bulkMatchItems[idx];
+    const tdStatus=document.getElementById(`bmStatus_${idx}`);
+    if(val===-1){
+        item.match=null;item.status='skipped';
+        tdStatus.innerHTML=`<span style="color:var(--text3)">건너뜀</span>`;
+    }else{
+        item.match=item.candidates[val];item.status='matched';
+        tdStatus.innerHTML=`<span style="color:var(--success)">매칭됨</span>`;
+    }
+    updateMatchCount();
+}
+
+async function manualSearch(idx){
+    const query=prompt('Jira 검색어를 입력하세요:',extractKeywords(bulkMatchItems[idx].name).join(' '));
+    if(!query)return;
+    const j=getJiraSettings();
+    try{
+        const jql=`project=${j.projectKey} AND summary~"${query}" ORDER BY created DESC`;
+        const r=await jiraFetch(`/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&maxResults=10&fields=summary,issuetype,status,fixVersions`);
+        if(!r.ok){showToast('검색 실패','error');return;}
+        const d=await r.json();
+        const candidates=(d.issues||[]).map(iss=>({
+            key:iss.key,summary:iss.fields.summary,
+            type:iss.fields.issuetype?.name||'',status:iss.fields.status?.name||'',
+            version:(iss.fields.fixVersions||[]).map(v=>v.name).join(', ')
+        }));
+        if(!candidates.length){showToast('검색 결과 없음','warning');return;}
+        bulkMatchItems[idx].candidates=candidates;
+        bulkMatchItems[idx].match=candidates[0];
+        bulkMatchItems[idx].status='matched';
+        renderMatchRow(idx,candidates,'matched');
+        updateMatchCount();
+    }catch(e){showToast('검색 오류','error');}
+}
+
+function updateMatchCount(){
+    const count=bulkMatchItems.filter(it=>it.status==='matched').length;
+    document.getElementById('bulkMatchCount').textContent=count;
+}
+
+function applyBulkMatch(){
+    const matched=bulkMatchItems.filter(it=>it.status==='matched'&&it.match);
+    if(!matched.length){showToast('매칭된 항목이 없습니다.','error');return;}
+    if(!confirm(`${matched.length}건의 매칭을 적용하시겠습니까?`))return;
+
+    matched.forEach(item=>{
+        const it=item.ref;
+        const m=item.match;
+        it.name=`[${m.key}] ${m.summary}`;
+        it.jiraLinked=true;
+        it.jiraKey=m.key;
+        it.jiraType=m.type;
+        it.jiraStatus=m.status;
+        it.jiraVersion=m.version;
+    });
+    saveData();
+    renderScheduleTable();
+    closeAllModals();
+    showToast(`${matched.length}건 매칭 적용 완료`,'success');
+}
+
+// ==========================================
+// ==========================================
+// PRESETS
+// ==========================================
+let presets=JSON.parse(localStorage.getItem('jiraPresets')||'[]');
+let presetEditIdx=-1; // -1 = new
+let presetEditData={issueType:'',assignee:'',assigneeName:'',component:[],labels:[],watcher:[],watcherNames:{},watcherGroup:[],subtasks:[]};
+let presetAcInit=false;
+
+function savePresetsToStorage(){localStorage.setItem('jiraPresets',JSON.stringify(presets));}
+
+function renderPresetList(){
+    const el=document.getElementById('presetList');
+    if(!presets.length){el.innerHTML='<span style="color:var(--text3);font-size:12px">등록된 프리셋이 없습니다.</span>';return;}
+    el.innerHTML=presets.map((p,i)=>{
+        const tags=[
+            p.issueType?`[${p.issueType}]`:'',
+            p.assigneeName?`담당: ${p.assigneeName}`:'',
+            p.component?.length?`컴포넌트: ${p.component.join(', ')}`:'',
+            p.labels?.length?`레이블: ${p.labels.join(', ')}`:'',
+            p.watcherGroup?.length?`그룹: ${p.watcherGroup.join(', ')}`:'',
+            p.subtasks?.length?`하위 ${p.subtasks.length}개`:'',
+        ].filter(Boolean).join(' · ');
+        return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)"><strong style="min-width:60px;color:var(--text)">${p.name}</strong><span style="flex:1;font-size:11px;color:var(--text3)">${tags||'(비어 있음)'}</span><button class="btn btn-sm btn-secondary" style="padding:2px 8px;font-size:11px" onclick="openPresetEditor(${i})">편집</button><button style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px" onclick="deletePreset(${i})">✕</button></div>`;
+    }).join('');
+}
+
+function populatePresetDropdowns(){
+    ['jcExistingPreset','jcNewPreset'].forEach(id=>{
+        const sel=document.getElementById(id);
+        if(!sel)return;
+        const val=sel.value;
+        sel.innerHTML='<option value="">프리셋...</option>';
+        presets.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.name;sel.appendChild(o);});
+        sel.value=val;
+    });
+}
+
+function applyPreset(tab){
+    const selId=tab==='existing'?'jcExistingPreset':'jcNewPreset';
+    const idx=parseInt(document.getElementById(selId).value);
+    if(isNaN(idx)||!presets[idx])return;
+    const p=presets[idx];
+
+    if(tab==='existing'){
+        // 속성 합치기
+        if(p.watcher)p.watcher.forEach(w=>{if(!jcWatchers.includes(w)){jcWatchers.push(w);jcWatcherNames[w]=(p.watcherNames||{})[w]||w;}});
+        if(p.watcherGroup)p.watcherGroup.forEach(g=>{if(!jcGroupWatchers.includes(g))jcGroupWatchers.push(g);});
+        if(p.component)p.component.forEach(c=>{if(!jcComps.includes(c))jcComps.push(c);});
+        if(p.labels)p.labels.forEach(l=>{if(!jcLabels.includes(l))jcLabels.push(l);});
+        renderJcTags('jcExistingWatcherTags',jcWatchers,jcWatcherNames,'removeJcWatcher');
+        renderJcTags('jcExistingGroupTags',jcGroupWatchers,null,'removeJcGroupWatcher');
+        renderJcTags('jcExistingCompTags',jcComps,null,'removeJcExistingComp');
+        renderJcTags('jcExistingLabelTags',jcLabels,null,'removeJcExistingLabel');
+        // 하위 태스크 추가
+        if(p.subtasks&&p.subtasks.length){
+            p.subtasks.forEach(s=>{
+                const name=typeof s==='string'?s:s.name;
+                if(!jcTaskRows.existing.includes(name)){
+                    addJcTaskRow('existing',name);
+                    if(typeof s==='object'&&s.assignee){
+                        const idx=jcTaskRows.existing.length-1;
+                        jcRowSettings[`existing_${idx}`]={assignee:s.assignee,assigneeName:s.assigneeName||'',labels:[],comps:[],watchers:[],watcherNames:{},groups:[]};
+                    }
+                }
+            });
+        }
+    }else{
+        // 이슈유형 적용
+        if(p.issueType){
+            document.getElementById('jcNewType').value=p.issueType;
+            onJcNewTypeChange();
+        }
+        // 담당자
+        if(p.assigneeName){
+            document.getElementById('jcNewAssignee').value=p.assigneeName;
+            document.getElementById('jcNewAssignee').dataset.accountId=p.assignee||'';
+        }
+        // 속성 합치기
+        if(p.watcher)p.watcher.forEach(w=>{if(!jcNewWatchers.includes(w)){jcNewWatchers.push(w);jcNewWatcherNames[w]=(p.watcherNames||{})[w]||w;}});
+        if(p.watcherGroup)p.watcherGroup.forEach(g=>{if(!jcNewGroupWatchers.includes(g))jcNewGroupWatchers.push(g);});
+        if(p.component)p.component.forEach(c=>{if(!jcNewComps.includes(c))jcNewComps.push(c);});
+        if(p.labels)p.labels.forEach(l=>{if(!jcNewLabels.includes(l))jcNewLabels.push(l);});
+        renderJcTags('jcNewWatcherTags',jcNewWatchers,jcNewWatcherNames,'removeJcNewWatcher');
+        renderJcTags('jcNewGroupTags',jcNewGroupWatchers,null,'removeJcNewGroupWatcher');
+        renderJcTags('jcNewCompTags',jcNewComps,null,'removeJcNewComp');
+        renderJcTags('jcNewLabelTags',jcNewLabels,null,'removeJcNewLabel');
+        // 하위 태스크 추가
+        const isEpic=document.getElementById('jcNewType').value==='Epic';
+        if(p.subtasks&&p.subtasks.length){
+            if(isEpic){
+                p.subtasks.forEach(s=>{
+                    const name=typeof s==='string'?s:s.name;
+                    if(!jcTaskRows.new.includes(name)){
+                        addJcTaskRow('new',name);
+                        if(typeof s==='object'&&s.assignee){const idx=jcTaskRows.new.length-1;jcRowSettings[`new_${idx}`]={assignee:s.assignee,assigneeName:s.assigneeName||'',labels:[],comps:[],watchers:[],watcherNames:{},groups:[]};}
+                    }
+                });
+            }else{
+                p.subtasks.forEach(s=>{
+                    const name=typeof s==='string'?s:s.name;
+                    if(!jcTaskRows.multi.includes(name)){
+                        addJcTaskRow('multi',name);
+                        if(typeof s==='object'&&s.assignee){const idx=jcTaskRows.multi.length-1;jcRowSettings[`multi_${idx}`]={assignee:s.assignee,assigneeName:s.assigneeName||'',labels:[],comps:[],watchers:[],watcherNames:{},groups:[]};}
+                    }
+                });
+            }
+        }
+    }
+    document.getElementById(selId).value='';
+    showToast(`프리셋 "${p.name}" 적용됨`,'success');
+}
+
+function onPresetTypeChange(){
+    const t=document.getElementById('presetIssueType').value;
+    document.getElementById('presetSubtaskSection').style.display=(t===''||t==='Epic'||t==='Task')?'':'none';
+}
+function addPresetSubtask(){
+    presetEditData.subtasks.push({name:'',assignee:'',assigneeName:''});
+    renderPresetSubtasks();
+}
+function removePresetSubtask(i){
+    presetEditData.subtasks.splice(i,1);
+    renderPresetSubtasks();
+}
+function renderPresetSubtasks(){
+    const list=document.getElementById('presetSubtaskList');
+    if(!presetEditData.subtasks.length){
+        list.innerHTML='<div style="padding:10px;text-align:center;color:var(--text3);font-size:13px">+ 추가 버튼으로 하위 태스크를 등록하세요</div>';
+        return;
+    }
+    list.innerHTML=presetEditData.subtasks.map((s,i)=>{
+        const name=typeof s==='string'?s:s.name;
+        const aName=typeof s==='object'?s.assigneeName||'':'';
+        return `<div class="task-row" style="gap:4px"><span class="task-row-badge">${i+1}</span><input type="text" value="${esc(name)}" oninput="presetEditData.subtasks[${i}].name=this.value" onkeydown="if(event.key==='Enter'){event.preventDefault();addPresetSubtask()}" placeholder="하위 태스크 제목..." style="flex:1"><input type="text" value="${esc(aName)}" id="presetSubAssign_${i}" placeholder="담당자..." style="width:100px;flex-shrink:0;font-size:12px"><button class="task-row-del" onclick="removePresetSubtask(${i})">✕</button></div>`;
+    }).join('');
+    // subtask 담당자 autocomplete
+    setTimeout(()=>{
+        presetEditData.subtasks.forEach((s,i)=>{
+            const input=document.getElementById('presetSubAssign_'+i);
+            if(!input||input._acInit)return;input._acInit=true;
+            makeAutocomplete(input,jcUserSearch,(val,label)=>{
+                presetEditData.subtasks[i].assignee=val;
+                presetEditData.subtasks[i].assigneeName=label;
+            });
+        });
+    },50);
+}
+function openPresetEditor(idx){
+    presetEditIdx=typeof idx==='number'?idx:-1;
+    const p=presetEditIdx>=0?presets[presetEditIdx]:{name:'',issueType:'',assignee:'',assigneeName:'',component:[],labels:[],watcher:[],watcherNames:{},watcherGroup:[],subtasks:[]};
+    presetEditData={issueType:p.issueType||'',assignee:p.assignee||'',assigneeName:p.assigneeName||'',component:[...(p.component||[])],labels:[...(p.labels||[])],watcher:[...(p.watcher||[])],watcherNames:{...(p.watcherNames||{})},watcherGroup:[...(p.watcherGroup||[])],subtasks:(p.subtasks||[]).map(s=>typeof s==='string'?{name:s,assignee:'',assigneeName:''}:{...s})};
+    document.getElementById('presetEditTitle').textContent=presetEditIdx>=0?'프리셋 편집':'프리셋 추가';
+    document.getElementById('presetName').value=p.name||'';
+    document.getElementById('presetIssueType').value=presetEditData.issueType;
+    document.getElementById('presetAssignee').value=presetEditData.assigneeName;
+    onPresetTypeChange();
+    renderPresetEditTags();
+    renderPresetSubtasks();
+    document.getElementById('modalPresetEdit').classList.add('active');
+    if(!presetAcInit){
+        presetAcInit=true;
+        // 담당자
+        makeAutocomplete(document.getElementById('presetAssignee'),jcUserSearch,(val,label)=>{
+            presetEditData.assignee=val;presetEditData.assigneeName=label;
+        });
+        // 컴포넌트
+        fetchComponents().then(comps=>{const names=comps.map(c=>c.name);
+            makeAutocomplete(document.getElementById('presetComp'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!presetEditData.component.includes(val))presetEditData.component.push(val);renderPresetEditTags();return false;});});
+        // 레이블
+        fetchLabels().then(lbls=>{const names=Array.isArray(lbls)?lbls:[];
+            makeAutocomplete(document.getElementById('presetLabel'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!presetEditData.labels.includes(val))presetEditData.labels.push(val);renderPresetEditTags();return false;});});
+        // 와쳐
+        makeAutocomplete(document.getElementById('presetWatcher'),jcUserSearch,(val,label)=>{
+            if(!presetEditData.watcher.includes(val)){presetEditData.watcher.push(val);presetEditData.watcherNames[val]=label;}
+            renderPresetEditTags();return false;
+        });
+        // 그룹 와쳐
+        makeAutocomplete(document.getElementById('presetGroup'),jcGroupSearch,(val)=>{
+            if(!presetEditData.watcherGroup.includes(val))presetEditData.watcherGroup.push(val);
+            renderPresetEditTags();return false;
+        });
+    }
+}
+
+function renderPresetEditTags(){
+    renderPresetFieldTags('presetCompTags',presetEditData.component,null,(v)=>{presetEditData.component=presetEditData.component.filter(x=>x!==v);renderPresetEditTags();});
+    renderPresetFieldTags('presetLabelTags',presetEditData.labels,null,(v)=>{presetEditData.labels=presetEditData.labels.filter(x=>x!==v);renderPresetEditTags();});
+    renderPresetFieldTags('presetWatcherTags',presetEditData.watcher,presetEditData.watcherNames,(v)=>{presetEditData.watcher=presetEditData.watcher.filter(x=>x!==v);renderPresetEditTags();});
+    renderPresetFieldTags('presetGroupTags',presetEditData.watcherGroup,null,(v)=>{presetEditData.watcherGroup=presetEditData.watcherGroup.filter(x=>x!==v);renderPresetEditTags();});
+}
+
+function renderPresetFieldTags(elId,arr,nameMap,onRemove){
+    const el=document.getElementById(elId);
+    el.innerHTML=arr.map(v=>{
+        const label=nameMap?nameMap[v]||v:v;
+        return `<span class="tag selected" style="margin:0;padding:2px 6px;font-size:11px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">${label} <span class="tag-remove" style="cursor:pointer" data-val="${v.replace(/"/g,'&quot;')}">&times;</span></span>`;
+    }).join('');
+    el.querySelectorAll('.tag-remove').forEach(btn=>{btn.onclick=()=>onRemove(btn.dataset.val);});
+}
+
+function closePresetEditor(){document.getElementById('modalPresetEdit').classList.remove('active');}
+
+function savePreset(){
+    const name=document.getElementById('presetName').value.trim();
+    if(!name){showToast('프리셋 이름을 입력하세요.','error');return;}
+    presetEditData.issueType=document.getElementById('presetIssueType').value;
+    presetEditData.subtasks=presetEditData.subtasks.filter(s=>typeof s==='string'?s.trim():(s.name&&s.name.trim()));
+    const p={name,...presetEditData};
+    if(presetEditIdx>=0){presets[presetEditIdx]=p;}
+    else{presets.push(p);}
+    savePresetsToStorage();
+    renderPresetList();
+    populatePresetDropdowns();
+    closePresetEditor();
+    showToast(`프리셋 "${name}" 저장됨`,'success');
+}
+
+function deletePreset(idx){
+    if(!confirm(`"${presets[idx].name}" 프리셋을 삭제하시겠습니까?`))return;
+    presets.splice(idx,1);
+    savePresetsToStorage();
+    renderPresetList();
+    populatePresetDropdowns();
+    showToast('프리셋 삭제됨','success');
+}
+
+// 초기화 시 프리셋 목록 렌더
+// 기본 프리셋 초기화 (최초 1회)
+if(!localStorage.getItem('jiraPresetsV3')){
+localStorage.setItem('jiraPresetsV3','1');
+const _W={pjh:'712020:c5940810-7dd0-44a7-a281-a0a8b723cecc',ywt:'606135cfb30f0d0070094d0f',mjs:'606130748d0575006853ca8f'};// 와쳐: 박정환,여운태,문종서
+const _WN={[_W.pjh]:'박정환',[_W.ywt]:'여운태',[_W.mjs]:'문종서'};
+const _WA=[_W.pjh,_W.ywt,_W.mjs];
+const _C=['아트'];
+const _A={
+    jm:'712020:f05ebf9e-79cb-49d9-9f52-6cfb458a8d2d',cws:'712020:d31b0738-2da3-4af1-8476-05c2399a2bff',
+    kmj:'60612f028d0575006853bb7f',kmg:'61d4224f68926d00684fb8b3',pjh:'712020:c5940810-7dd0-44a7-a281-a0a8b723cecc',
+    ywt:'606135cfb30f0d0070094d0f',jkj:'616521b807ac3c0068754e22',wdh:'62380189ee1b5a0070274b78',
+    jts:'712020:93cbe6dc-4429-411e-ba65-80f0aec47c5d',sjs:'712020:9ba20f66-4ca9-49b0-b8d3-238e720e954e',
+    kjs:'61dba0857c6f98007092328e',sja:DEFAULT_ASSIGNEE
+};
+const S=(n,a,an)=>({name:n,assignee:a,assigneeName:an});
+presets=[
+{name:'신규 클래스 - 외형 제작',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링',_A.cws,'최원석'),S('리깅 및 기본 모션',_A.kmj,'김민정'),S('의상 염색작업',_A.cws,'최원석'),S('BP생성 및 인게임 등록 요청',_A.kmg,'김민규(MN)'),S('랭킹 외형 보상 이펙트',_A.ywt,'여운태')]},
+{name:'신규 클래스 - 무기 외형 제작',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화+모델링 (이미지 업데이트)',_A.cws,'최원석'),S('리깅',_A.kmj,'김민정'),S('BP생성 및 인게임 등록 요청',_A.jkj,'정국진(MN)'),S('이펙트 제작(초월 포함)',_A.pjh,'박정환')]},
+{name:'신규 클래스 - 전직/각성 연출',issueType:'Task',assignee:_A.pjh,assigneeName:'박정환',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[]},
+{name:'신규 클래스 - 사운드 제작',issueType:'Task',assignee:_A.kjs,assigneeName:'김준식(MN)',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[]},
+{name:'신규 클래스 - 스킬 발주',issueType:'Task',assignee:_A.kmg,assigneeName:'김민규(MN)',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('애니메이션',_A.kmj,'김민정'),S('몽타주 생성',_A.kmg,'김민규(MN)'),S('이펙트',_A.pjh,'박정환')]},
+{name:'몬스터/NPC - 신규 몬스터 제작',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링 (이미지 업데이트)',_A.cws,'최원석'),S('애니메이션',_A.kmj,'김민정'),S('이펙트',_A.pjh,'박정환'),S('BP 및 몽타주 생성',_A.wdh,'원동훈(MN)'),S('스킬',_A.kmg,'김민규(MN)'),S('사운드',_A.kjs,'김준식(MN)')]},
+{name:'비전투 NPC - 신규 NPC 제작',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링 (이미지 업데이트)',_A.cws,'최원석'),S('애니메이션',_A.kmj,'김민정'),S('BP 생성 및 몽타주',_A.wdh,'원동훈(MN)')]},
+{name:'필드 (격전지, 공성전 등)',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화(컨셉) 제작',_A.jts,'주태식'),S('문양 발주',_A.wdh,'원동훈(MN)'),S('모델링 제작',_A.sjs,'신지선'),S('에셋 제작',_A.sjs,'신지선'),S('레벨 제작',_A.sjs,'신지선'),S('미니어쳐 레벨 제작',_A.ywt,'여운태'),S('미니어쳐 레벨 연결 요청',_A.sja,'손정아'),S('최적화',_A.sjs,'신지선'),S('사운드',_A.kjs,'김준식(MN)'),S('로딩씬 / 위젯 대표 이미지',_A.jts,'주태식')]},
+{name:'던전 (수숲, 이를레타, 산코나)',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 제작',_A.jts,'주태식'),S('레벨 제작',_A.sjs,'신지선'),S('에셋 제작',_A.sjs,'신지선'),S('최적화',_A.sjs,'신지선'),S('사운드 제작',_A.kjs,'김준식(MN)'),S('씬 이미지',_A.jts,'주태식')]},
+{name:'크리쳐 - 의상',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링',_A.cws,'최원석'),S('리깅',_A.kmj,'김민정'),S('인게임 등록',_A.jkj,'정국진(MN)'),S('염색 맵 / 팔레트 세팅',_A.cws,'최원석'),S('포트레이트 원본 이미지',_A.ywt,'여운태')]},
+{name:'크리쳐 - 무기외형',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링',_A.cws,'최원석'),S('리깅',_A.kmj,'김민정'),S('BP 생성 및 등록',_A.jkj,'정국진(MN)'),S('초월/등급 이펙트',_A.pjh,'박정환')]},
+{name:'크리쳐 - 탈것',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링 (이미지 업데이트)',_A.cws,'최원석'),S('애니메이션 제작',_A.kmj,'김민정'),S('BP 생성 및 인게임 등록',_A.jkj,'정국진(MN)'),S('초월/등급 이펙트(*영웅등급 이상)',_A.pjh,'박정환'),S('사운드',_A.kjs,'김준식(MN)')]},
+{name:'크리쳐 - 글라이더',issueType:'Task',assignee:_A.jm,assigneeName:'김정민',component:_C,labels:[],watcher:_WA,watcherNames:_WN,watcherGroup:[],subtasks:[S('원화 + 모델링',_A.cws,'최원석'),S('애니메이션 제작',_A.kmj,'김민정'),S('BP 생성 및 인게임 등록',_A.wdh,'원동훈(MN)'),S('이펙트',_A.pjh,'박정환'),S('스킬 발주',_A.kmg,'김민규(MN)'),S('사운드',_A.kjs,'김준식(MN)')]},
+];
+// 기존 프리셋에 합치기 (이름 중복 제거)
+const existingNames=new Set(presets.map(p=>p.name));
+const newPresets=presets.filter(p=>!existingNames.has(p.name)||existingNames.delete(p.name));
+// 기존 것 유지 + 새 것 추가
+const oldPresets=JSON.parse(localStorage.getItem('jiraPresets')||'[]');
+const oldNames=new Set(oldPresets.map(p=>p.name));
+presets=[...oldPresets,...presets.filter(p=>!oldNames.has(p.name))];
+savePresetsToStorage();
+}
+setTimeout(()=>{renderPresetList();},100);
+
+// CREATION RESULT MODAL
+// ==========================================
+// 담당자 추천 DB (Sub-task 유형 → 추천 담당자)
+const ASSIGNEE_SUGGEST={
+    '이벤트 리소스':{name:'곽아름',id:'712020:3524fa82-3a5d-4529-bcf2-4c7145877718'},
+    '유료화 상품':{name:'김영웅(MN)',id:'712020:2ed0bb43-045f-42a3-b9df-ab67b84d82ab'},
+    '제작 이벤트':{name:'황우주(MN)',id:'712020:7e91b534-613f-42e2-b6f5-4581c6fc75da'},
+};
+let resultTickets=[];
+
+function getSuggestedAssignee(summary){
+    for(const[keyword,assignee] of Object.entries(ASSIGNEE_SUGGEST)){
+        if(summary.includes(keyword))return assignee;
+    }
+    return null;
+}
+
+function showCreationResult(tickets,errors){
+    resultTickets=tickets;
+    saveCreationHistory(tickets);
+    const domain=localStorage.getItem('jiraDomain');
+    const summary=document.getElementById('resultSummary');
+    const list=document.getElementById('resultList');
+    if(errors&&errors.length){
+        summary.style.background='rgba(220,38,38,.08)';
+        summary.style.border='1px solid rgba(220,38,38,.2)';
+        summary.innerHTML=`<span style="color:var(--success);font-weight:600">${tickets.length}건 생성 완료</span> · <span style="color:var(--danger)">${errors.length}건 오류</span>`;
+    }else{
+        summary.style.background='rgba(22,163,74,.08)';
+        summary.style.border='1px solid rgba(22,163,74,.2)';
+        summary.innerHTML=`<span style="color:var(--success);font-weight:600">${tickets.length}건 생성 완료!</span>`;
+    }
+    list.innerHTML=tickets.map(t=>{
+        const typeCls=`issue-type-${(t.type||'').toLowerCase().replace(/[^a-z-]/g,'')}`;
+        const href=domain?`https://${domain}/browse/${t.key}`:'#';
+        return `<div class="result-item"><a href="${href}" target="_blank" class="result-key" style="font-size:14px">${t.key}</a><span class="issue-type-badge ${typeCls} result-type">${t.type||''}</span><span class="result-title" style="font-size:14px">${t.summary}</span></div>`;
+    }).join('');
+    if(errors&&errors.length){
+        list.innerHTML+=`<div style="padding:12px 14px;font-size:13px;color:var(--danger)"><strong>오류:</strong><br>${errors.join('<br>')}</div>`;
+    }
+    // 담당자 배정 섹션
+    const assignSection=document.getElementById('resultAssignSection');
+    const assignList=document.getElementById('resultAssignList');
+    document.getElementById('resultAssignStatus').textContent='';
+    if(tickets.length){
+        assignSection.style.display='';
+        assignList.innerHTML=tickets.map((t,i)=>{
+            const suggest=getSuggestedAssignee(t.summary);
+            const typeCls=`issue-type-${(t.type||'').toLowerCase().replace(/[^a-z-]/g,'')}`;
+            return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+                <span style="color:var(--text3);font-size:13px;min-width:70px">${t.key}</span>
+                <span class="issue-type-badge ${typeCls}" style="font-size:10px;flex-shrink:0">${t.type}</span>
+                <span style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${t.summary}">${t.summary}</span>
+                <div style="flex:0 0 160px;position:relative">
+                    <input type="text" id="resultAssign_${i}" data-key="${t.key}" placeholder="${suggest?suggest.name+' (추천)':'담당자 검색...'}" value="${suggest?suggest.name:''}" data-account-id="${suggest?suggest.id:''}" style="width:100%;padding:5px 8px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:var(--text)">
+                </div>
+            </div>`;
+        }).join('');
+        // autocomplete 연결
+        setTimeout(()=>{
+            tickets.forEach((t,i)=>{
+                const input=document.getElementById('resultAssign_'+i);
+                if(!input)return;
+                makeAutocomplete(input,jcUserSearch,(val,label)=>{
+                    input.dataset.accountId=val;
+                    input.value=label;
+                });
+            });
+        },100);
+    }else{
+        assignSection.style.display='none';
+    }
+    closeAllModals();
+    document.getElementById('modalResult').classList.add('active');
+}
+
+function copyResultKeys(){
+    if(!resultTickets.length){showToast('복사할 티켓이 없습니다.','error');return;}
+    const domain=localStorage.getItem('jiraDomain');
+    const text=resultTickets.map(t=>{
+        const url=domain?`https://${domain}/browse/${t.key}`:t.key;
+        return `${t.key} - ${t.summary}\n${url}`;
+    }).join('\n\n');
+    navigator.clipboard.writeText(text).then(()=>{
+        showToast(`${resultTickets.length}건 복사됨`,'success');
+    }).catch(()=>showToast('복사 실패','error'));
+}
+
+function openAllInJira(){
+    if(!resultTickets.length){showToast('티켓이 없습니다.','error');return;}
+    const domain=localStorage.getItem('jiraDomain');
+    if(!domain){showToast('Jira 도메인이 설정되지 않았습니다.','error');return;}
+    const keys=resultTickets.map(t=>t.key).join(',');
+    const jql=encodeURIComponent(`key in (${keys})`);
+    const url=`https://${domain}/issues/?jql=${jql}`;
+    window.open(url,'_blank');
+}
+
+async function executeAssignAll(){
+    const statusEl=document.getElementById('resultAssignStatus');
+    let updated=0,errors=0;
+    for(let i=0;i<resultTickets.length;i++){
+        const input=document.getElementById('resultAssign_'+i);
+        if(!input)continue;
+        const accountId=input.dataset.accountId;
+        if(!accountId)continue;
+        const key=input.dataset.key;
+        try{
+            const r=await jiraFetch(`/rest/api/3/issue/${key}`,{method:'PUT',body:JSON.stringify({fields:{assignee:{accountId}}})});
+            if(r.ok)updated++;
+            else errors++;
+        }catch(e){errors++;}
+        statusEl.textContent=`${updated}건 배정 중...`;
+    }
+    statusEl.textContent=errors?`완료: ${updated}건 배정, ${errors}건 오류`:`${updated}건 담당자 배정 완료!`;
+    statusEl.style.color=errors?'var(--danger)':'var(--success)';
+    showToast(`${updated}건 담당자 배정 완료`,'success');
+}
+
 function switchCsvTab(tab,btn){
     document.querySelectorAll('#modalCsv .tab-bar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
     document.getElementById('csvTabPaste').style.display=tab==='paste'?'':'none';
@@ -1707,7 +3231,7 @@ async function createFromCsv(){
     pv+='\n이대로 생성하시겠습니까?';
     if(!confirm(pv))return;
     const ps=document.getElementById('csvProgressSection'),pf=document.getElementById('csvProgressFill'),pt=document.getElementById('csvProgressText'),btn=document.getElementById('csvBtnCreate');
-    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
+    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
     let created=0,errors=[];
     const parents=rows.filter(r=>r._isParent);
     const enabledSTs=subtaskTemplates.filter(st=>st.enabled);
@@ -2030,7 +3554,7 @@ async function createCloneTickets(){
     preview+='이대로 생성하시겠습니까?';
     if(!confirm(preview))return;
     const ps=document.getElementById('cloneProgressSection'),pf=document.getElementById('cloneProgressFill'),pt=document.getElementById('cloneProgressText'),btn=document.getElementById('cloneBtnCreate');
-    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
+    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
     let created=0,errors=[];
     try{
         const mkAdf=t=>({type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:t}]}]});
@@ -2139,7 +3663,7 @@ async function applyBulkEdit(){
             if(r.ok)updated++;else{const et=await r.text();errors.push(`${key}: ${et}`);}
         }else updated++;
         // Add watchers
-        if(bulkEditFields.watcher){for(const w of bulkEditFields.watcher.split(',')){const wt=w.trim();if(wt)await jiraFetch(`/rest/api/3/issue/${key}/watchers`,{method:'POST',body:JSON.stringify(wt)}).catch(()=>{});}}
+        if(bulkEditFields.watcher){for(const w of bulkEditFields.watcher.split(',')){const wt=w.trim();if(wt)await jiraFetch(`/rest/api/3/issue/${key}/watchers`,{method:'POST',body:JSON.stringify(wt)}).catch(e=>console.warn('API warning:',e));}}
     }
     closeAllModals();clearTableSelection();
     if(errors.length){showToast(`${updated}건 업데이트, ${errors.length}건 오류`,'error');alert('오류:\n'+errors.join('\n'));}
@@ -2279,6 +3803,376 @@ async function createBulkVersions(){
 }
 
 // ==========================================
+// ==========================================
+// WEEKLY UPDATE CREATE
+// ==========================================
+const WEEKLY_TEMPLATE=[
+    {category:'상품',enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['기획데이터','밸런스'],groups:['NCKR_밸런스팀','MAD_PM'],
+     subs:[
+        {name:'상품 리소스',labels:['UI','기획데이터'],groups:['MAD_PM','NCKR_밸런스팀','NCKR_UI팀']},
+        {name:'상품 데이터 - 전체 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']},
+        {name:'유료화 상품 시트 내 제작식',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀'],suggestName:'김영웅(MN)',suggestId:'712020:2ed0bb43-045f-42a3-b9df-ab67b84d82ab'},
+        {name:'상품 데이터 - 신규 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']},
+     ]},
+    {category:'이벤트',enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['기획데이터','밸런스'],groups:['NCKR_밸런스팀','MAD_PM'],
+     subs:[
+        {name:'이벤트 리소스',labels:['UI','기획데이터'],groups:['MAD_PM','NCKR_밸런스팀','NCKR_UI팀'],suggestName:'곽아름',suggestId:'712020:3524fa82-3a5d-4529-bcf2-4c7145877718'},
+        {name:'제작 이벤트 - 전체 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀'],suggestName:'황우주(MN)',suggestId:'712020:7e91b534-613f-42e2-b6f5-4581c6fc75da'},
+        {name:'출석 이벤트 - 전체 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']},
+        {name:'특별 이벤트 - 전체 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']},
+        {name:'시즌 패스 - 전체 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']},
+        {name:'미션 이벤트 - 전체 서버',labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']},
+     ]},
+    {category:'이벤트 종료',enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['기획데이터','밸런스'],groups:['NCKR_밸런스팀','MAD_PM'],subs:[]},
+    {category:'정기점검 공지용 확률 갱신',enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['기획데이터','밸런스'],groups:['NCKR_밸런스팀','MAD_PM'],subs:[]},
+    {category:'월드 콘텐츠 매칭 및 시즌 데이터',enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['밸런스','시스템'],groups:['NCKR_밸런스팀','MAD_PM','NCKR_시스템팀'],subs:[]},
+];
+let weeklyState=[];
+
+function renderMaintWeeklyList(){
+    const el=document.getElementById('maintWeeklyList');
+    if(!el)return;
+    const date=document.getElementById('maintDate')?.value;
+    let dateStr='';
+    if(date){const d=new Date(date);dateStr=`${String(d.getFullYear()).slice(2)}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;}
+    const ver=document.getElementById('maintVersion')?.value||'';
+    const m=ver.match(/^(M\d+)/i);
+    const prefix=m?`[${m[1]}] `:'';
+    renderWeeklyListInner(el,dateStr,prefix);
+}
+function renderWeeklyListInner(el,date,prefix){
+    el.innerHTML=weeklyState.map((t,ti)=>{
+        const taskTitle=prefix+(date?date+' ':'')+t.category;
+        const subHtml=t.enabled?t.subs.map((s,si)=>{
+            const subTitle=prefix+(date?date+' ':'')+s.name;
+            const isCustom=s._custom;
+            if(isCustom){
+                const sp=s.prefix||'';
+                const summaryParts=[];
+                if(s.assigneeName&&s.assigneeName!=='손정아')summaryParts.push(s.assigneeName);
+                if(s.labels?.length)summaryParts.push(s.labels.join(', '));
+                if(s.groups?.length)summaryParts.push(s.groups.join(', '));
+                const summaryText=summaryParts.length?`<div style="font-size:10px;color:var(--text3);padding:1px 0 0 76px">${summaryParts.join(' · ')}</div>`:'';
+                return `<div style="border-top:1px solid var(--border);background:var(--bg);padding:6px 12px 6px 36px"><div style="display:flex;align-items:center;gap:4px"><input type="checkbox" ${s.enabled?'checked':''} onchange="weeklyState[${ti}].subs[${si}].enabled=this.checked" style="width:14px;height:14px"><span style="font-size:12px;color:var(--text2);flex-shrink:0">Sub-task</span><input type="text" value="${sp.replace(/"/g,'&quot;')}" oninput="weeklyState[${ti}].subs[${si}].prefix=this.value" style="width:56px;flex-shrink:0;border:1px solid var(--border);border-radius:4px;padding:2px 4px;font-size:11px;background:var(--bg3);color:var(--primary);font-weight:600;text-align:center" title="마일스톤 태그"><input type="text" value="${s.name.replace(/"/g,'&quot;')}" oninput="weeklyState[${ti}].subs[${si}].name=this.value" placeholder="제목 입력..." style="flex:1;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-size:12px;background:var(--bg);color:var(--text)"><button onclick="openWeeklySettings(${ti},${si})" class="btn-detail" style="flex-shrink:0">상세</button><button onclick="weeklyState[${ti}].subs.splice(${si},1);refreshWeeklyLists()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;flex-shrink:0">✕</button></div>${summaryText}</div>`;
+            }
+            const aName=s.assigneeName||'손정아';
+            const isSuggest=s.suggestName&&aName===s.suggestName;
+            const hasExtra=s.comps?.length||s.watchers?.length||(s.labels?.length&&!s.suggestName);
+            return `<div style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px 36px;border-top:1px solid var(--border);background:var(--bg)"><input type="checkbox" ${s.enabled?'checked':''} onchange="weeklyState[${ti}].subs[${si}].enabled=this.checked" style="width:14px;height:14px"><span style="font-size:13px;color:var(--text2);flex-shrink:0">Sub-task</span><span style="flex:1;font-size:14px">${subTitle}</span><input type="text" id="wkSubAssign_${ti}_${si}" value="${aName}" data-ti="${ti}" data-si="${si}" placeholder="담당자 검색..." style="width:130px;flex-shrink:0;padding:5px 8px;font-size:13px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:${isSuggest?'var(--primary)':'var(--text)'};font-style:${isSuggest?'italic':'normal'}"><button onclick="openWeeklySettings(${ti},${si})" class="btn-detail${hasExtra?' active':''}" style="flex-shrink:0">상세</button></div>`;
+        }).join(''):'';
+        const addSubBtn=t.enabled?`<div style="padding:4px 12px 4px 36px;border-top:1px solid var(--border)"><button onclick="addWeeklySub(${ti})" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:12px;padding:2px 0">+ Sub-task 추가</button></div>`:'';
+        const isCustomTask=t._custom;
+        if(isCustomTask){
+            const summaryParts=[];
+            if(t.assigneeName)summaryParts.push('담당: '+t.assigneeName);
+            if(t.labels?.length)summaryParts.push('레이블: '+t.labels.join(', '));
+            if(t.comps?.length)summaryParts.push('컴포넌트: '+t.comps.join(', '));
+            if(t.groups?.length)summaryParts.push('그룹: '+t.groups.join(', '));
+            const summaryText=summaryParts.length?`<div style="padding:4px 12px 4px 40px;font-size:10px;color:var(--text3);border-top:1px dashed var(--border)">${summaryParts.join(' · ')}</div>`:'';
+            return `<div style="border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg3)"><input type="checkbox" ${t.enabled?'checked':''} onchange="weeklyState[${ti}].enabled=this.checked;refreshWeeklyLists()" style="width:16px;height:16px"><span class="issue-type-badge issue-type-task" style="font-size:10px">Task</span><input type="text" value="${t.category.replace(/"/g,'&quot;')}" oninput="weeklyState[${ti}].category=this.value" style="flex:1;border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:13px;font-weight:600;background:var(--bg);color:var(--text)"><button onclick="openWeeklySettings(${ti})" class="btn-detail" style="flex-shrink:0">상세</button><button onclick="weeklyState.splice(${ti},1);refreshWeeklyLists()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;flex-shrink:0">✕</button></div>${summaryText}${subHtml}${addSubBtn}</div>`;
+        }
+        return `<div style="border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg3)"><input type="checkbox" ${t.enabled?'checked':''} onchange="weeklyState[${ti}].enabled=this.checked;refreshWeeklyLists()" style="width:16px;height:16px"><span class="issue-type-badge issue-type-task" style="font-size:10px">Task</span><span style="flex:1;font-weight:600">${taskTitle}</span><span style="font-size:11px;color:var(--text3)">${t.subs.length?t.subs.length+' sub':'단독'}</span></div>${subHtml}${addSubBtn}</div>`;
+    }).join('')+`<div style="padding:8px 12px;border-top:1px solid var(--border)"><button onclick="addWeeklyTask()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:13px;padding:2px 0">+ Task 추가</button></div>`;
+}
+// 주간 항목 설정 팝업
+let wkSettingsTarget=null; // {ti, si} or {ti}
+let wkSetData={assignee:'',assigneeName:'',labels:[],comps:[],watchers:[],watcherNames:{},groups:[]};
+let wkSetAcInit=false;
+
+function openWeeklySettings(ti,si){
+    const isSub=si!==undefined;
+    const item=isSub?weeklyState[ti].subs[si]:weeklyState[ti];
+    wkSettingsTarget={ti,si};
+    wkSetData={
+        assignee:item.assignee||DEFAULT_ASSIGNEE,
+        assigneeName:item.assigneeName||'손정아',
+        labels:[...(item.labels||[])],
+        comps:[...(item.comps||[])],
+        watchers:[...(item.watchers||[])],
+        watcherNames:{...(item.watcherNames||{})},
+        groups:[...(item.groups||[])]
+    };
+    document.getElementById('wkSettingsTitle').textContent=isSub?'Sub-task 설정':'Task 설정';
+    document.getElementById('wkSetAssignee').value=wkSetData.assigneeName;
+    renderWkSetTags();
+    document.getElementById('modalWeeklySettings').style.display='flex';
+    if(!wkSetAcInit){
+        wkSetAcInit=true;
+        makeAutocomplete(document.getElementById('wkSetAssignee'),jcUserSearch,(val,label)=>{wkSetData.assignee=val;wkSetData.assigneeName=label;});
+        makeAutocomplete(document.getElementById('wkSetWatcher'),jcUserSearch,(val,label)=>{
+            if(!wkSetData.watchers.includes(val)){wkSetData.watchers.push(val);wkSetData.watcherNames[val]=label;}
+            renderWkSetTags();return false;
+        });
+        makeAutocomplete(document.getElementById('wkSetGroup'),jcGroupSearch,(val)=>{
+            if(!wkSetData.groups.includes(val))wkSetData.groups.push(val);
+            renderWkSetTags();return false;
+        });
+        fetchComponents().then(comps=>{const names=comps.map(c=>c.name);
+            makeAutocomplete(document.getElementById('wkSetComp'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!wkSetData.comps.includes(val))wkSetData.comps.push(val);renderWkSetTags();return false;});});
+        fetchLabels().then(lbls=>{const names=Array.isArray(lbls)?lbls:[];
+            makeAutocomplete(document.getElementById('wkSetLabel'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!wkSetData.labels.includes(val))wkSetData.labels.push(val);renderWkSetTags();return false;});});
+    }
+}
+function renderWkSetTags(){
+    const mkTags=(elId,arr,nameMap,field)=>{
+        const el=document.getElementById(elId);
+        el.innerHTML=arr.map(v=>{
+            const label=nameMap?nameMap[v]||v:v;
+            return `<span class="tag selected" style="margin:0;padding:2px 6px;font-size:11px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">${label} <span class="tag-remove" style="cursor:pointer" onclick="wkSetData.${field}=wkSetData.${field}.filter(x=>x!=='${v.replace(/'/g,"\\'")}');renderWkSetTags()">&times;</span></span>`;
+        }).join('');
+    };
+    mkTags('wkSetLabelTags',wkSetData.labels,null,'labels');
+    mkTags('wkSetCompTags',wkSetData.comps,null,'comps');
+    mkTags('wkSetWatcherTags',wkSetData.watchers,wkSetData.watcherNames,'watchers');
+    mkTags('wkSetGroupTags',wkSetData.groups,null,'groups');
+}
+function closeWeeklySettings(){document.getElementById('modalWeeklySettings').style.display='none';jcRowSettingsTarget=null;}
+function saveWeeklySettings(){
+    if(jcRowSettingsTarget){
+        // Jira 생성 탭 개별 설정
+        jcRowSettings[jcRowSettingsTarget]={...wkSetData,labels:[...wkSetData.labels],comps:[...wkSetData.comps],watchers:[...wkSetData.watchers],watcherNames:{...wkSetData.watcherNames},groups:[...wkSetData.groups]};
+        jcRowSettingsTarget=null;
+        closeWeeklySettings();
+        renderJcTaskRows('existing');renderJcTaskRows('new');renderJcTaskRows('multi');
+        showToast('개별 설정 적용됨','success');
+        return;
+    }
+    if(!wkSettingsTarget)return;
+    const {ti,si}=wkSettingsTarget;
+    const isSub=si!==undefined;
+    const item=isSub?weeklyState[ti].subs[si]:weeklyState[ti];
+    item.assignee=wkSetData.assignee;
+    item.assigneeName=wkSetData.assigneeName;
+    item.labels=[...wkSetData.labels];
+    item.comps=[...wkSetData.comps];
+    item.watchers=[...wkSetData.watchers];
+    item.watcherNames={...wkSetData.watcherNames};
+    item.groups=[...wkSetData.groups];
+    closeWeeklySettings();
+    refreshWeeklyLists();
+    showToast('설정 적용됨','success');
+}
+
+// Jira 생성 탭 - 개별 행 설정
+let jcRowSettingsTarget=null; // 'existing_0' etc.
+function openJcRowSettings(tab,idx){
+    const key=`${tab}_${idx}`;
+    jcRowSettingsTarget=key;
+    const existing=jcRowSettings[key]||{};
+    wkSetData={
+        assignee:existing.assignee||'',
+        assigneeName:existing.assigneeName||'',
+        labels:[...(existing.labels||[])],
+        comps:[...(existing.comps||[])],
+        watchers:[...(existing.watchers||[])],
+        watcherNames:{...(existing.watcherNames||{})},
+        groups:[...(existing.groups||[])]
+    };
+    document.getElementById('wkSettingsTitle').textContent='항목 개별 설정';
+    document.getElementById('wkSetAssignee').value=wkSetData.assigneeName;
+    renderWkSetTags();
+    document.getElementById('modalWeeklySettings').style.display='flex';
+    if(!wkSetAcInit){
+        wkSetAcInit=true;
+        makeAutocomplete(document.getElementById('wkSetAssignee'),jcUserSearch,(val,label)=>{wkSetData.assignee=val;wkSetData.assigneeName=label;});
+        makeAutocomplete(document.getElementById('wkSetWatcher'),jcUserSearch,(val,label)=>{
+            if(!wkSetData.watchers.includes(val)){wkSetData.watchers.push(val);wkSetData.watcherNames[val]=label;}
+            renderWkSetTags();return false;
+        });
+        makeAutocomplete(document.getElementById('wkSetGroup'),jcGroupSearch,(val)=>{
+            if(!wkSetData.groups.includes(val))wkSetData.groups.push(val);
+            renderWkSetTags();return false;
+        });
+        fetchComponents().then(comps=>{const names=comps.map(c=>c.name);
+            makeAutocomplete(document.getElementById('wkSetComp'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!wkSetData.comps.includes(val))wkSetData.comps.push(val);renderWkSetTags();return false;});});
+        fetchLabels().then(lbls=>{const names=Array.isArray(lbls)?lbls:[];
+            makeAutocomplete(document.getElementById('wkSetLabel'),async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
+            (val)=>{if(!wkSetData.labels.includes(val))wkSetData.labels.push(val);renderWkSetTags();return false;});});
+    }
+}
+// saveWeeklySettings를 확장 - jcRowSettings도 저장
+const origSaveWeeklySettings=typeof saveWeeklySettings==='function'?null:null;
+
+function addWeeklySub(ti){
+    // 상위 Task 또는 수정버전에서 마일스톤 추출
+    const ver=document.getElementById('maintVersion')?.value||'';
+    const m=ver.match(/^(M\d+)/i);
+    const prefix=m?`[${m[1]}] `:'';
+    weeklyState[ti].subs.push({name:'',prefix:prefix,labels:[],groups:[],comps:[],watchers:[],watcherNames:{},enabled:true,_custom:true});
+    refreshWeeklyLists();
+}
+function addWeeklyTask(){
+    weeklyState.push({category:'',enabled:true,assignee:DEFAULT_ASSIGNEE,assigneeName:'손정아',labels:[],groups:[],comps:[],watchers:[],watcherNames:{},subs:[],_custom:true});
+    refreshWeeklyLists();
+    // 마지막 추가된 Task의 입력란에 포커스
+    setTimeout(()=>{const inputs=document.querySelectorAll('#maintWeeklyList input[type="text"]');if(inputs.length)inputs[inputs.length-1].focus();},50);
+}
+function refreshWeeklyLists(){
+    renderMaintWeeklyList();
+    // Sub-task 담당자 autocomplete 연결
+    setTimeout(()=>{
+        weeklyState.forEach((t,ti)=>{
+            t.subs.forEach((s,si)=>{
+                const input=document.getElementById(`wkSubAssign_${ti}_${si}`);
+                if(!input||input._acInit)return;
+                input._acInit=true;
+                makeAutocomplete(input,jcUserSearch,(val,label)=>{
+                    weeklyState[ti].subs[si].assignee=val;
+                    weeklyState[ti].subs[si].assigneeName=label;
+                    input.style.color='var(--text)';
+                    input.style.fontStyle='normal';
+                });
+            });
+        });
+    },100);
+}
+
+function previewMaintAll(){
+    const ver=document.getElementById('maintVersion').value;
+    const date=document.getElementById('maintDate').value;
+    if(!ver){showToast('수정버전을 입력하세요.','error');return;}
+
+    const tag=(items,cls)=>items.map(v=>`<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:${cls};white-space:nowrap">${v}</span>`).join(' ');
+    const labelTag=items=>tag(items,'rgba(74,85,104,.08)');
+    const groupTag=items=>tag(items,'rgba(99,102,241,.08)');
+    const tree=document.getElementById('maintFinalList');
+    let html='';let total=0;
+
+    // 빌드 에픽
+    const newMaint=maintItems.filter(it=>!it.existing&&it.checked);
+    newMaint.forEach(it=>{
+        html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--bg3);border-bottom:1px solid var(--border)"><span class="issue-type-badge issue-type-epic" style="font-size:10px">Epic</span><span style="flex:1;font-weight:600">${it.summary}</span>
+        <div style="font-size:10px;color:var(--text3)">버전: ${ver} | 우선순위: High</div></div>`;
+        total++;
+    });
+
+    // 주간 Task
+    const m=ver.match(/^(M\d+)/i);
+    const prefix=m?`[${m[1]}] `:'';
+    let dateStr='';
+    if(date){const d=new Date(date);dateStr=`${String(d.getFullYear()).slice(2)}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;}
+
+    weeklyState.filter(t=>t.enabled).forEach(t=>{
+        const title=prefix+(dateStr?dateStr+' ':'')+t.category;
+        html+=`<div style="padding:6px 12px;background:var(--bg3);border-bottom:1px solid var(--border)">
+            <div style="display:flex;align-items:center;gap:8px"><span class="issue-type-badge issue-type-task" style="font-size:10px">Task</span><span style="flex:1;font-weight:600">${title}</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:3px;padding-left:44px">
+                <span style="font-size:10px;color:var(--text3)">담당자:</span><span style="font-size:10px">${t.assigneeName||'손정아'}</span>
+                <span style="font-size:10px;color:var(--text3);margin-left:4px">레이블:</span>${labelTag(t.labels)}
+                <span style="font-size:10px;color:var(--text3);margin-left:4px">그룹:</span>${groupTag(t.groups)}
+            </div>
+        </div>`;
+        total++;
+        t.subs.filter(s=>s.enabled).forEach(s=>{
+            const subTitle=s._custom?(s.prefix||'')+s.name:prefix+(dateStr?dateStr+' ':'')+s.name;
+            html+=`<div style="padding:4px 12px 4px 36px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:8px"><span class="issue-type-badge issue-type-subtask" style="font-size:10px">Sub</span><span style="flex:1;font-size:12px">${subTitle}</span></div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;padding-left:36px">
+                    <span style="font-size:10px;color:var(--text3)">레이블:</span>${labelTag(s.labels)}
+                    <span style="font-size:10px;color:var(--text3);margin-left:4px">그룹:</span>${groupTag(s.groups)}
+                </div>
+            </div>`;
+            total++;
+        });
+    });
+
+    tree.innerHTML=html||'<div style="padding:20px;text-align:center;color:var(--text3)">생성할 항목이 없습니다.</div>';
+    document.getElementById('maintTotalCount').textContent=total;
+    document.getElementById('maintFinalPreview').style.display='';
+}
+
+async function createMaintAllTickets(){
+    const j=getJiraSettings();if(!j.isValid){showToast('Jira 설정을 먼저 완료하세요.','error');return;}
+    const ver=document.getElementById('maintVersion').value;
+    const date=document.getElementById('maintDate').value;
+    if(!ver){showToast('수정버전을 입력하세요.','error');return;}
+
+    const m=ver.match(/^(M\d+)/i);
+    const prefix=m?`[${m[1]}] `:'';
+    let dateStr='';
+    if(date){const d=new Date(date);dateStr=`${String(d.getFullYear()).slice(2)}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;}
+
+    // 빌드 에픽 카운트
+    const newMaint=maintItems.filter(it=>!it.existing&&it.checked);
+    const enabledTasks=weeklyState.filter(t=>t.enabled);
+    let totalCount=newMaint.length;
+    enabledTasks.forEach(t=>{totalCount++;totalCount+=t.subs.filter(s=>s.enabled).length;});
+
+    if(!totalCount){showToast('생성할 항목이 없습니다.','error');return;}
+    if(!confirm(`총 ${totalCount}건 생성 (에픽 ${newMaint.length} + Task ${enabledTasks.length} + Sub-task)\n계속하시겠습니까?`))return;
+
+    const ps=document.getElementById('maintProgressSection'),pf=document.getElementById('maintProgressFill'),pt=document.getElementById('maintProgressText'),btn=document.getElementById('maintBtnCreate');
+    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
+    let created=0,errors=[];const createdTickets=[];
+    const desc={type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:'-'}]}]};
+
+    try{
+        // 1. 빌드 에픽 생성
+        for(const it of newMaint){
+            if(_cancelCreation)break;
+            pt.textContent=`에픽 생성 중... - ${it.summary}`;
+            pf.style.width=`${(created/totalCount)*100}%`;
+            const body={fields:{project:{key:j.projectKey},summary:it.summary,issuetype:{name:'Epic'},priority:{name:'High'},description:desc}};
+            body.fields.fixVersions=[{name:ver}];
+            const r=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(body)});
+            if(!r.ok){errors.push(`에픽 [${it.summary}]: ${await r.text()}`);}
+            else{const td=await r.json();created++;createdTickets.push({key:td.key,type:'Epic',summary:it.summary});}
+        }
+
+        // 2. 주간 Task + Sub-task 생성
+        for(const task of enabledTasks){
+            const taskTitle=prefix+(dateStr?dateStr+' ':'')+task.category;
+            if(_cancelCreation)break;
+            pt.textContent=`Task 생성 중... - ${task.category}`;
+            pf.style.width=`${(created/totalCount)*100}%`;
+
+            const body={fields:{project:{key:j.projectKey},summary:taskTitle,issuetype:{name:'Task'},priority:{name:'Medium'},description:desc}};
+            body.fields.fixVersions=[{name:ver}];
+            if(task.assignee)body.fields.assignee={accountId:task.assignee};
+            if(task.labels&&task.labels.length)body.fields.labels=task.labels;
+            if(task.comps&&task.comps.length)body.fields.components=task.comps.map(c=>({name:c}));
+
+            const r=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(body)});
+            if(!r.ok){const e=await r.text();errors.push(`Task [${task.category}]: ${e}`);continue;}
+            const td=await r.json();created++;
+            createdTickets.push({key:td.key,type:'Task',summary:taskTitle});
+            for(const g of task.groups){await jiraFetch(`/rest/api/3/issue/${td.key}/watchers`,{method:'POST',body:JSON.stringify(g)}).catch(e=>console.warn('API warning:',e));}
+            if(task.watchers)for(const w of task.watchers){await jiraFetch(`/rest/api/3/issue/${td.key}/watchers`,{method:'POST',body:JSON.stringify(w)}).catch(e=>console.warn('API warning:',e));}
+
+            const enabledSubs=task.subs.filter(s=>s.enabled);
+            for(const sub of enabledSubs){
+                const subTitle=sub._custom?(sub.prefix||'')+sub.name:prefix+(dateStr?dateStr+' ':'')+sub.name;
+                if(_cancelCreation)break;
+                pt.textContent=`Sub-task 생성 중... - ${sub.name}`;
+                const sb={fields:{project:{key:j.projectKey},summary:subTitle,issuetype:{name:'Sub-task'},parent:{key:td.key},priority:{name:'Medium'},description:desc}};
+                sb.fields.fixVersions=[{name:ver}];
+                sb.fields.assignee={accountId:sub.assignee||DEFAULT_ASSIGNEE};
+                if(sub.labels&&sub.labels.length)sb.fields.labels=sub.labels;
+                if(sub.comps&&sub.comps.length)sb.fields.components=sub.comps.map(c=>({name:c}));
+
+                const sr=await jiraFetch('/rest/api/3/issue',{method:'POST',body:JSON.stringify(sb)});
+                if(!sr.ok){errors.push(`Sub [${sub.name}]: ${await sr.text()}`);}
+                else{
+                    const sd=await sr.json();created++;
+                    createdTickets.push({key:sd.key,type:'Sub-task',summary:subTitle});
+                    for(const g of (sub.groups||[])){await jiraFetch(`/rest/api/3/issue/${sd.key}/watchers`,{method:'POST',body:JSON.stringify(g)}).catch(e=>console.warn('API warning:',e));}
+                    if(sub.watchers)for(const w of sub.watchers){await jiraFetch(`/rest/api/3/issue/${sd.key}/watchers`,{method:'POST',body:JSON.stringify(w)}).catch(e=>console.warn('API warning:',e));}
+                }
+                pf.style.width=`${(created/totalCount)*100}%`;
+            }
+        }
+
+        pf.style.width='100%';
+        pt.textContent=_cancelCreation?`중단됨: ${created}건 생성됨`:errors.length?`완료: ${created}건 생성, ${errors.length}건 오류`:`완료! ${created}건 생성됨`;
+        showCreationResult(createdTickets,errors);
+    }catch(e){pt.textContent=`오류: ${e.message}`;showToast('생성 중 오류','error');}
+    btn.disabled=false;btn.textContent='Jira 생성';
+}
+
+// ==========================================
 // MAINTENANCE CREATE
 // ==========================================
 let maintItems=[]; // [{summary, date, checked}]
@@ -2289,8 +4183,11 @@ async function openMaintenanceModal(){
     document.getElementById('maintEditList').innerHTML='';
     document.getElementById('maintPreviewSection').style.display='none';
     document.getElementById('maintBtnCsv').style.display='none';
-    document.getElementById('maintBtnCreate').style.display='none';
     document.getElementById('maintProgressSection').style.display='none';
+    document.getElementById('maintFinalPreview').style.display='none';
+    // 주간 업데이트 초기화
+    weeklyState=WEEKLY_TEMPLATE.map(t=>({...t,enabled:true,subs:t.subs.map(s=>({...s,enabled:true,assignee:s.suggestId||DEFAULT_ASSIGNEE,assigneeName:s.suggestName||'손정아'}))}));
+    renderMaintWeeklyList();
     document.getElementById('modalMaint').classList.add('active');
     // 버전 자동완성
     const vers=await fetchVersions();
@@ -2306,11 +4203,12 @@ async function openMaintenanceModal(){
                 tmpl.value=tmpl.value.replace(/\[M\d+\]/,`[${m[1]}]`).replace(/\[마일스톤\]/,`[${m[1]}]`);
             }
             // 날짜 자동 추출: M38_260409_정기점검 → 2026-04-09
-            const dm=val.match(/(\d{2})(\d{2})(\d{2})/);
+            const dm=val.match(/_(\d{2})(\d{2})(\d{2})/);
             if(dm){
                 const dateStr=`20${dm[1]}-${dm[2]}-${dm[3]}`;
                 document.getElementById('maintDate').value=dateStr;
             }
+            renderMaintWeeklyList();
         });
 }
 let maintMilestone='';let maintThurDate=null;
@@ -2471,7 +4369,7 @@ async function createMaintTickets(){
     preview+='\n이대로 생성하시겠습니까?';
     if(!confirm(preview))return;
     const ps=document.getElementById('maintProgressSection'),pf=document.getElementById('maintProgressFill'),pt=document.getElementById('maintProgressText'),btn=document.getElementById('maintBtnCreate');
-    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';
+    ps.style.display='block';btn.disabled=true;btn.textContent='생성 중...';_cancelCreation=false;
     let created=0,errors=[];
     const mkAdf=t=>({type:'doc',version:1,content:[{type:'paragraph',content:[{type:'text',text:t}]}]});
     for(let i=0;i<items.length;i++){
