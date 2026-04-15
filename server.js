@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 
 // 정적 파일 (로컬 접속용)
 app.use(express.static(path.join(__dirname)));
-app.use(express.json());
+app.use(express.json({ strict: false }));
 
 // 설정 파일 경로
 const CONFIG_PATH = path.join(__dirname, 'config.json');
