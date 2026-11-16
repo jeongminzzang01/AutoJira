@@ -1,3 +1,7 @@
 @echo off
-cd /d "d:\AUTOJIRA"
+cd /d "%~dp0"
+if not exist "node_modules" (
+  echo Installing dependencies...
+  call npm install
+)
 start /min node server.js
