@@ -133,6 +133,7 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .modal-overlay.side-panel-mode .modal{width:100%!important;max-width:none!important;max-height:none!important;height:auto!important;box-shadow:none;border:none;background:transparent;border-radius:0}
 .modal-overlay.side-panel-mode .modal-header{padding:0 0 16px 0!important;border-bottom:1px solid var(--border);margin-bottom:20px}
 .modal-overlay.side-panel-mode .modal-close{display:none}
+#modalSubtaskMove.side-panel-mode .modal-header{display:none}
 .modal-overlay.side-panel-mode .modal-body{padding:0!important;overflow-y:visible;background:transparent}
 .modal-overlay.side-panel-mode .wizard-pane{background:transparent}
 .modal-overlay.side-panel-mode{background:transparent!important}
@@ -541,7 +542,9 @@ input[placeholder*="검색"]:not([type="date"]):not([type="number"]),
     </div>
 </div>
 
-<div class="jira-settings-inline" id="jiraSettingsPanel">
+<!-- 처음엔 접어 둔다 — 펼친 채 시작하면 설정을 받아오는 동안 다른 메뉴를 열어도 프리셋 화면이 잠깐 비친다.
+     설정이 덜 됐으면 loadJiraSettingsUI 가 펼친다. -->
+<div class="jira-settings-inline collapsed" id="jiraSettingsPanel">
     <div class="settings-section" id="sectionJira">
     <h3 class="section-title" onclick="toggleSection('sectionJira')"><span class="section-chevron">▾</span> Jira 연결 설정</h3>
     <div class="section-body jira-settings-body">
@@ -1141,6 +1144,7 @@ input[placeholder*="검색"]:not([type="date"]):not([type="number"]),
                     <div class="form-group fg-version">
                         <label>수정버전 <span class="lbl-req">*</span></label>
                         <input type="text" id="maintVersion" placeholder="버전 검색..." class="maint-ac-version">
+                        <div id="maintVersionHint" style="display:none;margin-top:4px;font-size:12px;color:#dc2626">필수 — 수정버전을 먼저 선택하세요</div>
                         <div id="maintDateAutoDisplay" class="date-auto-display" style="display:none">
                             <span id="maintDateAutoText"></span>
                             <a href="#" onclick="showMaintDateInput();return false" class="link-edit">수정</a>
@@ -1200,7 +1204,7 @@ input[placeholder*="검색"]:not([type="date"]):not([type="number"]),
                     <div id="maintFinalList" style="max-height:280px;overflow-y:auto"></div>
                 </div>
             </div>
-            <div style="margin-top:8px;text-align:center"><button class="btn btn-sm btn-secondary" onclick="previewMaintAll()">👁 통합 미리보기 새로고침</button></div>
+            <div style="margin-top:8px;text-align:center"><button class="btn btn-sm btn-secondary" onclick="previewMaintAll(true)">👁 통합 미리보기 새로고침</button></div>
         </div>
 
         <div id="maintProgressSection" style="display:none;margin-top:12px">
@@ -1220,12 +1224,12 @@ input[placeholder*="검색"]:not([type="date"]):not([type="number"]),
 
 <!-- Modal: Subtask Parent Move -->
 <div class="modal-overlay" id="modalSubtaskMove"><div class="modal" style="width:920px;max-height:92vh">
-    <div class="modal-header"><h2>서브태스크 부모 이동</h2><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
+    <div class="modal-header" style="justify-content:flex-end"><button class="modal-close" onclick="closeAllModals()">&times;</button></div>
     <div class="modal-body">
         <div id="smSelectArea">
         <div class="tab-bar" style="margin-bottom:12px">
-            <button class="active" id="smTabMove" onclick="setSmMode('move')">서브태스크 부모 이동</button>
-            <button id="smTabConvert" onclick="setSmMode('convert')">태스크 → 서브태스크 변환 이동</button>
+            <button class="active" id="smTabMove" onclick="setSmMode('move')">서브태스크 이동</button>
+            <button id="smTabConvert" onclick="setSmMode('convert')">태스크 → 서브태스크 변환</button>
         </div>
         <div class="form-card">
             <div class="form-card-title">🔍 ① 기준 에픽 / 태스크</div>
@@ -2693,7 +2697,7 @@ async function loadJiraSettingsUI(){
     restoreSectionStates();
     // 설정이 완전하면 패널 자동 접기 (첫 방문자에게만 노출)
     const j=getJiraSettings();
-    if(j.isValid)document.getElementById('jiraSettingsPanel').classList.add('collapsed');
+    document.getElementById('jiraSettingsPanel').classList.toggle('collapsed',j.isValid);
     // 오늘 D-day 배지 렌더
     renderTodayDdayBadge();
 }
@@ -6087,10 +6091,28 @@ function refreshWeeklyLists(){
     },100);
 }
 
-function previewMaintAll(){
+/* 수정버전 칸에 '필수' 표시를 켜고 끈다 — 오류 팝업 대신 칸 자체로 알린다 */
+function markMaintVersionRequired(on){
+    const el=document.getElementById('maintVersion');
+    const hint=document.getElementById('maintVersionHint');
+    if(el)el.style.borderColor=on?'#dc2626':'';
+    if(hint)hint.style.display=on?'':'none';
+}
+/* manual=true 는 [통합 미리보기 새로고침] 을 직접 누른 경우.
+   화면을 열거나 항목을 고칠 때 저절로 불리면 버전이 비어도 팝업을 띄우지 않고,
+   미리보기 자리에 안내만 보이고 버전 칸에 필수 표시를 한다 */
+function previewMaintAll(manual){
     const ver=document.getElementById('maintVersion').value;
     const date=document.getElementById('maintDate').value;
-    if(!ver){showToast('수정버전을 입력하세요.','error');return;}
+    if(!ver){
+        markMaintVersionRequired(true);
+        if(manual===true){showToast('수정버전을 입력하세요.','error');return;}
+        document.getElementById('maintFinalList').innerHTML='<div style="padding:20px;text-align:center;color:var(--text3)">수정버전을 선택하면 미리보기가 나옵니다.</div>';
+        document.getElementById('maintTotalCount').textContent='0';
+        document.getElementById('maintFinalPreview').style.display='';
+        return;
+    }
+    markMaintVersionRequired(false);
 
     const tag=(items,cls)=>items.map(v=>`<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:${cls};white-space:nowrap">${v}</span>`).join(' ');
     const labelTag=items=>tag(items,'rgba(74,85,104,.08)');
@@ -6152,7 +6174,7 @@ async function createMaintAllTickets(){
     // 한 페이지 뷰가 아닐 때만 필수 입력값 검증
     const isSidePanelMode=document.getElementById('modalMaint')?.classList.contains('side-panel-mode');
     if(!isSidePanelMode){
-        if(!ver){showToast('수정버전을 입력하세요.','error');return;}
+        if(!ver){showToast('수정버전을 입력하세요.','error');markMaintVersionRequired(true);return;}
     }
     const reporterId=document.getElementById('maintReporterId').value;
 
@@ -6291,6 +6313,8 @@ async function openMaintenanceModal(){
         ['maintVersion','maintDate','maintReporter','maintTemplate'].forEach(id=>{
             const el=document.getElementById(id);if(el)el.addEventListener('input',maintAutosave);
         });
+        // 버전을 적기 시작하면 필수 표시를 끈다
+        document.getElementById('maintVersion')?.addEventListener('input',e=>{if(e.target.value.trim())markMaintVersionRequired(false);});
         // 버전명을 직접 입력하고 포커스를 벗어난 경우에도 날짜 자동 입력
         document.getElementById('maintVersion')?.addEventListener('change',e=>{
             tryAutofillMaintDate(e.target.value);maintAutosave();
@@ -6303,6 +6327,7 @@ async function openMaintenanceModal(){
         async q=>names.filter(n=>n.toLowerCase().includes(q.toLowerCase())).map(n=>({value:n,label:n})),
         (val)=>{
             document.getElementById('maintVersion').value=val;
+            markMaintVersionRequired(false);
             // 마일스톤 자동 추출 → 템플릿 반영
             const m=val.match(/^(M\d+)/i);
             if(m){
@@ -6434,6 +6459,7 @@ function getMaintDraftState(){
 function restoreMaintDraft(s){
     if(s.version){
         document.getElementById('maintVersion').value=s.version;
+        markMaintVersionRequired(false);
         // 자동 추출 시도 → 성공하면 input 숨김
         if(s.date&&!tryAutofillMaintDate(s.version))hideMaintDateAutoDisplay();
     }
@@ -6831,8 +6857,8 @@ async function createMaintTickets(){
 }
 
 // ==========================================
-// 서브태스크 부모 이동 (로직: lib/subtask-move.js)
-// 탭(작업 종류): move = 서브태스크 부모 이동 / convert = 태스크 → 서브태스크 변환 이동
+// 서브태스크 이동·변환 (로직: lib/subtask-move.js)
+// 탭(작업 종류): move = 서브태스크 이동 / convert = 태스크 → 서브태스크 변환
 // 흐름: ① 기준 에픽/태스크 (+ 선택 키워드) → ② 결과 체크 (+ 번호로 직접 추가) → ③ 이동할 태스크 → 확인
 // ==========================================
 let _smMode='move';
@@ -7149,7 +7175,7 @@ function initSidebarMenu(){
         {icon:'📦',label:'수정버전 생성',fn:'openVersionModal'},
         {icon:'',label:''},  // divider
         {icon:'✏️',label:'일괄 필드 수정',fn:'openBulkEdit'},
-        {icon:'🔀',label:'서브태스크 부모 이동',fn:'openSubtaskMove'},
+        {icon:'🔀',label:'서브태스크 이동·변환',fn:'openSubtaskMove'},
         {icon:'',label:''},  // divider
         {icon:'🕒',label:'최근 생성 이력',fn:'showRecentHistory'},
         {icon:'',label:''},  // divider
