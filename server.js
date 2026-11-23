@@ -12,12 +12,60 @@ app.use((req, res, next) => {
     next();
 });
 
-// 정적 파일 (로컬 접속용)
-app.use(express.static(path.join(__dirname)));
+// 정적 파일 (로컬 접속용) — 화면이 쓰는 파일만 내보낸다.
+// 폴더 통째로 열면 config.json · move-logs/ · server.js 까지 주소로 읽힌다.
+app.get(['/', '/index.html'], (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+['lib/logger.js', 'lib/utils.js', 'lib/subtask-move.js'].forEach(f => {
+    app.get('/' + f, (req, res) => res.sendFile(path.join(__dirname, f)));
+});
 app.use(express.json({ strict: false }));
 
 // 설정 파일 경로
 const CONFIG_PATH = path.join(__dirname, 'config.json');
+
+/* ── 지라 자격은 PM AGENT 의 연결 설정 한 군데서 온다 ──────────────
+   베껴 두지 않고 그때그때 읽는다. 파일 고친 시각이 그대로면 읽지 않는다.
+   PM AGENT 가 없는 PC 에서 혼자 띄울 때를 위해 환경변수도 본다. */
+const PM_AGENT = process.env.PM_AGENT_DIR || path.join('E:', 'PM-AGENT');
+const 자격파일 = path.join(PM_AGENT, 'config', 'credentials.json');
+let _자격 = null, _읽은때 = 0;
+
+function 지라자격() {
+    const env = {
+        domain: process.env.JIRA_DOMAIN || '',
+        email: process.env.JIRA_EMAIL || '',
+        token: process.env.JIRA_API_TOKEN || '',
+    };
+    if (env.email && env.token) return { ...env, 어디서: '환경변수' };
+    try {
+        const 때 = require('fs').statSync(자격파일).mtimeMs;
+        if (!_자격 || 때 !== _읽은때) {
+            const j = (JSON.parse(require('fs').readFileSync(자격파일, 'utf8')) || {}).jira || {};
+            _자격 = {
+                domain: j.domain || env.domain || '',
+                email: j.email || '',
+                token: j.token || '',
+                어디서: 'PM AGENT 연결 설정',
+            };
+            _읽은때 = 때;
+        }
+        return _자격;
+    } catch (e) {
+        return { ...env, 어디서: '', 탈: String(e.message).slice(0, 120) };
+    }
+}
+
+/* 화면이 "누구로 들어가 있는지" 를 묻는 자리. 토큰은 절대 안 싣는다. */
+app.get('/api/me', (req, res) => {
+    const c = 지라자격();
+    res.json({
+        ok: Boolean(c.email && c.token),
+        domain: c.domain,
+        email: c.email,
+        어디서: c.어디서,
+        탈: c.탈 || '',
+    });
+});
 
 // 설정 읽기
 app.get('/api/config', (req, res) => {
@@ -33,26 +81,14 @@ app.get('/api/config', (req, res) => {
     }
 });
 
-// 프리셋 병합: 같은 이름이면 updatedAt 기준 최신값만 유지
-function mergePresets(existing = [], incoming = []) {
-    const map = {};
-    existing.forEach(p => {
-        const key = p.name || '';
-        if (!map[key] || (p.updatedAt || 0) > (map[key].updatedAt || 0)) {
-            map[key] = p;
-        }
-    });
-    incoming.forEach(p => {
-        const key = p.name || '';
-        if (!map[key] || (p.updatedAt || 0) > (map[key].updatedAt || 0)) {
-            map[key] = p;
-        }
-    });
-    return Object.values(map);
-}
+/* 프리셋 합치기는 화면과 같은 함수를 쓴다 (lib/utils.js).
+   이름으로 짝지어 나중에 고친 쪽을 두고, '지운 표'(jiraPresetsDeleted) 에
+   적힌 이름은 지운 시각보다 나중에 고친 것이 아니면 뺀다. 전에는 지운 것을
+   나타낼 길이 없어서 지우거나 이름을 바꾼 프리셋이 다시 열면 되살아났다. */
+const { reconcilePresets } = require('./lib/utils.js');
 
 // 설정 저장 (개인 토큰·이메일은 서버에 저장하지 않음 — 다중 사용자 덮어쓰기 방지)
-// 프리셋은 서버에 저장하되, 기존 프리셋과 병합 (이름 중복 시 updatedAt 최신값 유지)
+// 프리셋은 서버에 저장하되, 기존 프리셋과 병합 (이름 중복 시 updatedAt 최신값 유지, 지운 표 반영)
 app.post('/api/config', (req, res) => {
     try {
         const fs = require('fs');
@@ -72,13 +108,19 @@ app.post('/api/config', (req, res) => {
             }
         }
 
-        // 프리셋 병합 (기존 + 새 프리셋, 중복은 최신버전만)
-        if (body.jiraPresets || existing.jiraPresets) {
-            body.jiraPresets = mergePresets(existing.jiraPresets || [], body.jiraPresets || []);
+        // 프리셋 병합 (기존 + 새 프리셋, 중복은 최신버전만, 지운 표에 있는 것은 뺀다)
+        if (body.jiraPresets || existing.jiraPresets || body.jiraPresetsDeleted || existing.jiraPresetsDeleted) {
+            const r = reconcilePresets({
+                presets: [existing.jiraPresets || [], Array.isArray(body.jiraPresets) ? body.jiraPresets : []],
+                deleted: [existing.jiraPresetsDeleted || [], Array.isArray(body.jiraPresetsDeleted) ? body.jiraPresetsDeleted : []],
+            });
+            body.jiraPresets = r.presets;
+            body.jiraPresetsDeleted = r.deleted;
         }
 
-        /* 보내 온 것만 쓰면 화면이 안 보낸 설정(프리셋 · 주간 고정 항목 등)이 사라진다.
-           있던 것 위에 덮어쓴다 (팀 저장소와 같은 방식). */
+        /* 보내 온 것만 쓰고 나머지를 버리면, 화면이 안 보내는 설정이 조용히
+           사라진다. 프리셋만 저장했을 뿐인데 proxyUrl 이 날아갔다
+           (2026-10-19). 있던 것 위에 덮어쓴다. */
         const merged = { ...existing, ...body };
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(merged, null, 2), 'utf8');
         res.json({ ok: true });
@@ -108,8 +150,16 @@ app.get('/api/move-log', (req, res) => {
     try {
         const fs = require('fs');
         if (!fs.existsSync(MOVE_LOG_DIR)) return res.json([]);
-        const list = fs.readdirSync(MOVE_LOG_DIR).filter(f => f.endsWith('.json')).sort().reverse().slice(0, 20)
-            .map(f => JSON.parse(fs.readFileSync(path.join(MOVE_LOG_DIR, f), 'utf8')));
+        // 깨진 파일 하나 때문에 목록 전체(되돌리기)가 막히지 않게, 못 읽는 파일은 건너뛰고 알린다
+        const list = [];
+        for (const f of fs.readdirSync(MOVE_LOG_DIR).filter(f => f.endsWith('.json')).sort().reverse()) {
+            if (list.length >= 20) break;
+            try {
+                list.push(JSON.parse(fs.readFileSync(path.join(MOVE_LOG_DIR, f), 'utf8')));
+            } catch (e) {
+                console.warn('[move-log] 읽을 수 없는 로그 건너뜀:', f, e.message);
+            }
+        }
         res.json(list);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -129,11 +179,21 @@ app.use('/jira-proxy', (req, res, next) => {
     }
 }, async (req, res) => {
     const jiraPath = req.url;
-    const domain = req.headers['x-jira-domain'];
-    const auth = req.headers['x-jira-auth'];
+
+    /* 서버가 들고 있는 자격이 먼저다. 화면에서 보내 온 머리글은 PM AGENT 가
+       없는 PC 에서 혼자 띄웠을 때만 쓴다 — 브라우저에 남아 있던 옛 토큰이
+       서버 것을 밀어내면 안 된다. */
+    const 내자격 = 지라자격();
+    const domain = (내자격.email && 내자격.token && 내자격.domain)
+        || req.headers['x-jira-domain'];
+    const auth = (내자격.email && 내자격.token)
+        ? Buffer.from(내자격.email + ':' + 내자격.token).toString('base64')
+        : req.headers['x-jira-auth'];
 
     if (!domain || !auth) {
-        return res.status(400).json({ error: 'Missing Jira domain or auth' });
+        return res.status(400).json({
+            error: '지라 자격이 없습니다. PM AGENT ▸ 시스템 ▸ 연결 설정 에서 지라 도메인·이메일·API 토큰을 넣어 주세요.',
+        });
     }
 
     const url = `https://${domain}${jiraPath}`;
@@ -181,18 +241,13 @@ app.use('/jira-proxy', (req, res, next) => {
     }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-    const os = require('os');
-    const nets = os.networkInterfaces();
-    let ip = 'localhost';
-    for (const name of Object.keys(nets)) {
-        for (const net of nets[name]) {
-            if (net.family === 'IPv4' && !net.internal) { ip = net.address; break; }
-        }
-    }
+/* 이 PC 안에서만 듣는다. 서버가 내 토큰을 끼워 넣으므로, 같은 망의 누가
+   열면 내 이름으로 티켓이 만들어진다. PM AGENT 의 프록시는 127.0.0.1 로
+   들어오니 쓰는 데는 지장이 없다. */
+app.listen(PORT, '127.0.0.1', () => {
+    const c = 지라자격();
     console.log('');
-    console.log('  ✅ AUTOJIRA 프록시 서버 실행 중');
-    console.log(`  로컬:    http://localhost:${PORT}`);
-    console.log(`  네트워크: http://${ip}:${PORT}`);
+    console.log('  국내 지라 도구 (KR JIRA)  http://127.0.0.1:' + PORT);
+    console.log('  지라 자격: ' + (c.email && c.token ? c.email + ' — ' + c.어디서 : '없음 (PM AGENT ▸ 연결 설정)'));
     console.log('');
 });
