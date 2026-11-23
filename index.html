@@ -362,18 +362,21 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 
 /* Autocomplete */
 .wt-overlay{display:none;position:fixed;inset:0;background:var(--overlay-bg,rgba(0,0,0,.35));z-index:1050;justify-content:center;align-items:center}
-.wt-box{background:var(--bg2);color:var(--text);border-radius:10px;width:min(960px,94vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.wt-box{background:var(--bg2);color:var(--text);border-radius:10px;width:min(1280px,96vw);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.2)}
 .wt-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);font-size:16px}
 .wt-desc{padding:10px 20px 0;font-size:12px;color:var(--text3)}
 .wt-body{padding:12px 20px;overflow-y:auto;flex:1}
 .wt-foot{display:flex;gap:8px;align-items:center;padding:12px 20px;border-top:1px solid var(--border)}
 .wt-task{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
-.wt-row{display:flex;gap:6px;align-items:center;padding:6px 10px}
+.wt-row{display:grid;grid-template-columns:40px 2.2fr 1fr 1.2fr 1.8fr 24px;gap:6px;align-items:center;padding:6px 10px}
 .wt-task-head{background:var(--bg3)}
-.wt-sub{padding-left:32px;border-top:1px solid var(--border)}
+.wt-sub{border-top:1px solid var(--border)}
+.wt-sub input[type=checkbox]{justify-self:end}
 .wt-row input[type=text]{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);min-width:0}
-.wt-row .wt-name{flex:2}
-.wt-row .wt-meta{flex:1}
+.wt-row input[type=text]{width:100%;box-sizing:border-box}
+.wt-cols{font-size:11px;color:var(--text3);font-weight:600;padding-top:2px;padding-bottom:2px}
+.wt-cols span{padding-left:9px}
+.wt-cols span:first-child{padding-left:0}
 .wt-row input[type=checkbox]{width:15px;height:15px;flex-shrink:0;accent-color:var(--primary)}
 .wt-row.off .wt-name{color:var(--text3);text-decoration:line-through}
 .wt-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0}
@@ -5672,17 +5675,18 @@ function renderWeeklyTemplateEditor(){
         <div class="wt-row wt-sub${s.on===false?' off':''}">
             <input type="checkbox" ${s.on!==false?'checked':''} onchange="wtToggle(${ti},${si},this.checked)" title="기본 포함 (끄면 체크가 풀린 채 목록에 남음)">
             <input type="text" class="wt-name" value="${esc(s.name||'')}" placeholder="서브태스크 이름" oninput="_wtDraft[${ti}].subs[${si}].name=this.value">
-            <input type="text" class="wt-meta wt-assignee" data-ti="${ti}" data-si="${si}" value="${esc(s.suggestName||'')}" placeholder="담당자 (비우면 손정아)">
-            <input type="text" class="wt-meta" value="${esc(_wtJoin(s.labels))}" placeholder="레이블 (쉼표로 구분)" onchange="_wtDraft[${ti}].subs[${si}].labels=_wtSplit(this.value)">
-            <input type="text" class="wt-meta" value="${esc(_wtJoin(s.groups))}" placeholder="그룹 와처 (쉼표로 구분)" onchange="_wtDraft[${ti}].subs[${si}].groups=_wtSplit(this.value)">
+            <input type="text" class="wt-meta wt-asg wt-assignee" data-ti="${ti}" data-si="${si}" value="${esc(s.suggestName||'')}" placeholder="담당자 (비우면 손정아)">
+            <input type="text" class="wt-meta wt-lbl" value="${esc(_wtJoin(s.labels))}" title="${esc(_wtJoin(s.labels))}" placeholder="레이블 (쉼표로 구분)" onchange="this.title=this.value;_wtDraft[${ti}].subs[${si}].labels=_wtSplit(this.value)">
+            <input type="text" class="wt-meta wt-grp" value="${esc(_wtJoin(s.groups))}" title="${esc(_wtJoin(s.groups))}" placeholder="그룹 와처 (쉼표로 구분)" onchange="this.title=this.value;_wtDraft[${ti}].subs[${si}].groups=_wtSplit(this.value)">
             <button class="wt-del" onclick="wtRemoveSub(${ti},${si})" title="서브태스크 삭제">✕</button>
         </div>`).join('');
         return `<div class="wt-task">
         <div class="wt-row wt-task-head${t.on===false?' off':''}">
             <input type="checkbox" ${t.on!==false?'checked':''} onchange="wtToggle(${ti},undefined,this.checked)" title="기본 포함 (끄면 체크가 풀린 채 목록에 남음)">
             <input type="text" class="wt-name" value="${esc(t.category||'')}" placeholder="Task 이름" oninput="_wtDraft[${ti}].category=this.value" style="font-weight:600">
-            <input type="text" class="wt-meta" value="${esc(_wtJoin(t.labels))}" placeholder="레이블 (쉼표로 구분)" onchange="_wtDraft[${ti}].labels=_wtSplit(this.value)">
-            <input type="text" class="wt-meta" value="${esc(_wtJoin(t.groups))}" placeholder="그룹 와처 (쉼표로 구분)" onchange="_wtDraft[${ti}].groups=_wtSplit(this.value)">
+            <span class="wt-meta wt-asg"></span>
+            <input type="text" class="wt-meta wt-lbl" value="${esc(_wtJoin(t.labels))}" title="${esc(_wtJoin(t.labels))}" placeholder="레이블 (쉼표로 구분)" onchange="this.title=this.value;_wtDraft[${ti}].labels=_wtSplit(this.value)">
+            <input type="text" class="wt-meta wt-grp" value="${esc(_wtJoin(t.groups))}" title="${esc(_wtJoin(t.groups))}" placeholder="그룹 와처 (쉼표로 구분)" onchange="this.title=this.value;_wtDraft[${ti}].groups=_wtSplit(this.value)">
             <button class="wt-del" onclick="wtRemoveTask(${ti})" title="Task 삭제">✕</button>
         </div>${subs}
         <button class="wt-add" onclick="wtAddSub(${ti})">+ 서브태스크 추가</button>
@@ -5691,7 +5695,7 @@ function renderWeeklyTemplateEditor(){
     ov.innerHTML=`<div class="wt-box">
         <div class="wt-head"><b>주간 업데이트 고정 항목</b><button class="wt-del" onclick="closeWeeklyTemplateEditor()" title="닫기">✕</button></div>
         <div class="wt-desc">매주 정기점검 생성에 기본으로 들어가는 항목입니다. 체크를 끄면 지우지 않고 <b>체크가 풀린 채</b> 목록에 남습니다. 저장하면 팀 모두에게 적용됩니다.</div>
-        <div class="wt-body">${tasks}<button class="wt-add" onclick="wtAddTask()">+ Task 추가</button></div>
+        <div class="wt-body"><div class="wt-row wt-cols"><span class="wt-chk-sp"></span><span class="wt-name">Task / 서브태스크</span><span class="wt-meta wt-asg">담당자</span><span class="wt-meta wt-lbl">레이블</span><span class="wt-meta wt-grp">그룹 와처</span><span class="wt-del-sp"></span></div>${tasks}<button class="wt-add" onclick="wtAddTask()">+ Task 추가</button></div>
         <div class="wt-foot">
             <button class="btn btn-sm btn-secondary" onclick="wtResetDefault()">코드 기본값 불러오기</button>
             <span style="flex:1"></span>
