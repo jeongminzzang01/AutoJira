@@ -77,7 +77,10 @@ app.post('/api/config', (req, res) => {
             body.jiraPresets = mergePresets(existing.jiraPresets || [], body.jiraPresets || []);
         }
 
-        fs.writeFileSync(CONFIG_PATH, JSON.stringify(body, null, 2), 'utf8');
+        /* 보내 온 것만 쓰면 화면이 안 보낸 설정(프리셋 · 주간 고정 항목 등)이 사라진다.
+           있던 것 위에 덮어쓴다 (팀 저장소와 같은 방식). */
+        const merged = { ...existing, ...body };
+        fs.writeFileSync(CONFIG_PATH, JSON.stringify(merged, null, 2), 'utf8');
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ error: err.message });

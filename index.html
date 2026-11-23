@@ -361,6 +361,24 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothi
 .table-checkbox{width:16px;height:16px;accent-color:var(--primary);cursor:pointer;flex-shrink:0;margin-right:2px}
 
 /* Autocomplete */
+.wt-overlay{display:none;position:fixed;inset:0;background:var(--overlay-bg,rgba(0,0,0,.35));z-index:1050;justify-content:center;align-items:center}
+.wt-box{background:var(--bg2);color:var(--text);border-radius:10px;width:min(960px,94vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.wt-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);font-size:16px}
+.wt-desc{padding:10px 20px 0;font-size:12px;color:var(--text3)}
+.wt-body{padding:12px 20px;overflow-y:auto;flex:1}
+.wt-foot{display:flex;gap:8px;align-items:center;padding:12px 20px;border-top:1px solid var(--border)}
+.wt-task{border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
+.wt-row{display:flex;gap:6px;align-items:center;padding:6px 10px}
+.wt-task-head{background:var(--bg3)}
+.wt-sub{padding-left:32px;border-top:1px solid var(--border)}
+.wt-row input[type=text]{font-size:13px;padding:5px 8px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);min-width:0}
+.wt-row .wt-name{flex:2}
+.wt-row .wt-meta{flex:1}
+.wt-row input[type=checkbox]{width:15px;height:15px;flex-shrink:0;accent-color:var(--primary)}
+.wt-row.off .wt-name{color:var(--text3);text-decoration:line-through}
+.wt-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 4px;flex-shrink:0}
+.wt-del:hover{color:var(--danger,#dc2626)}
+.wt-add{background:none;border:none;color:var(--primary);cursor:pointer;font-size:13px;padding:6px 10px}
 .ac-box{position:fixed;background:var(--bg2);border:1px solid var(--border);border-radius:6px;max-height:180px;overflow-y:auto;z-index:1100;box-shadow:0 8px 24px rgba(0,0,0,.12),0 4px 12px rgba(0,0,0,.08);min-width:200px}
 .ac-item{padding:8px 12px;font-size:13px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border)}
 .ac-item:hover{background:var(--tag-bg)}
@@ -1187,7 +1205,7 @@ input[placeholder*="검색"]:not([type="date"]):not([type="number"]),
             <div class="form-card">
                 <div class="form-card-title" style="display:flex;justify-content:space-between;align-items:center">
                     <span>🗂 주간 업데이트 Task</span>
-                    <button class="btn btn-sm btn-secondary" onclick="addWeeklyTask()" style="padding:4px 10px;font-size:11px">+ Task 추가</button>
+                    <span style="display:flex;gap:6px"><button class="btn btn-sm btn-secondary" onclick="openWeeklyTemplateEditor()" style="padding:4px 10px;font-size:11px" title="매주 기본으로 들어가는 Task · 서브태스크를 켜고 끄거나 추가 · 삭제 (팀 공용)">고정 항목 편집</button><button class="btn btn-sm btn-secondary" onclick="addWeeklyTask()" style="padding:4px 10px;font-size:11px">+ Task 추가</button></span>
                 </div>
                 <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:6px 10px;background:var(--bg2);border-radius:6px;font-size:12px">
                     <label style="display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--text2)">
@@ -2678,6 +2696,8 @@ async function loadJiraSettingsUI(){
                 if(cfg[k]&&!localStorage.getItem(k))localStorage.setItem(k,cfg[k]);
             });
             // 프리셋: 서버 프리셋과 로컬 프리셋 병합 (로컬 최신값 우선, 이름 중복 시 updatedAt 기준)
+            // 주간 업데이트 고정 항목 (팀 공용) — 없으면 코드 기본값
+            weeklyTemplateSaved=(Array.isArray(cfg.weeklyTemplate)&&cfg.weeklyTemplate.length)?cfg.weeklyTemplate:null;
             if(cfg.jiraPresets){
                 const localPresets=JSON.parse(localStorage.getItem('jiraPresets')||'[]');
                 const merged=mergePresetsClient(localPresets,cfg.jiraPresets);
@@ -5591,6 +5611,119 @@ const WEEKLY_TEMPLATE=[
     {category:'월드 콘텐츠 매칭 및 시즌 데이터',enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['밸런스','시스템'],groups:['NCKR_밸런스팀','MAD_PM','NCKR_시스템팀'],subs:[]},
 ];
 let weeklyState=[];
+
+/* ---- 주간 업데이트 고정 항목 (팀 공용) ----
+   서버 config.json 의 weeklyTemplate 에 저장한다. 없으면 위 WEEKLY_TEMPLATE(코드 기본값).
+   항목의 on:false 는 '기본 끔' — 지우지 않고 목록에 남긴 채 체크만 풀려 시작한다.
+   (2026-11-23 김정민님: 고정 항목을 코드 수정 없이 넣다 뺐다) */
+let weeklyTemplateSaved=null;
+let _wtDraft=null;
+function getWeeklyTemplate(){return (Array.isArray(weeklyTemplateSaved)&&weeklyTemplateSaved.length)?weeklyTemplateSaved:WEEKLY_TEMPLATE;}
+function buildWeeklyState(){
+    return JSON.parse(JSON.stringify(getWeeklyTemplate())).map(t=>({...t,enabled:t.on!==false,
+        subs:(t.subs||[]).map(s=>({...s,enabled:s.on!==false,assignee:s.suggestId||DEFAULT_ASSIGNEE,assigneeName:s.suggestName||'손정아'}))}));
+}
+const _wtJoin=v=>(v||[]).join(', ');
+const _wtSplit=v=>String(v||'').split(',').map(x=>x.trim()).filter(Boolean);
+async function openWeeklyTemplateEditor(){
+    // 다른 사람이 방금 고친 것을 덮지 않게, 열 때 서버에서 새로 받는다
+    try{const r=await fetch('/api/config');if(r.ok){const c=await r.json();weeklyTemplateSaved=(Array.isArray(c.weeklyTemplate)&&c.weeklyTemplate.length)?c.weeklyTemplate:null;}}catch(e){}
+    _wtDraft=JSON.parse(JSON.stringify(getWeeklyTemplate()));
+    let ov=document.getElementById('wtEditor');
+    if(!ov){
+        ov=document.createElement('div');ov.id='wtEditor';ov.className='wt-overlay';document.body.appendChild(ov);
+        ov.addEventListener('mousedown',e=>{if(e.target===ov)closeWeeklyTemplateEditor();});
+    }
+    renderWeeklyTemplateEditor();
+    ov.style.display='flex';
+}
+function closeWeeklyTemplateEditor(){
+    const ov=document.getElementById('wtEditor');if(ov)ov.style.display='none';
+    document.querySelectorAll('.ac-box').forEach(b=>b.remove());
+    _wtDraft=null;
+}
+function wtToggle(ti,si,on){
+    const it=si===undefined?_wtDraft[ti]:_wtDraft[ti].subs[si];
+    it.on=on;
+    renderWeeklyTemplateEditor();
+}
+function wtAddTask(){
+    _wtDraft.push({category:'',on:true,enabled:true,assignee:DEFAULT_ASSIGNEE,labels:['기획데이터','밸런스'],groups:['NCKR_밸런스팀','MAD_PM'],subs:[]});
+    renderWeeklyTemplateEditor();
+    const names=document.querySelectorAll('#wtEditor .wt-task-head .wt-name');if(names.length)names[names.length-1].focus();
+}
+function wtAddSub(ti){
+    const t=_wtDraft[ti];
+    (t.subs=t.subs||[]).push({name:'',on:true,labels:['기획데이터'],groups:['MAD_PM','NCKR_밸런스팀']});
+    renderWeeklyTemplateEditor();
+    const subs=document.querySelectorAll(`#wtEditor .wt-task:nth-child(${ti+1}) .wt-sub .wt-name`);if(subs.length)subs[subs.length-1].focus();
+}
+function wtRemoveTask(ti){_wtDraft.splice(ti,1);renderWeeklyTemplateEditor();}
+function wtRemoveSub(ti,si){_wtDraft[ti].subs.splice(si,1);renderWeeklyTemplateEditor();}
+function wtResetDefault(){
+    _wtDraft=JSON.parse(JSON.stringify(WEEKLY_TEMPLATE));
+    renderWeeklyTemplateEditor();
+    showToast('코드 기본값을 불러왔습니다. [저장] 을 눌러야 적용됩니다.');
+}
+function renderWeeklyTemplateEditor(){
+    const ov=document.getElementById('wtEditor');if(!ov||!_wtDraft)return;
+    const tasks=_wtDraft.map((t,ti)=>{
+        const subs=(t.subs||[]).map((s,si)=>`
+        <div class="wt-row wt-sub${s.on===false?' off':''}">
+            <input type="checkbox" ${s.on!==false?'checked':''} onchange="wtToggle(${ti},${si},this.checked)" title="기본 포함 (끄면 체크가 풀린 채 목록에 남음)">
+            <input type="text" class="wt-name" value="${esc(s.name||'')}" placeholder="서브태스크 이름" oninput="_wtDraft[${ti}].subs[${si}].name=this.value">
+            <input type="text" class="wt-meta wt-assignee" data-ti="${ti}" data-si="${si}" value="${esc(s.suggestName||'')}" placeholder="담당자 (비우면 손정아)">
+            <input type="text" class="wt-meta" value="${esc(_wtJoin(s.labels))}" placeholder="레이블 (쉼표로 구분)" onchange="_wtDraft[${ti}].subs[${si}].labels=_wtSplit(this.value)">
+            <input type="text" class="wt-meta" value="${esc(_wtJoin(s.groups))}" placeholder="그룹 와처 (쉼표로 구분)" onchange="_wtDraft[${ti}].subs[${si}].groups=_wtSplit(this.value)">
+            <button class="wt-del" onclick="wtRemoveSub(${ti},${si})" title="서브태스크 삭제">✕</button>
+        </div>`).join('');
+        return `<div class="wt-task">
+        <div class="wt-row wt-task-head${t.on===false?' off':''}">
+            <input type="checkbox" ${t.on!==false?'checked':''} onchange="wtToggle(${ti},undefined,this.checked)" title="기본 포함 (끄면 체크가 풀린 채 목록에 남음)">
+            <input type="text" class="wt-name" value="${esc(t.category||'')}" placeholder="Task 이름" oninput="_wtDraft[${ti}].category=this.value" style="font-weight:600">
+            <input type="text" class="wt-meta" value="${esc(_wtJoin(t.labels))}" placeholder="레이블 (쉼표로 구분)" onchange="_wtDraft[${ti}].labels=_wtSplit(this.value)">
+            <input type="text" class="wt-meta" value="${esc(_wtJoin(t.groups))}" placeholder="그룹 와처 (쉼표로 구분)" onchange="_wtDraft[${ti}].groups=_wtSplit(this.value)">
+            <button class="wt-del" onclick="wtRemoveTask(${ti})" title="Task 삭제">✕</button>
+        </div>${subs}
+        <button class="wt-add" onclick="wtAddSub(${ti})">+ 서브태스크 추가</button>
+        </div>`;
+    }).join('');
+    ov.innerHTML=`<div class="wt-box">
+        <div class="wt-head"><b>주간 업데이트 고정 항목</b><button class="wt-del" onclick="closeWeeklyTemplateEditor()" title="닫기">✕</button></div>
+        <div class="wt-desc">매주 정기점검 생성에 기본으로 들어가는 항목입니다. 체크를 끄면 지우지 않고 <b>체크가 풀린 채</b> 목록에 남습니다. 저장하면 팀 모두에게 적용됩니다.</div>
+        <div class="wt-body">${tasks}<button class="wt-add" onclick="wtAddTask()">+ Task 추가</button></div>
+        <div class="wt-foot">
+            <button class="btn btn-sm btn-secondary" onclick="wtResetDefault()">코드 기본값 불러오기</button>
+            <span style="flex:1"></span>
+            <button class="btn btn-sm btn-secondary" onclick="closeWeeklyTemplateEditor()">취소</button>
+            <button class="btn btn-sm btn-primary" onclick="saveWeeklyTemplate()">저장</button>
+        </div>
+    </div>`;
+    // 담당자 자동완성 — 고르면 이름 · 계정 ID 를 같이 둔다. 비우면 기본 담당(손정아)
+    ov.querySelectorAll('.wt-assignee').forEach(inp=>{
+        const ti=+inp.dataset.ti,si=+inp.dataset.si;
+        inp.addEventListener('input',()=>{if(!inp.value.trim()){const s=_wtDraft[ti].subs[si];delete s.suggestId;delete s.suggestName;}});
+        makeAutocomplete(inp,jcUserSearch,(val,label)=>{const s=_wtDraft[ti].subs[si];s.suggestId=val;s.suggestName=label;});
+    });
+}
+async function saveWeeklyTemplate(){
+    if(!_wtDraft)return;
+    const clean=_wtDraft
+        .map(t=>({...t,category:(t.category||'').trim(),subs:(t.subs||[]).map(s=>({...s,name:(s.name||'').trim()})).filter(s=>s.name)}))
+        .filter(t=>t.category);
+    if(!clean.length){showToast('Task 가 하나 이상 있어야 합니다.','error');return;}
+    try{
+        const r=await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({weeklyTemplate:clean})});
+        if(!r.ok)throw new Error('HTTP '+r.status);
+    }catch(e){showToast('저장하지 못했습니다: '+e.message,'error',6000);return;}
+    weeklyTemplateSaved=clean;
+    closeWeeklyTemplateEditor();
+    // 이번 주 목록도 새 고정 항목으로 다시 채운다
+    weeklyState=buildWeeklyState();
+    refreshWeeklyLists();
+    try{previewMaintAll();}catch(e){}
+    showToast('고정 항목을 저장했습니다. 이번 주 목록도 새로 채웠습니다.','success');
+}
 let weeklyExpanded={}; // 펼쳐진 행: {'ti_si':'Task_0_1'} 형태로 ti와 si 추적
 let jcExpanded={}; // Jira 생성 탭 행 펼쳐짐: 'tab_i' 형태
 
@@ -6297,7 +6430,7 @@ async function openMaintenanceModal(){
         const p2=document.getElementById('maintProgressSection');if(p2)p2.style.display='none';
         const p3=document.getElementById('maintFinalPreview');if(p3)p3.style.display='none';
         // 주간 업데이트 초기화
-        weeklyState=WEEKLY_TEMPLATE.map(t=>({...t,enabled:true,subs:t.subs.map(s=>({...s,enabled:true,assignee:s.suggestId||DEFAULT_ASSIGNEE,assigneeName:s.suggestName||'손정아'}))}));
+        weeklyState=buildWeeklyState();
         renderMaintWeeklyList();
     } catch(e){console.error('Error initializing maintenance modal:',e);}
     showModalAsSidePanel('modalMaint');
